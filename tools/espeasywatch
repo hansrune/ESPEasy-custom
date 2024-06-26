@@ -1,0 +1,103 @@
+#!/bin/bash
+#
+# $Id$
+#
+PROG=$( basename $0 ) 
+DIR=$( dirname $0 ) 
+PATH="${PATH}:${DIR}"; export PATH
+HWPROVIDERS="5c:cf:7f:|18:fe:34:|60:01:94:|a0:20:a6:|b4:e6:2d:"
+HWPROVIDERS="5c:cf:7f:|18:fe:34:|60:01:94:|a0:20:a6:|b4:e6:2d:|68:c6:3a:|3c:71:bf:|5c:cf:7f:|bc:dd:c2:"
+LOGFACILITY="local6"
+WATCHDOGTIME="600"
+LOGINF=${LOGINF:-"logger -t ${PROG} -p ${LOGFACILITY}.info"}
+LOGERR=${LOGERR:-"logger -t ${PROG} -p ${LOGFACILITY}.error"}
+LOGOK=${LOGOK:-"logger -t ${PROG} -p ${LOGFACILITY}.info"}
+LOGDBG=${LOGOK:-"logger -t ${PROG} -p ${LOGFACILITY}.debug"}
+DBGPRINT=${DBGPRINT:-"echo"}
+#
+DATETIME=$( date '+%F %T' )
+TMPDIR="/tmp/${PROG}"
+
+#
+# Check on needed commands
+#
+for C in jq curl
+do
+	which ${C} > /dev/null && continue
+	${LOGERR} "${C} command not available. Please install" && exit 2
+done
+mkdir -p "${TMPDIR}" || exit 2
+
+RC=0
+TESTEDIP="none"
+if [[ "$1" == "-a" ]]
+then
+	shift
+	IPADDRS=( $* $( /usr/sbin/arp -an | awk "/${HWPROVIDERS}/  { print \$2 }" | tr -d '()' ) )
+else
+	IPADDRS=( $* )
+fi
+for IP in ${IPADDRS[@]} 
+do    
+	if [[ "${TESTEDIP/$IP/}" != "${TESTEDIP}" ]] 
+	then
+		${DBGPRINT} "$IP already tested - skipping"
+		continue
+	fi
+	${DBGPRINT} $IP ..
+	TESTEDIP="${TESTEDIP} ${IP}"
+		
+	curl -s http://${IP}/json > ${TMPDIR}/espeasy-${IP}.json-$$
+	if [[ $? -eq 0 ]] && [[ -s "${TMPDIR}/espeasy-${IP}.json-$$" ]]
+	then
+		ESPNAME=$( jq .WiFi.Hostname < "${TMPDIR}/espeasy-${IP}.json-$$" | tr -d '"' )
+		ESPCHANNEL=$( jq .WiFi.Channel < "${TMPDIR}/espeasy-${IP}.json-$$" | tr -d '"' )
+		ESPRECONNECTS=$( jq .WiFi < "${TMPDIR}/espeasy-${IP}.json-$$" | awk '/Number Reconnects/ { print $NF }' | tr -d '", ' )
+		ESPUPTIME=$( jq .System.Uptime < "${TMPDIR}/espeasy-${IP}.json-$$" )
+		ESPUNIT="${IP}"
+		[[ -n "${ESPNAME}" ]] && ESPUNIT="${ESPNAME}, ip address ${IP}"
+		[[ -n "${ESPUPTIME}" ]] && [[ -n "${ESPNAME}" ]] && ESPUNIT="${ESPNAME}, ip address ${IP}, uptime ${ESPUPTIME}"
+		if [[ -n "${ESPRECONNECTS}" ]]
+		then
+			ESPUNIT="${ESPUNIT}, channel ${ESPCHANNEL}, ${ESPRECONNECTS} reconnects"
+			if [[ ${ESPRECONNECTS} -gt 10 ]] 
+			then
+				${DBGPRINT} "ERROR: Excessive reconnects on ${ESPUNIT}"
+				${LOGERR}   "ERROR: Excessive reconnects on ${ESPUNIT}"
+			fi
+		fi
+
+		# if jq '.Sensors[].TaskName' < "${TMPDIR}/espeasy-${IP}.json-$$" | grep -q WatchDog
+		if : # jq '.Sensors[].TaskValues[].Name' <  "${TMPDIR}/espeasy-${IP}.json-$$" | egrep -q 'WatchDog|TimeOutSetting'
+		then
+			if curl -s "http://${IP}/control?cmd=event,SetWatchDog=${WATCHDOGTIME}" | grep -q OK 
+			then
+				${DBGPRINT} "Watchdog on ${ESPUNIT} updated to ${WATCHDOGTIME} seconds"
+				${LOGOK}    "Watchdog on ${ESPUNIT} updated to ${WATCHDOGTIME} seconds"
+			else
+				${DBGPRINT} "ERROR: Watchdog on ${ESPUNIT} failed to update"
+				${LOGERR}   "ERROR: Watchdog on ${ESPUNIT} failed to update"
+				RC=2
+			fi
+		else
+			${DBGPRINT} "DEBUG: No watchdog on ${ESPUNIT}"
+			${LOGDBG}   "DEBUG: No watchdog on ${ESPUNIT}"
+		fi
+	else
+		# Error if we used to have response, then no longer any response
+		if [[ -s "${TMPDIR}/espeasy-${IP}.json" ]]
+		then
+			${DBGPRINT} "ERROR: espeasy device on ip address ${IP} no longer responding"
+			${LOGERR}   "ERROR: espeasy device on ip address ${IP} no longer responding"
+		else
+			${DBGPRINT} "ERROR: espeasy device on ip address ${IP} still not responding"
+			${LOGDBG}   "ERROR: espeasy device on ip address ${IP} still not responding"
+		fi
+		RC=2
+	fi
+	mv -f "${TMPDIR}/espeasy-${IP}.json-$$" "${TMPDIR}/espeasy-${IP}.json"
+done
+exit ${RC}
+
+# :tabSize=4:indentSize=4:noTabs=true
+# vim:ts=4:sw=4
