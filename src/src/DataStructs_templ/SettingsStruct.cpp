@@ -374,6 +374,18 @@ void SettingsStruct_tmpl<N_TASKS>::DisableRulesCodeCompletion(bool value) {
   bitWrite(VariousBits2, 2, value);
 }
 #endif // if FEATURE_RULES_EASY_COLOR_CODE
+
+#if FEATURE_TARSTREAM_SUPPORT
+template<unsigned int N_TASKS>
+bool SettingsStruct_tmpl<N_TASKS>::DisableSaveConfigAsTar() const { 
+  return bitRead(VariousBits2, 3); // Using bit 4 now...
+}
+
+template<unsigned int N_TASKS>
+void SettingsStruct_tmpl<N_TASKS>::DisableSaveConfigAsTar(bool value) { 
+  bitWrite(VariousBits2, 3, value); // Using bit 4 now...
+}
+#endif // if FEATURE_TARSTREAM_SUPPORT
 */
 
 
@@ -1019,7 +1031,10 @@ void SettingsStruct_tmpl<N_TASKS>::setWiFi_TX_power(float dBm) {
 template<unsigned int N_TASKS>
 pluginID_t SettingsStruct_tmpl<N_TASKS>::getPluginID_for_task(taskIndex_t taskIndex) const {
   if (validTaskIndex(taskIndex)) {
-    return pluginID_t::toPluginID(TaskDeviceNumber[taskIndex]);
+    const uint8_t tdn = TaskDeviceNumber[taskIndex];
+    if (tdn > 0) {
+      return pluginID_t::toPluginID(tdn);
+    }
   }
   return INVALID_PLUGIN_ID;
 }

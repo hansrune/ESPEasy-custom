@@ -22,6 +22,7 @@
 #include "../Helpers/Misc.h"
 #include "../Helpers/Networking.h"
 #include "../Helpers/Numerical.h"
+#include "../Helpers/StringGenerator_System.h"
 #include "../Helpers/StringParser.h"
 #include "../Helpers/SystemVariables.h"
 #include "../Helpers/_Plugin_SensorTypeHelper.h"
@@ -437,7 +438,7 @@ String doFormatUserVar(struct EventStruct *event, uint8_t rel_index, bool mustCh
     return EMPTY_STRING;
   }
 
-  {
+  if (Device[DeviceIndex].HasFormatUserVar) {
     // First try to format using the plugin specific formatting.
     String result;
     EventStruct tempEvent;
@@ -448,7 +449,8 @@ String doFormatUserVar(struct EventStruct *event, uint8_t rel_index, bool mustCh
       return result;
     }
   }
-
+  
+  // Spent upto 400 usec till here
   const uint8_t valueCount      = getValueCountForTask(event->TaskIndex);
   const Sensor_VType sensorType = event->getSensorType();
 
@@ -495,7 +497,7 @@ String doFormatUserVar(struct EventStruct *event, uint8_t rel_index, bool mustCh
   }
   String res =  UserVar.getAsString(event->TaskIndex, rel_index, sensorType, nrDecimals);
   STOP_TIMER(FORMAT_USER_VAR);
-  return res;
+  return std::move(res);
 }
 
 String formatUserVarNoCheck(taskIndex_t TaskIndex, uint8_t rel_index) {
@@ -984,11 +986,14 @@ std::vector<uint8_t> parseHexTextData(const String& argument, int index) {
         j += 2;
 
         // Skip characters we need to ignore
-        int c = -1;
-        do {
-          ++j;
-          c = (j < arg.length()) ? skipChars.indexOf(arg[j]) : -1;
-        } while (c > -1);
+        if ((j + 1 < arg.length()) && (skipChars.indexOf(arg[j + 1]) != -1)) {
+          int c = -1;
+
+          do {
+            ++j;
+            c = (j < arg.length()) ? skipChars.indexOf(arg[j]) : -1;
+          } while (c > -1);
+        }
       }
     } else {
       for (size_t s = 0; s < arg.length(); s++) {
@@ -1341,12 +1346,13 @@ void parseEventVariables(String& s, struct EventStruct *event, bool useURLencode
   const bool vname_found = s.indexOf(F("%vname")) != -1;
 
   if (vname_found) {
-    for (uint8_t i = 0; i < 4; ++i) {
+    const uint8_t valueCount = getValueCountForTask(event->TaskIndex);
+    for (uint8_t i = 0; i < valueCount; ++i) {
       String vname = F("%vname");
       vname += (i + 1);
       vname += '%';
 
-      SMART_REPL(vname, getTaskValueName(event->TaskIndex, i));
+      SMART_REPL(vname, Cache.getTaskDeviceValueName(event->TaskIndex, i));
     }
   }
 }
@@ -1462,6 +1468,15 @@ void parseStandardConversions(String& s, bool useURLencode) {
   SMART_CONV(F("%c_m2hcm%"),  minutesToHourColonMinute(data.arg1))
   SMART_CONV(F("%c_s2dhms%"), secondsToDayHourMinuteSecond(data.arg1))
   SMART_CONV(F("%c_2hex%"),   formatToHex_no_prefix(data.arg1))
+  #if FEATURE_ESPEASY_P2P
+  SMART_CONV(F("%c_uname%"),  getNameForUnit(data.arg1))
+  SMART_CONV(F("%c_uage%"),   String(static_cast<int32_t>(getAgeForUnit(data.arg1) / 1000)))
+  SMART_CONV(F("%c_ubuild%"), String(getBuildnrForUnit(data.arg1)))
+  SMART_CONV(F("%c_ubuildstr%"), formatSystemBuildNr(getBuildnrForUnit(data.arg1)))
+  SMART_CONV(F("%c_uload%"),  toString(getLoadForUnit(data.arg1)))
+  SMART_CONV(F("%c_utype%"),  String(getTypeForUnit(data.arg1)))
+  SMART_CONV(F("%c_utypestr%"), getTypeStringForUnit(data.arg1))
+  #endif // if FEATURE_ESPEASY_P2P
   #undef SMART_CONV
 
   // Conversions with 2 parameters

@@ -182,11 +182,20 @@ class SettingsStruct_tmpl
   bool WaitWiFiConnect() const { return VariousBits_2.WaitWiFiConnect; }
   void WaitWiFiConnect(bool value) { VariousBits_2.WaitWiFiConnect = value; }
 
+#ifdef ESP32
+  // Toggle between passive/active WiFi scan.
+  bool PassiveWiFiScan() const { return !VariousBits_2.PassiveWiFiScan; }
+  void PassiveWiFiScan(bool value) { VariousBits_2.PassiveWiFiScan = !value; }
+#endif
+
   // Connect to Hidden SSID using channel and BSSID
   // This is much slower, but appears to be needed for some access points 
   // like MikroTik.
   bool HiddenSSID_SlowConnectPerBSSID() const { return !VariousBits_2.HiddenSSID_SlowConnectPerBSSID; }
   void HiddenSSID_SlowConnectPerBSSID(bool value) { VariousBits_2.HiddenSSID_SlowConnectPerBSSID = !value; }
+
+  bool EnableIPv6() const { return !VariousBits_2.EnableIPv6; }
+  void EnableIPv6(bool value) { VariousBits_2.EnableIPv6 = !value; }
 
   // Use Espressif's auto reconnect.
   bool SDK_WiFi_autoreconnect() const { return VariousBits_2.SDK_WiFi_autoreconnect; }
@@ -198,6 +207,10 @@ class SettingsStruct_tmpl
   void DisableRulesCodeCompletion(bool value) { VariousBits_2.DisableRulesCodeCompletion = value; }
   #endif // if FEATURE_RULES_EASY_COLOR_CODE
 
+  #if FEATURE_TARSTREAM_SUPPORT
+  bool DisableSaveConfigAsTar() const { return VariousBits_2.DisableSaveConfigAsTar; }
+  void DisableSaveConfigAsTar(bool value) { VariousBits_2.DisableSaveConfigAsTar = value; }
+  #endif // if FEATURE_TARSTREAM_SUPPORT
 
   // Flag indicating whether all task values should be sent in a single event or one event per task value (default behavior)
   bool CombineTaskValues_SingleEvent(taskIndex_t taskIndex) const;
@@ -519,9 +532,9 @@ public:
     uint32_t SDK_WiFi_autoreconnect           : 1; // Bit 01
     uint32_t DisableRulesCodeCompletion       : 1; // Bit 02
     uint32_t HiddenSSID_SlowConnectPerBSSID   : 1; // Bit 03  // inverted
-    uint32_t unused_04                        : 1; // Bit 04
-    uint32_t unused_05                        : 1; // Bit 05
-    uint32_t unused_06                        : 1; // Bit 06
+    uint32_t EnableIPv6                       : 1; // Bit 04  // inverted
+    uint32_t DisableSaveConfigAsTar           : 1; // Bit 05
+    uint32_t PassiveWiFiScan                  : 1; // Bit 06  // inverted
     uint32_t unused_07                        : 1; // Bit 07
     uint32_t unused_08                        : 1; // Bit 08
     uint32_t unused_09                        : 1; // Bit 09

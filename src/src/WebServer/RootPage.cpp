@@ -158,14 +158,19 @@ void handle_root() {
 
     if (wdcounter > 0)
     {
-      addHtmlFloat(getCPUload());
-      addHtml(F("% (LC="));
-      addHtmlInt(getLoopCountPerSec());
-      addHtml(')');
+      addHtml(strformat(
+        F("%.2f [%%] (LC=%d)"),
+        getCPUload(),
+        getLoopCountPerSec()));
     }
+
+#if FEATURE_INTERNAL_TEMPERATURE
+    addRowLabelValue(LabelType::INTERNAL_TEMPERATURE);
+#endif
     {
       addRowLabel(LabelType::FREE_MEM);
       addHtmlInt(freeMem);
+      addUnit(getFormUnit(LabelType::FREE_MEM));
 # ifndef BUILD_NO_RAM_TRACKER
       addHtml(strformat(
         F(" (%d - %s)"),
@@ -174,13 +179,14 @@ void handle_root() {
 # endif // ifndef BUILD_NO_RAM_TRACKER
     }
     {
-        # ifdef USE_SECOND_HEAP
+# ifdef USE_SECOND_HEAP
       addRowLabelValue(LabelType::FREE_HEAP_IRAM);
-      # endif // ifdef USE_SECOND_HEAP
+# endif // ifdef USE_SECOND_HEAP
     }
     {
       addRowLabel(LabelType::FREE_STACK);
       addHtmlInt(getCurrentFreeStack());
+      addUnit(getFormUnit(LabelType::FREE_STACK));
 # ifndef BUILD_NO_RAM_TRACKER
       addHtml(strformat(
         F(" (%d - %s)"),
@@ -197,12 +203,14 @@ void handle_root() {
     {
       addRowLabelValue(LabelType::IP_ADDRESS);
 #if FEATURE_USE_IPV6
-      addRowLabelValue(LabelType::IP6_LOCAL);
-      // Do not show global IPv6 on the root page
+      if (Settings.EnableIPv6()) {
+        addRowLabelValue(LabelType::IP6_LOCAL);
+        // Do not show global IPv6 on the root page
+      }
 #endif
       addRowLabel(LabelType::WIFI_RSSI);
       addHtml(strformat(
-        F("%d dBm (%s)"),
+        F("%d [dBm] (%s)"),
         WiFi.RSSI(),
         WiFi.SSID().c_str()));
     }
@@ -213,8 +221,10 @@ void handle_root() {
       addRowLabelValue(LabelType::ETH_SPEED_STATE);
       addRowLabelValue(LabelType::ETH_IP_ADDRESS);
 #if FEATURE_USE_IPV6
-      addRowLabelValue(LabelType::ETH_IP6_LOCAL);
-      // Do not show global IPv6 on the root page
+      if (Settings.EnableIPv6()) {
+        addRowLabelValue(LabelType::ETH_IP6_LOCAL);
+        // Do not show global IPv6 on the root page
+      }
 #endif
     }
   # endif // if FEATURE_ETHERNET
@@ -337,8 +347,10 @@ void handle_root() {
 
         if (it->second.ip[0] != 0
 #if FEATURE_USE_IPV6
-            || it->second.hasIPv6_mac_based_link_local
-            || it->second.hasIPv6_mac_based_link_global
+            || (Settings.EnableIPv6() &&
+                (it->second.hasIPv6_mac_based_link_local || 
+                 it->second.hasIPv6_mac_based_link_global)
+               )
 #endif
         )
         {
@@ -347,12 +359,14 @@ void handle_root() {
 
 #if FEATURE_USE_IPV6
           bool isIPv6 = false;
-          if (it->second.hasIPv6_mac_based_link_local) {
-            ip = it->second.IPv6_link_local(true);
-            isIPv6 = true;
-          } else if (it->second.hasIPv6_mac_based_link_global) {
-            ip = it->second.IPv6_global();
-            isIPv6 = true;
+          if (Settings.EnableIPv6()) {
+            if (it->second.hasIPv6_mac_based_link_local) {
+              ip = it->second.IPv6_link_local(true);
+              isIPv6 = true;
+            } else if (it->second.hasIPv6_mac_based_link_global) {
+              ip = it->second.IPv6_global();
+              isIPv6 = true;
+            }
           }
           if (it->second.hasIPv4 && it->second.hasIPv6()) {
             // Add 2 buttons for IPv4 and IPv6 address
