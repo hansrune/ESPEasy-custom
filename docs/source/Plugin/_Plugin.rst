@@ -375,6 +375,7 @@ There are different released versions of ESP Easy:
    ":ref:`P137_page`","|P137_status|","P137"
    ":ref:`P138_page`","|P138_status|","P138"
    ":ref:`P141_page`","|P141_status|","P141"
+   ":ref:`P142_page`","|P142_status|","P142"
    ":ref:`P143_page`","|P143_status|","P143"
    ":ref:`P144_page`","|P144_status|","P144"
    ":ref:`P145_page`","|P145_status|","P145"
@@ -394,6 +395,7 @@ There are different released versions of ESP Easy:
    ":ref:`P168_page`","|P168_status|","P168"
    ":ref:`P169_page`","|P169_status|","P169"
    ":ref:`P170_page`","|P170_status|","P170"
+   ":ref:`P172_page`","|P172_status|","P172"
 
 
 .. include:: _plugin_sets_overview.repl

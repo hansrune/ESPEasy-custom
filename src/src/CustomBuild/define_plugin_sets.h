@@ -1376,7 +1376,9 @@ To create/register a plugin, you have to :
     #define USES_P009   // MCP
 
     #define USES_P010   // BH1750
-    #define USES_P011   // PME
+    #ifndef ESP8266_1M
+      #define USES_P011   // PME (2024-08-13: moved to Collection builds)
+    #endif
     #define USES_P012   // LCD
     #define USES_P013   // HCSR04
     #define USES_P014   // SI7021
@@ -1577,7 +1579,9 @@ To create/register a plugin, you have to :
 
 #ifdef PLUGIN_SET_COLLECTION_D
     #define USES_P093   // Mitsubishi Heat Pump
-    #define USES_P094  // CUL Reader
+    // #ifdef ESP32
+    //   #define USES_P094  // CUL Reader
+    // #endif
     #ifndef USES_P098
       #define USES_P098   // PWM motor
     #endif
@@ -1630,8 +1634,14 @@ To create/register a plugin, you have to :
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_G
+  #ifndef USES_P142
+    #define USES_P142   // Position - AS5600
+  #endif
   #ifndef USES_P154
-    #define USES_P154   // Environment - BMP3xx
+    #define USES_P154   // Environment - BMP3xx I2C
+  #endif
+  #ifndef USES_P172
+    #define USES_P172   // Environment - BMP3xx SPI
   #endif
   #ifndef USES_P159
     #define USES_P159   // Presence - LD2410 Radar detection
@@ -1950,7 +1960,10 @@ To create/register a plugin, you have to :
     #define USES_P153   // Environment - SHT4x
   #endif
   #ifndef USES_P154
-    #define USES_P154   // Environment - BMP3xx
+    #define USES_P154   // Environment - BMP3xx I2C
+  #endif
+  #ifndef USES_P172
+    #define USES_P172   // Environment - BMP3xx SPI
   #endif
   #ifndef USES_P164
     #define USES_P164   // Gases - ENS16x TVOC/eCO2
@@ -2345,7 +2358,7 @@ To create/register a plugin, you have to :
     #define USES_P141   // PCD8544 Nokia 5110
   #endif
   #ifndef USES_P142
-//    #define USES_P142   // GT911 Touchscreen
+    #define USES_P142   // Position - AS5600
   #endif
   #ifndef USES_P143
     #define USES_P143   // I2C Rotary encoders
@@ -2381,7 +2394,10 @@ To create/register a plugin, you have to :
     #define USES_P153   // Environment - SHT4x
   #endif
   #ifndef USES_P154
-    #define USES_P154   // Environment - BMP3xx
+    #define USES_P154   // Environment - BMP3xx I2C
+  #endif
+  #ifndef USES_P172
+    #define USES_P172   // Environment - BMP3xx SPI
   #endif
   #ifndef USES_P159
     #define USES_P159   // Presence - LD2410 Radar detection
