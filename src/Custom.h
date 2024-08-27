@@ -3,7 +3,7 @@
 
 #ifdef USE_SECRETS_H
 #include "../../secrets.h"
-// Below lines are defined in secrets.h - file MUST be in .gitignore
+// Below lines are defined in secrets.h - file MUST be in .gitignore / outside your git repo
 // #warning "Secrets included in this firmware"
 // #define DEFAULT_SSID                         "xxxxxxxx"         // Enter your network SSID
 // #define DEFAULT_KEY                          "xxxxxxxx"         // Enter your network WPA key
