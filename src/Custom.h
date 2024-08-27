@@ -3,7 +3,7 @@
 
 #ifdef USE_SECRETS_H
 #include "../../secrets.h"
-// Below lines are defined in secrets.h - file MUST be in .gitignore
+// Below lines are defined in secrets.h - file MUST be in .gitignore / outside your git repo
 // #warning "Secrets included in this firmware"
 // #define DEFAULT_SSID                         "xxxxxxxx"         // Enter your network SSID
 // #define DEFAULT_KEY                          "xxxxxxxx"         // Enter your network WPA key
@@ -60,11 +60,7 @@ Your Own Default Settings
     But since this Custom.h is included before other defines are made, you don't have to undef a lot of defines.
 */
 
-<<<<<<< HEAD
 #define DATEREV "20241029a"
-=======
-#define DATEREV "20240722a"
->>>>>>> 5208f4a39 (Build date 20240722a)
 // #define BUILDDATEREV(pre, post) pre " - " DATEREV " - " post
 #define BUILDDATEREV(pre, post) pre " - " DATEREV
 // #warning "Custom config is being used"
