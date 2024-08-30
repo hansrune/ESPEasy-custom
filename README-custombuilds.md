@@ -32,6 +32,8 @@ git clone https://github.com/hansrune/ESPEasy-custom.git    # clone this ESPEasy
 cd ESPEasy-custom/  
 git checkout builds/custom/mega-20240822-1                  # check out latest build
 touch ../secrets.h                                          # see src/include/../Custom.h if you want to set up your own 
+git status                                                  # verify that you are on the expected branch
+``
 
 
 ## Build 
@@ -39,7 +41,6 @@ touch ../secrets.h                                          # see src/include/..
 ```bash
 pio run --environment public_IR_ESP32c3_4M316k_LittleFS_CDC # this will take a long time as it also downloads all tools and libraries needed
 ```
-
 
 ## Upload
 
