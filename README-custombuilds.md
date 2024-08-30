@@ -33,10 +33,12 @@ cd ESPEasy-custom/
 git checkout builds/custom/mega-20240822-1                  # check out latest build
 touch ../secrets.h                                          # see src/include/../Custom.h if you want to set up your own 
 git status                                                  # verify that you are on the expected branch
-``
+```
 
 
-## Build 
+## Build for ESP32c3
+
+You can build the firmware like this for any of the environments in `platformio.ini`. ESP32c3 is probably the easiest build, and contains no secrets from `../secrets.h` (hence public in the name)
 
 ```bash
 pio run --environment public_IR_ESP32c3_4M316k_LittleFS_CDC # this will take a long time as it also downloads all tools and libraries needed
