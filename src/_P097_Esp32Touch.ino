@@ -23,23 +23,23 @@
 
 
 # define PLUGIN_097
-# define PLUGIN_ID_097         97
-# define PLUGIN_NAME_097       "Touch (ESP32) - internal"
-# define PLUGIN_VALUENAME1_097 "Touch"
+# define PLUGIN_ID_097              97
+# define PLUGIN_NAME_097            "Touch (ESP32) - internal"
+# define PLUGIN_VALUENAME1_097      "Touch"
+# define PLUGIN_VALUENAME2_097      "State"
+# define P097_MAX_ADC_VALUE         4095
+# define P097_MAX_LONGPRESS_VALUE   10000
 
 
-# ifdef ESP32
-  #  define P097_MAX_ADC_VALUE    4095
-# endif // ifdef ESP32
-# ifdef ESP8266
-  #  define P097_MAX_ADC_VALUE    1023
-# endif // ifdef ESP8266
-
-
-# define P097_SEND_TOUCH_EVENT    PCONFIG(0)
-# define P097_SEND_RELEASE_EVENT  PCONFIG(1)
-# define P097_SEND_DURATION_EVENT PCONFIG(2)
-# define P097_TOUCH_THRESHOLD     PCONFIG(3)
+# define P097_SEND_TOUCH_EVENT      PCONFIG(0)
+# define P097_SEND_RELEASE_EVENT    PCONFIG(1)
+# define P097_SEND_DURATION_EVENT   PCONFIG(2)
+# define P097_TOUCH_THRESHOLD       PCONFIG(3)
+//# define P097_SEND_LONG_PRESS_EVENT PCONFIG(4)
+//# define P097_LONG_PRESS_TIME       PCONFIG(5)
+#if defined(ESP32S2) || defined(ESP32S3)
+# define P097_Sleep_WakeUp          PCONFIG(6)
+#endif
 
 // Share this bitmap among all instances of this plugin
 DRAM_ATTR uint32_t p097_pinTouched     = 0;
@@ -61,12 +61,13 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
       Device[deviceCount].PullUpOption       = false;
       Device[deviceCount].InverseLogicOption = false;
       Device[deviceCount].FormulaOption      = true;
-      Device[deviceCount].ValueCount         = 1;
+      Device[deviceCount].ValueCount         = 2;
       Device[deviceCount].SendDataOption     = true;
       Device[deviceCount].DecimalsOnly       = false;
       Device[deviceCount].TimerOption        = false;
       Device[deviceCount].TimerOptional      = true;
       Device[deviceCount].GlobalSyncOption   = true;
+      Device[deviceCount].OutputDataType     = Output_Data_type_t::All;
       break;
     }
 
@@ -77,16 +78,25 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
     }
 
     case PLUGIN_GET_DEVICEVALUENAMES:
-    {
+    { 
       strcpy_P(ExtraTaskSettings.TaskDeviceValueNames[0], PSTR(PLUGIN_VALUENAME1_097));
+      strcpy_P(ExtraTaskSettings.TaskDeviceValueNames[1], PSTR(PLUGIN_VALUENAME2_097));
+      ExtraTaskSettings.TaskDeviceValueDecimals[1] = 0;
+      ExtraTaskSettings.TaskDeviceValueDecimals[2] = 0;
       break;
     }
 
     case PLUGIN_SET_DEFAULTS:
     {
       P097_SEND_TOUCH_EVENT = 1;
-      P097_SEND_DURATION_EVENT = 1;
+      P097_SEND_RELEASE_EVENT = 1;
+      P097_SEND_DURATION_EVENT = 0;
+      //P097_LONG_PRESS_TIME = 1000;
+      #if defined(ESP32S2) || defined(ESP32S3)
+      P097_TOUCH_THRESHOLD = 1500;
+      #else
       P097_TOUCH_THRESHOLD = 20;
+      #endif
       break;
     }
 
@@ -99,8 +109,14 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 
       addFormCheckBox(F("Send Touch Event"),    F("sendtouch"),    P097_SEND_TOUCH_EVENT);
       addFormCheckBox(F("Send Release Event"),  F("sendrelease"),  P097_SEND_RELEASE_EVENT);
+      //addFormCheckBox(F("Send Long Press Event"), F("sendlongpress"), P097_SEND_LONG_PRESS_EVENT);
+      //addFormNumericBox(F("Long Press Time"), F("longpress"), P097_LONG_PRESS_TIME, 0, P097_MAX_LONGPRESS_VALUE);
       addFormCheckBox(F("Send Duration Event"), F("sendduration"), P097_SEND_DURATION_EVENT);
       addFormNumericBox(F("Touch Threshold"), F("threshold"), P097_TOUCH_THRESHOLD, 0, P097_MAX_ADC_VALUE);
+      #if defined(ESP32S2) || defined(ESP32S3)
+      addFormCheckBox(F("Wake Up from sleep"),    F("sleepwakeup"),    P097_Sleep_WakeUp);
+      addFormNote(F("Wake up from sleep is only supported on one touch pin!"));
+      #endif
 
       // Show current value
       addRowLabel(F("Current Pressure"));
@@ -114,9 +130,13 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
     {
       P097_SEND_TOUCH_EVENT    = isFormItemChecked(F("sendtouch"));
       P097_SEND_RELEASE_EVENT  = isFormItemChecked(F("sendrelease"));
+      //P097_SEND_LONG_PRESS_EVENT = isFormItemChecked(F("sendlongpress"));
+      //P097_LONG_PRESS_TIME = getFormItemInt(F("longpress"));
       P097_SEND_DURATION_EVENT = isFormItemChecked(F("sendduration"));
       P097_TOUCH_THRESHOLD     = getFormItemInt(F("threshold"));
-
+      #if defined(ESP32S2) || defined(ESP32S3)
+      P097_Sleep_WakeUp        = isFormItemChecked(F("sleepwakeup"));
+      #endif
       success = true;
       break;
     }
@@ -124,6 +144,11 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
     case PLUGIN_INIT:
     {
       P097_setEventParams(CONFIG_PIN1, P097_TOUCH_THRESHOLD);
+      #if defined(ESP32S2) || defined(ESP32S3)
+      if (P097_Sleep_WakeUp) {
+        touchSleepWakeUpEnable(CONFIG_PIN1, P097_TOUCH_THRESHOLD);
+      }
+      #endif
       success = true;
       break;
     }
@@ -139,6 +164,28 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
           const bool touched      = bitRead(p097_pinTouched, t);
           const bool touched_prev = bitRead(p097_pinTouchedPrev, t);
 
+          #if defined(ESP32S2) || defined(ESP32S3)
+          if (touched) {
+            bitClear(p097_pinTouched, t);
+            UserVar.setFloat(event->TaskIndex, 0, touchRead(CONFIG_PIN1));
+            if (touchInterruptGetLastStatus(CONFIG_PIN1)) {
+                Scheduler.schedule_task_device_timer(event->TaskIndex, millis());
+                UserVar.setFloat(event->TaskIndex, 1, 1);
+            } else {
+                if (P097_SEND_RELEASE_EVENT) {
+                  Scheduler.schedule_task_device_timer(event->TaskIndex, millis());
+                UserVar.setFloat(event->TaskIndex, 1, 0);
+                }
+
+                if (P097_SEND_DURATION_EVENT) {
+                    eventQueue.add(event->TaskIndex, F("Duration"), timePassedSince(p097_timestamp[t]));
+                }
+              
+              p097_timestamp[t] = 0;
+              }    
+          }
+
+          #else
           if (touched) {
             bitClear(p097_pinTouched, t);
           }
@@ -150,25 +197,30 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
             if (touched) {
               if (P097_SEND_TOUCH_EVENT) {
                 // schedule a read to update output values and send to controllers
+                UserVar.setFloat(event->TaskIndex, 1, 1);
                 Scheduler.schedule_task_device_timer(event->TaskIndex, millis());
+                
               }
               bitSet(p097_pinTouchedPrev, t);
-            } else {
+            } else { 
+              // Touch released
               if (P097_SEND_RELEASE_EVENT) {
                 // schedule a read to update output values and send to controllers
+                UserVar.setFloat(event->TaskIndex, 1, 0);
                 Scheduler.schedule_task_device_timer(event->TaskIndex, millis());
+                
               }
 
               if (P097_SEND_DURATION_EVENT) {
-                if (Settings.UseRules) {
                   eventQueue.add(event->TaskIndex, F("Duration"), timePassedSince(p097_timestamp[t]));
-                }
               }
+              
               bitClear(p097_pinTouchedPrev, t);
               p097_timestamp[t] = 0;
             }
           }
-        }
+          #endif
+        }    
       }
       success = true;
       break;
