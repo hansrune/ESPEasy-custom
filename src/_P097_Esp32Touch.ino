@@ -156,7 +156,9 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 
         if (getADC_gpio_info(CONFIG_PIN1, adc, ch, t)) {
           const bool touched      = bitRead(p097_pinTouched, t);
+          #ifdef ESP32_CLASSIC
           const bool touched_prev = bitRead(p097_pinTouchedPrev, t);
+          #endif
 
           #if defined(ESP32S2) || defined(ESP32S3)
           if (touched) {
@@ -165,18 +167,18 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
             
             if (touchInterruptGetLastStatus(CONFIG_PIN1)) {
                 UserVar.setFloat(event->TaskIndex, 1, 1);
-                eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME2_097), 1);
+                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 1);
                 
                 if (P097_SEND_TOUCH_EVENT) {
-                  eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME1_097), UserVar.getFloat(event->TaskIndex, 0)); 
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0)); 
                 }
                 
             } else { 
                 UserVar.setFloat(event->TaskIndex, 1, 0);
-                eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME2_097), 0);
+                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1), 0);
                 
                 if (P097_SEND_RELEASE_EVENT) {
-                  eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME1_097), UserVar.getFloat(event->TaskIndex, 0));
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
                 }
 
                 if (P097_SEND_DURATION_EVENT) {
@@ -200,20 +202,20 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 
             if (touched) {
               UserVar.setFloat(event->TaskIndex, 1, 1);
-              eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME2_097), 1);
+              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 1);
 
               if (P097_SEND_TOUCH_EVENT) {
-                eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME1_097), UserVar.getFloat(event->TaskIndex, 0)); 
+                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0)); 
               }
 
               bitSet(p097_pinTouchedPrev, t);
             } else { 
               // Touch released
               UserVar.setFloat(event->TaskIndex, 1, 0);
-              eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME2_097), 0);
+              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
 
               if (P097_SEND_RELEASE_EVENT) {
-                eventQueue.add(event->TaskIndex, F(PLUGIN_VALUENAME1_097), UserVar.getFloat(event->TaskIndex, 0));
+                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
               }
 
               if (P097_SEND_DURATION_EVENT) {
