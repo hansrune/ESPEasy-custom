@@ -175,7 +175,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
                 
             } else { 
                 UserVar.setFloat(event->TaskIndex, 1, 0);
-                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1), 0);
+                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
                 
                 if (P097_SEND_RELEASE_EVENT) {
                   eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
