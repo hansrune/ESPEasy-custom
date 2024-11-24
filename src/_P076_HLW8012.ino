@@ -600,7 +600,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           success = true;
         }
 
-        if (equals(command, F("hwlresetenergy"))) {
+        if (equals(command, F("hlwresetenergy"))) {
           Plugin076_ResetEnergy();
           success = true;
         }
