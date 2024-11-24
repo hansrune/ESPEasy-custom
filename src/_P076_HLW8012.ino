@@ -53,7 +53,7 @@ float p076_henergy{};
 
 # define P076_NR_OUTPUT_VALUES   4
 # define P076_NR_OUTPUT_OPTIONS  7
-# define P076_QUERY1_CONFIG_POS  1
+# define P076_QUERY1_CONFIG_POS  0
 # define P076_QUERY1          PCONFIG(0)
 # define P076_QUERY2          PCONFIG(1)
 # define P076_QUERY3          PCONFIG(2)
