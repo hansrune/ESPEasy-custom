@@ -54,10 +54,10 @@ float p076_henergy{};
 # define P076_NR_OUTPUT_VALUES   4
 # define P076_NR_OUTPUT_OPTIONS  7
 # define P076_QUERY1_CONFIG_POS  1
-# define P076_QUERY1          PCONFIG(1)
-# define P076_QUERY2          PCONFIG(2)
-# define P076_QUERY3          PCONFIG(3)
-# define P076_QUERY4          PCONFIG(4)
+# define P076_QUERY1          PCONFIG(8)
+# define P076_QUERY2          PCONFIG(9)
+# define P076_QUERY3          PCONFIG(10)
+# define P076_QUERY4          PCONFIG(11)
 # define P076_QUERY1_DFLT     0 // Voltage (V)
 # define P076_QUERY2_DFLT     1 // Current (A)
 # define P076_QUERY3_DFLT     2 // Active Power (W)
