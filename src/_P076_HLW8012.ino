@@ -305,7 +305,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       }
 
       # if PLUGIN_076_DEBUG
-      addLogMove(LOG_LEVEL_INFO, strformat(F("P076: PIN Settings  curr_read: %d cf_edge: %d cf1_edge: %d")
+      addLogMove(LOG_LEVEL_INFO, strformat(F("P076: PIN Settings  curr_read: %d cf_edge: %d cf1_edge: %d"),
                                            PCONFIG(4),  PCONFIG(5),  PCONFIG(6)));
       # endif // if PLUGIN_076_DEBUG
 
