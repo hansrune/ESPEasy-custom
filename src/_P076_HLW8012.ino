@@ -546,16 +546,16 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           Scheduler.schedule_task_device_timer(event->TaskIndex, millis() + 5000);
 
           // Set default querys if not set
-          if ( P076_QUERY1 = 0 ) {
+          if ( P076_QUERY1 == 0) {
             P076_QUERY1    = P076_QUERY1_DFLT;
           }
-          if ( P076_QUERY2 = 0 ) {
+          if ( P076_QUERY2 == 0 ) {
             P076_QUERY2    = P076_QUERY2_DFLT;
           }
-          if ( P076_QUERY3 = 0 ) {
+          if ( P076_QUERY3 == 0 ) {
             P076_QUERY3    = P076_QUERY3_DFLT;
           }
-          if ( P076_QUERY4 = 0 ) {
+          if ( P076_QUERY4 == 0 ) {
             P076_QUERY4    = P076_QUERY4_DFLT;
           }
           success = true;
