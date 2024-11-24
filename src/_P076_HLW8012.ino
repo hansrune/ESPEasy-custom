@@ -620,10 +620,12 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
 }
 
 void Plugin076_ResetEnergy() {
-  Plugin_076_hlw -> resetEnergy();
-  # if PLUGIN_076_DEBUG
-  addLog(LOG_LEVEL_INFO, F("P076: Reset Energy counter to zero"));
-  # endif // if PLUGIN_076_DEBUG
+  if (Plugin_076_hlw) {
+    Plugin_076_hlw -> resetEnergy();
+    # if PLUGIN_076_DEBUG
+    addLog(LOG_LEVEL_INFO, F("P076: Reset Energy counter to zero"));
+    # endif // if PLUGIN_076_DEBUG
+  }
 }
 
 void Plugin076_ResetMultipliers() {
