@@ -418,49 +418,50 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           //        ++p076_read_stage;
           //      } else if (p076_read_stage > 3) {
           bool valid = false;
+          float HLW[7];
           p076_hpowerActive = Plugin_076_hlw->getActivePower(valid);
 
           if (valid) {
+            HLW[2] = p076_hpowerActive;
             success = true;
           }
 
           p076_hvoltage = Plugin_076_hlw->getVoltage(valid);
 
           if (valid) {
+            HLW[0] = p076_hvoltage;
             success = true;
           }
+
           p076_hcurrent = Plugin_076_hlw->getCurrent(valid);
 
           if (valid) {
+            HLW[1] = p076_hcurrent;
             success = true;
           }
+
           p076_hpowfact = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
 
           if (valid) {
+            HLW[5] = p076_hpowfact;
             success = true;
           }
 
           p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
 
           if (valid) {
+            HLW[3] = p076_hpowerReactive;
             success = true;
           }
 
           p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
 
           if (valid) {
+            HLW[4] = p076_hpowerApparent;
             success = true;
           }
 
           p076_henergy = Plugin_076_hlw->getEnergy();
-
-          float HLW[7];
-          HLW[0] = p076_hvoltage;
-          HLW[1] = p076_hcurrent;
-          HLW[2] = p076_hpowerActive;
-          HLW[3] = p076_hpowerReactive;
-          HLW[4] = p076_hpowerApparent;
-          HLW[5] = p076_hpowfact;
           HLW[6] = p076_henergy;
 
           UserVar.setFloat(event->TaskIndex, 0, HLW[P076_QUERY1]);
