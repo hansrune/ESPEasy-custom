@@ -44,7 +44,7 @@ DRAM_ATTR uint32_t p097_pinTouchedLong                      = 0;
 DRAM_ATTR uint32_t p097_pinTouchedPrev                      = 0;
 DRAM_ATTR uint32_t p097_timestamp[LAST_TOUCH_INPUT_INDEX]   = { 0 };
 DRAM_ATTR uint32_t p097_touchstart[LAST_TOUCH_INPUT_INDEX]  = { 0 };
-IRAM_ATTR uint32_t p097_togglevalue[LAST_TOUCH_INPUT_INDEX] = { 0 };
+DRAM_ATTR uint32_t p097_togglevalue[LAST_TOUCH_INPUT_INDEX] = { 0 };
 
 boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 {
