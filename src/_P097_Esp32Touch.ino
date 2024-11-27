@@ -318,14 +318,12 @@ void P097_setEventParams(int pin, uint16_t threshold) {
       case 8: touchAttachInterrupt(T8, P097_got_T8, threshold); break;
       case 9: touchAttachInterrupt(T9, P097_got_T9, threshold); break;
 #  if HAS_T10_TO_T14
+      case 10: touchAttachInterrupt(T10, P097_got_T10, threshold); break;
+      case 11: touchAttachInterrupt(T11, P097_got_T11, threshold); break;
+      case 12: touchAttachInterrupt(T12, P097_got_T12, threshold); break;
+      case 13: touchAttachInterrupt(T13, P097_got_T13, threshold); break;
+      case 14: touchAttachInterrupt(T14, P097_got_T14, threshold); break;
 
-        /*
-              case 10: touchAttachInterrupt(T10, P097_got_T10, threshold); break;
-              case 11: touchAttachInterrupt(T11, P097_got_T11, threshold); break;
-              case 12: touchAttachInterrupt(T12, P097_got_T12, threshold); break;
-              case 13: touchAttachInterrupt(T13, P097_got_T13, threshold); break;
-              case 14: touchAttachInterrupt(T14, P097_got_T14, threshold); break;
-         */
 #  endif // if HAS_T10_TO_T14
     }
   }
