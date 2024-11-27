@@ -160,124 +160,126 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
       int adc, ch, t;
 
       if (getADC_gpio_info(CONFIG_PIN1, adc, ch, t)) {
-        if (P097_SEND_LONG_PRESS_EVENT &&
-            (p097_touchstart[t] >= 1) &&
-            (timePassedSince(p097_touchstart[t]) >= P097_LONG_PRESS_TIME)) {
-          UserVar.setFloat(event->TaskIndex, 1, 10);
-          eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 10);
-          p097_touchstart[t] = 0;
-        }
+        if (t >= 0) { //check if there is a touch pad "t" since "getADC_gpio_info" returns true even if there is no touch pad 
+          if (P097_SEND_LONG_PRESS_EVENT &&
+              (p097_touchstart[t] >= 1) &&
+              (timePassedSince(p097_touchstart[t]) >= P097_LONG_PRESS_TIME)) {
+            UserVar.setFloat(event->TaskIndex, 1, 10);
+            eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 10);
+            p097_touchstart[t] = 0;
+          }
 
 
-        if ((p097_pinTouched != 0) || (p097_pinTouchedPrev != 0)) {
-          // Some pin has been touched or released.
-          // Check if it is 'our' pin
+          if ((p097_pinTouched != 0) || (p097_pinTouchedPrev != 0)) {
+            // Some pin has been touched or released.
+            // Check if it is 'our' pin
 
-          const bool touched = bitRead(p097_pinTouched, t);
+            const bool touched = bitRead(p097_pinTouched, t);
           #  ifdef ESP32_CLASSIC
-          const bool touched_prev = bitRead(p097_pinTouchedPrev, t);
+            const bool touched_prev = bitRead(p097_pinTouchedPrev, t);
           #  endif // ifdef ESP32_CLASSIC
 
           #  if defined(ESP32S2) || defined(ESP32S3)
 
-          if (touched) {
-            bitClear(p097_pinTouched, t);
-            UserVar.setFloat(event->TaskIndex, 0, touchRead(CONFIG_PIN1));
+            if (touched) {
+              bitClear(p097_pinTouched, t);
+              UserVar.setFloat(event->TaskIndex, 0, touchRead(CONFIG_PIN1));
 
-            if (touchInterruptGetLastStatus(CONFIG_PIN1)) {
-              if (p097_touchstart[t] == 0) { p097_touchstart[t] = millis(); }
+              if (touchInterruptGetLastStatus(CONFIG_PIN1)) {
+                if (p097_touchstart[t] == 0) { p097_touchstart[t] = millis(); }
 
-              if (P097_TYPE_TOGGLE) {
-                p097_togglevalue[t] = !UserVar.getInt32(event->TaskIndex, 1);
-              } else {
-                p097_togglevalue[t] = 1;
-              }
-              UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]);
-              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[t]);
-
-              if (P097_SEND_TOUCH_EVENT) {
-                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
-              }
-            } else { // Touch released
-              p097_touchstart[t] = 0;
-
-              if (!P097_TYPE_TOGGLE) {
-                UserVar.setFloat(event->TaskIndex, 1, 0);
-                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
-              } else {
-                // set only the taskvalue back to previous state after long press release
-                if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]); }
-              }
-
-              if (P097_SEND_RELEASE_EVENT) {
-                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
-              }
-
-              if (P097_SEND_DURATION_EVENT) {
-                if (Settings.UseRules) {
-                  eventQueue.add(event->TaskIndex, F("Duration"), timePassedSince(p097_timestamp[t]));
+                if (P097_TYPE_TOGGLE) {
+                  p097_togglevalue[t] = !UserVar.getInt32(event->TaskIndex, 1);
+                } else {
+                  p097_togglevalue[t] = 1;
                 }
-              }
+                UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]);
+                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[t]);
 
-              p097_timestamp[t] = 0;
+                if (P097_SEND_TOUCH_EVENT) {
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
+                }
+              } else { // Touch released
+                p097_touchstart[t] = 0;
+
+                if (!P097_TYPE_TOGGLE) {
+                  UserVar.setFloat(event->TaskIndex, 1, 0);
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
+                } else {
+                  // set only the taskvalue back to previous state after long press release
+                  if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]); }
+                }
+
+                if (P097_SEND_RELEASE_EVENT) {
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
+                }
+
+                if (P097_SEND_DURATION_EVENT) {
+                  if (Settings.UseRules) {
+                    eventQueue.add(event->TaskIndex, F("Duration"), timePassedSince(p097_timestamp[t]));
+                  }
+                }
+
+                p097_timestamp[t] = 0;
+              }
             }
-          }
 
           #  else // if defined(ESP32S2) || defined(ESP32S3)
 
-          if (touched) {
-            bitClear(p097_pinTouched, t);
-          }
-
-          if (touched != touched_prev) {
-            // state changed
-            UserVar.setFloat(event->TaskIndex, 0, touchRead(CONFIG_PIN1));
-
             if (touched) {
-              if (p097_touchstart[t] == 0) { p097_touchstart[t] = millis(); }
-
-              if (P097_TYPE_TOGGLE) {
-                p097_togglevalue[t] = !UserVar.getInt32(event->TaskIndex, 1);
-              } else {
-                p097_togglevalue[t] = 1;
-              }
-              UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]);
-              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[t]);
-
-              if (P097_SEND_TOUCH_EVENT) {
-                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
-              }
-
-              bitSet(p097_pinTouchedPrev, t);
-            } else { // Touch released
-              p097_touchstart[t] = 0;
-
-              if (!P097_TYPE_TOGGLE) {
-                UserVar.setFloat(event->TaskIndex, 1, 0);
-                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
-              } else {
-                // set only the taskvalue back to previous state after long press release
-                if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]); }
-              }
-
-              if (P097_SEND_RELEASE_EVENT) {
-                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
-              }
-
-              if (P097_SEND_DURATION_EVENT) {
-                if (Settings.UseRules) {
-                  eventQueue.add(event->TaskIndex, F("Duration"), timePassedSince(p097_timestamp[t]));
-                }
-              }
-
-              bitClear(p097_pinTouchedPrev, t);
-              p097_timestamp[t] = 0;
+              bitClear(p097_pinTouched, t);
             }
-          }
+
+            if (touched != touched_prev) {
+              // state changed
+              UserVar.setFloat(event->TaskIndex, 0, touchRead(CONFIG_PIN1));
+
+              if (touched) {
+                if (p097_touchstart[t] == 0) { p097_touchstart[t] = millis(); }
+
+                if (P097_TYPE_TOGGLE) {
+                  p097_togglevalue[t] = !UserVar.getInt32(event->TaskIndex, 1);
+                } else {
+                  p097_togglevalue[t] = 1;
+                }
+                UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]);
+                eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[t]);
+
+                if (P097_SEND_TOUCH_EVENT) {
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
+                }
+
+                bitSet(p097_pinTouchedPrev, t);
+              } else { // Touch released
+                p097_touchstart[t] = 0;
+
+                if (!P097_TYPE_TOGGLE) {
+                  UserVar.setFloat(event->TaskIndex, 1, 0);
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
+                } else {
+                  // set only the taskvalue back to previous state after long press release
+                  if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]); }
+                }
+
+                if (P097_SEND_RELEASE_EVENT) {
+                  eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
+                }
+
+                if (P097_SEND_DURATION_EVENT) {
+                  if (Settings.UseRules) {
+                    eventQueue.add(event->TaskIndex, F("Duration"), timePassedSince(p097_timestamp[t]));
+                  }
+                }
+
+                bitClear(p097_pinTouchedPrev, t);
+                p097_timestamp[t] = 0;
+              }
+            }
           #  endif // if defined(ESP32S2) || defined(ESP32S3)
+          }
+          success = true;
+          break;
         }
-        success = true;
-        break;
       }
     }
 
