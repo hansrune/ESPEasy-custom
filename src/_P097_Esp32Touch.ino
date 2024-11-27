@@ -16,7 +16,7 @@
 #  if defined(ESP32S2) || defined(ESP32S3)
   #   define HAS_T0_INPUT  0
   #   define HAS_T10_TO_T14 1
-  #   define LAST_TOUCH_INPUT_INDEX 15
+  #   define LAST_TOUCH_INPUT_INDEX 14
 #  endif // if defined(ESP32S2) || defined(ESP32S3)
 
 
@@ -157,25 +157,22 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 
     case PLUGIN_TEN_PER_SECOND:
     {
-      const int START_PIN = HAS_T0_INPUT ? 0 : 1;
-      const int END_PIN   = LAST_TOUCH_INPUT_INDEX - HAS_T0_INPUT;
+      int adc, ch, t;
 
-      if ((CONFIG_PIN1 >= START_PIN) && (CONFIG_PIN1 <= END_PIN)) {
+      if (getADC_gpio_info(CONFIG_PIN1, adc, ch, t)) {
         if (P097_SEND_LONG_PRESS_EVENT &&
-            (p097_touchstart[CONFIG_PIN1] >= 1) &&
-            (timePassedSince(p097_touchstart[CONFIG_PIN1]) >= P097_LONG_PRESS_TIME)) {
+            (p097_touchstart[t] >= 1) &&
+            (timePassedSince(p097_touchstart[t]) >= P097_LONG_PRESS_TIME)) {
           UserVar.setFloat(event->TaskIndex, 1, 10);
           eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 10);
-          p097_touchstart[CONFIG_PIN1] = 0;
+          p097_touchstart[t] = 0;
         }
-      }
 
-      if ((p097_pinTouched != 0) || (p097_pinTouchedPrev != 0)) {
-        // Some pin has been touched or released.
-        // Check if it is 'our' pin
-        int adc, ch, t;
 
-        if (getADC_gpio_info(CONFIG_PIN1, adc, ch, t)) {
+        if ((p097_pinTouched != 0) || (p097_pinTouchedPrev != 0)) {
+          // Some pin has been touched or released.
+          // Check if it is 'our' pin
+
           const bool touched = bitRead(p097_pinTouched, t);
           #  ifdef ESP32_CLASSIC
           const bool touched_prev = bitRead(p097_pinTouchedPrev, t);
@@ -188,28 +185,28 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
             UserVar.setFloat(event->TaskIndex, 0, touchRead(CONFIG_PIN1));
 
             if (touchInterruptGetLastStatus(CONFIG_PIN1)) {
-              if (p097_touchstart[CONFIG_PIN1] == 0) { p097_touchstart[CONFIG_PIN1] = millis(); }
+              if (p097_touchstart[t] == 0) { p097_touchstart[t] = millis(); }
 
               if (P097_TYPE_TOGGLE) {
-                p097_togglevalue[CONFIG_PIN1] = !UserVar.getInt32(event->TaskIndex, 1);
+                p097_togglevalue[t] = !UserVar.getInt32(event->TaskIndex, 1);
               } else {
-                p097_togglevalue[CONFIG_PIN1] = 1;
+                p097_togglevalue[t] = 1;
               }
-              UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[CONFIG_PIN1]);
-              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[CONFIG_PIN1]);
+              UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]);
+              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[t]);
 
               if (P097_SEND_TOUCH_EVENT) {
                 eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
               }
             } else { // Touch released
-              p097_touchstart[CONFIG_PIN1] = 0;
+              p097_touchstart[t] = 0;
 
               if (!P097_TYPE_TOGGLE) {
                 UserVar.setFloat(event->TaskIndex, 1, 0);
                 eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
               } else {
                 // set only the taskvalue back to previous state after long press release
-                if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[CONFIG_PIN1]); }
+                if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]); }
               }
 
               if (P097_SEND_RELEASE_EVENT) {
@@ -237,15 +234,15 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
             UserVar.setFloat(event->TaskIndex, 0, touchRead(CONFIG_PIN1));
 
             if (touched) {
-              if (p097_touchstart[CONFIG_PIN1] == 0) { p097_touchstart[CONFIG_PIN1] = millis(); }
+              if (p097_touchstart[t] == 0) { p097_touchstart[t] = millis(); }
 
               if (P097_TYPE_TOGGLE) {
-                p097_togglevalue[CONFIG_PIN1] = !UserVar.getInt32(event->TaskIndex, 1);
+                p097_togglevalue[t] = !UserVar.getInt32(event->TaskIndex, 1);
               } else {
-                p097_togglevalue[CONFIG_PIN1] = 1;
+                p097_togglevalue[t] = 1;
               }
-              UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[CONFIG_PIN1]);
-              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[CONFIG_PIN1]);
+              UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]);
+              eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), p097_togglevalue[t]);
 
               if (P097_SEND_TOUCH_EVENT) {
                 eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 0)), UserVar.getFloat(event->TaskIndex, 0));
@@ -253,14 +250,14 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 
               bitSet(p097_pinTouchedPrev, t);
             } else { // Touch released
-              p097_touchstart[CONFIG_PIN1] = 0;
+              p097_touchstart[t] = 0;
 
               if (!P097_TYPE_TOGGLE) {
                 UserVar.setFloat(event->TaskIndex, 1, 0);
                 eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
               } else {
                 // set only the taskvalue back to previous state after long press release
-                if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[CONFIG_PIN1]); }
+                if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[t]); }
               }
 
               if (P097_SEND_RELEASE_EVENT) {
@@ -279,9 +276,9 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
           }
           #  endif // if defined(ESP32S2) || defined(ESP32S3)
         }
+        success = true;
+        break;
       }
-      success = true;
-      break;
     }
 
     case PLUGIN_READ:
@@ -296,6 +293,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
       break;
     }
   }
+
   return success;
 }
 
