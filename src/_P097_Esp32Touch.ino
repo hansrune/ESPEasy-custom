@@ -15,7 +15,9 @@
 #  endif // ifdef ESP32_CLASSIC
 #  if defined(ESP32S2) || defined(ESP32S3)
   #   define HAS_T0_INPUT  0
-  #   define HAS_T10_TO_T14 1
+
+// temporary disabled since T10 to T14  are causing problems
+  #   define HAS_T10_TO_T14 0
   #   define LAST_TOUCH_INPUT_INDEX 14
 #  endif // if defined(ESP32S2) || defined(ESP32S3)
 
@@ -104,6 +106,9 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
     {
       addRowLabel(F("Analog Pin"));
       addADC_PinSelect(AdcPinSelectPurpose::TouchOnly, F("taskdevicepin1"), CONFIG_PIN1);
+      #  if (defined(ESP32S2) || defined(ESP32S3)) && !HASS_T10_TO_T14
+      addFormNote(F("For now touch pins T10 to T14 are not supported!"));
+      #  endif // if (defined(ESP32S2) || defined(ESP32S3)) && !HASS_T10_TO_T14
 
       addFormCheckBox(F("Toggle State"),       F("typetoggle"),  P097_TYPE_TOGGLE);
       addFormCheckBox(F("Wake Up from Sleep"), F("sleepwakeup"), P097_SLEEP_WAKEUP);
@@ -160,7 +165,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
       int adc, ch, t;
 
       if (getADC_gpio_info(CONFIG_PIN1, adc, ch, t)) {
-        if (t >= 0) { //check if there is a touch pad "t" since "getADC_gpio_info" returns true even if there is no touch pad 
+        if (t >= 0) { // check if there is a touch pad "t" since "getADC_gpio_info" returns true even if there is no touch pad
           if (P097_SEND_LONG_PRESS_EVENT &&
               (p097_touchstart[t] >= 1) &&
               (timePassedSince(p097_touchstart[t]) >= P097_LONG_PRESS_TIME)) {
