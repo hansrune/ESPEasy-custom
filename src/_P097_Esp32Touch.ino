@@ -157,12 +157,17 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 
     case PLUGIN_TEN_PER_SECOND:
     {
-      if (P097_SEND_LONG_PRESS_EVENT &&
-          (p097_touchstart[CONFIG_PIN1] >= 1) &&
-          (timePassedSince(p097_touchstart[CONFIG_PIN1]) >= P097_LONG_PRESS_TIME)) {
-        UserVar.setFloat(event->TaskIndex, 1, 10);
-        eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 10);
-        p097_touchstart[CONFIG_PIN1] = 0;
+      const int START_PIN = HAS_T0_INPUT ? 0 : 1;
+      const int END_PIN   = LAST_TOUCH_INPUT_INDEX - HAS_T0_INPUT;
+
+      if ((CONFIG_PIN1 >= START_PIN) && (CONFIG_PIN1 <= END_PIN)) {
+        if (P097_SEND_LONG_PRESS_EVENT &&
+            (p097_touchstart[CONFIG_PIN1] >= 1) &&
+            (timePassedSince(p097_touchstart[CONFIG_PIN1]) >= P097_LONG_PRESS_TIME)) {
+          UserVar.setFloat(event->TaskIndex, 1, 10);
+          eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 10);
+          p097_touchstart[CONFIG_PIN1] = 0;
+        }
       }
 
       if ((p097_pinTouched != 0) || (p097_pinTouchedPrev != 0)) {
@@ -203,7 +208,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
                 UserVar.setFloat(event->TaskIndex, 1, 0);
                 eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
               } else {
-                // set value back to previous state after long press release
+                // set only the taskvalue back to previous state after long press release
                 if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[CONFIG_PIN1]); }
               }
 
@@ -254,7 +259,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
                 UserVar.setFloat(event->TaskIndex, 1, 0);
                 eventQueue.add(event->TaskIndex, (getTaskValueName(event->TaskIndex, 1)), 0);
               } else {
-                // set value back to previous state after long press release
+                // set only the taskvalue back to previous state after long press release
                 if (P097_SEND_LONG_PRESS_EVENT) { UserVar.setFloat(event->TaskIndex, 1, p097_togglevalue[CONFIG_PIN1]); }
               }
 
