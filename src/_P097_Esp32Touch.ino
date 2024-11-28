@@ -12,13 +12,15 @@
   #   define HAS_T0_INPUT  1
   #   define HAS_T10_TO_T14 0
   #   define LAST_TOUCH_INPUT_INDEX 10
+  #   define P097_MAX_THRESHOLD_VALUE         4095
 #  endif // ifdef ESP32_CLASSIC
 #  if defined(ESP32S2) || defined(ESP32S3)
   #   define HAS_T0_INPUT  0
 
-// temporary disabled since T10 to T14  are causing problems
+// temporary disabled since T10 to T14 are causing problems
   #   define HAS_T10_TO_T14 0
   #   define LAST_TOUCH_INPUT_INDEX 14
+  #   define P097_MAX_THRESHOLD_VALUE         500000 // couldn't find a max value but threshold for ESP32S2 & ESP32S3 is uint32_t
 #  endif // if defined(ESP32S2) || defined(ESP32S3)
 
 
@@ -27,8 +29,8 @@
 #  define PLUGIN_NAME_097            "Touch (ESP32) - internal"
 #  define PLUGIN_VALUENAME1_097      "Touch"
 #  define PLUGIN_VALUENAME2_097      "State"
-#  define P097_MAX_ADC_VALUE         4095
 #  define P097_MAX_LONGPRESS_VALUE   10000
+
 
 
 #  define P097_SEND_TOUCH_EVENT      PCONFIG(0)
@@ -106,7 +108,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
     {
       addRowLabel(F("Analog Pin"));
       addADC_PinSelect(AdcPinSelectPurpose::TouchOnly, F("taskdevicepin1"), CONFIG_PIN1);
-      #  if (defined(ESP32S2) || defined(ESP32S3)) && !HASS_T10_TO_T14
+      #  if (defined(ESP32S2) || defined(ESP32S3)) && !HAS_T10_TO_T14
       addFormNote(F("For now touch pins T10 to T14 are not supported!"));
       #  endif // if (defined(ESP32S2) || defined(ESP32S3)) && !HASS_T10_TO_T14
 
@@ -124,7 +126,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
       addFormCheckBox(F("Send Touch Event"),    F("sendtouch"),    P097_SEND_TOUCH_EVENT);
       addFormCheckBox(F("Send Release Event"),  F("sendrelease"),  P097_SEND_RELEASE_EVENT);
       addFormCheckBox(F("Send Duration Event"), F("sendduration"), P097_SEND_DURATION_EVENT);
-      addFormNumericBox(F("Touch Threshold"), F("threshold"), P097_TOUCH_THRESHOLD, 0, P097_MAX_ADC_VALUE);
+      addFormNumericBox(F("Touch Threshold"), F("threshold"), P097_TOUCH_THRESHOLD, 0, P097_MAX_THRESHOLD_VALUE);
 
       // Show current value
       addRowLabel(F("Current Pressure"));
@@ -177,7 +179,6 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 
           if ((p097_pinTouched != 0) || (p097_pinTouchedPrev != 0)) {
             // Some pin has been touched or released.
-            // Check if it is 'our' pin
 
             const bool touched = bitRead(p097_pinTouched, t);
           #  ifdef ESP32_CLASSIC
@@ -307,7 +308,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 /**********************************************************************************
 * Touch pin callback functions
 **********************************************************************************/
-void P097_setEventParams(int pin, uint16_t threshold) {
+void P097_setEventParams(int pin, touch_value_t threshold) {
   int adc, ch, t;
 
   if (getADC_gpio_info(pin, adc, ch, t)) {
