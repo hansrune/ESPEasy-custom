@@ -45,16 +45,16 @@ HLW8012 *Plugin_076_hlw = nullptr;
 # define HLW_VOLTAGE_RESISTOR_DOWN (1000)     // Real 1.009k
 // -----------------------------------------------------------------------------------------------
 int StoredTaskIndex = -1;
-uint8_t p076_read_stage{};
-unsigned long p076_timer{};
+uint8_t p076_read_stage {};
+unsigned long p076_timer {};
 
-float p076_hcurrent{};
-float p076_hvoltage{};
-float p076_hpowerActive{};
-float p076_hpowerReactive{};
-float p076_hpowerApparent{};
-float p076_hpowfact{};
-float p076_henergy{};
+float p076_hcurrent {};
+float p076_hvoltage {};
+float p076_hpowerActive {};
+float p076_hpowerReactive {};
+float p076_hpowerApparent {};
+float p076_hpowfact {};
+float p076_henergy {};
 
 # define P076_NR_OUTPUT_VALUES   4
 # define P076_NR_OUTPUT_OPTIONS  7
@@ -138,7 +138,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       Device[deviceCount].TimerOption    = true;
       Device[deviceCount].PluginStats    = true;
       Device[deviceCount].setPin1Direction(gpio_direction::gpio_output);
-      Device[deviceCount].OutputDataType     = Output_Data_type_t::Simple;
+      Device[deviceCount].OutputDataType = Output_Data_type_t::Simple;
       break;
     }
 
@@ -161,15 +161,15 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
 
     case PLUGIN_SET_DEFAULTS: {
       // Load some defaults
-      P076_QUERY1    = P076_QUERY1_DFLT;
-      P076_QUERY2    = P076_QUERY2_DFLT;
-      P076_QUERY3    = P076_QUERY3_DFLT;
-      P076_QUERY4    = P076_QUERY4_DFLT;
+      P076_QUERY1 = P076_QUERY1_DFLT;
+      P076_QUERY2 = P076_QUERY2_DFLT;
+      P076_QUERY3 = P076_QUERY3_DFLT;
+      P076_QUERY4 = P076_QUERY4_DFLT;
 
       success = true;
       break;
     }
-    
+
     case PLUGIN_GET_DEVICEGPIONAMES: {
       event->String1 = formatGpioName_output(F("SEL"));
       event->String2 = formatGpioName_input(F("CF1"));
@@ -336,7 +336,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       hlwMultipliers[2] = getFormItemFloat(F("powmult"));
 
       if ((hlwMultipliers[0] > 1.0) && (hlwMultipliers[1] > 1.0) && (hlwMultipliers[2] > 1.0)) {
-        SaveCustomTaskSettings(event->TaskIndex, reinterpret_cast<const uint8_t *>(&hlwMultipliers),
+        SaveCustomTaskSettings(event->TaskIndex, reinterpret_cast < const uint8_t * > (&hlwMultipliers),
                                sizeof(hlwMultipliers));
         # if PLUGIN_076_DEBUG
         addLog(LOG_LEVEL_INFO, F("P076: Saved Calibration from Config Page"));
@@ -373,6 +373,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
 
       if (Plugin_076_hlw) {
         bool valid = false;
+
         switch (p076_read_stage) {
           case 0:
             // The stage where we have to wait for a measurement to be started.
@@ -394,12 +395,12 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           case 3: // Read voltage + active power + power factor
 
             if (timeOutReached(p076_timer)) {
-              p076_hvoltage = Plugin_076_hlw->getVoltage(valid);
+              p076_hvoltage       = Plugin_076_hlw->getVoltage(valid);
               p076_hpowerActive   = Plugin_076_hlw->getActivePower(valid);
-              p076_hpowerReactive   = Plugin_076_hlw->getReactivePower(valid);
-              p076_hpowerApparent   = Plugin_076_hlw->getApparentPower(valid);
-              p076_hpowfact = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
-              p076_henergy = Plugin_076_hlw->getEnergy();
+              p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
+              p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
+              p076_hpowfact       = static_cast < int > (100 * Plugin_076_hlw->getPowerFactor(valid));
+              p076_henergy        = Plugin_076_hlw->getEnergy();
               ++p076_read_stage;
 
               // Measurement is done, schedule a new PLUGIN_READ call
@@ -421,52 +422,52 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           // Force a measurement start.
           //        ++p076_read_stage;
           //      } else if (p076_read_stage > 3) {
-          bool valid = false;
+          bool  valid = false;
           float HLW[7];
           p076_hpowerActive = Plugin_076_hlw->getActivePower(valid);
 
           if (valid) {
-            HLW[2] = p076_hpowerActive;
+            HLW[2]  = p076_hpowerActive;
             success = true;
           }
 
           p076_hvoltage = Plugin_076_hlw->getVoltage(valid);
 
           if (valid) {
-            HLW[0] = p076_hvoltage;
+            HLW[0]  = p076_hvoltage;
             success = true;
           }
 
           p076_hcurrent = Plugin_076_hlw->getCurrent(valid);
 
           if (valid) {
-            HLW[1] = p076_hcurrent;
+            HLW[1]  = p076_hcurrent;
             success = true;
           }
 
-          p076_hpowfact = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
+          p076_hpowfact = static_cast < int > (100 * Plugin_076_hlw->getPowerFactor(valid));
 
           if (valid) {
-            HLW[5] = p076_hpowfact;
+            HLW[5]  = p076_hpowfact;
             success = true;
           }
 
           p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
 
           if (valid) {
-            HLW[3] = p076_hpowerReactive;
+            HLW[3]  = p076_hpowerReactive;
             success = true;
           }
 
           p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
 
           if (valid) {
-            HLW[4] = p076_hpowerApparent;
+            HLW[4]  = p076_hpowerApparent;
             success = true;
           }
 
           p076_henergy = Plugin_076_hlw->getEnergy();
-          HLW[6] = p076_henergy;
+          HLW[6]       = p076_henergy;
 
           UserVar.setFloat(event->TaskIndex, 0, HLW[P076_QUERY1]);
           UserVar.setFloat(event->TaskIndex, 1, HLW[P076_QUERY2]);
@@ -479,7 +480,13 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           # if PLUGIN_076_DEBUG
           addLogMove(LOG_LEVEL_INFO,
                      strformat(F("P076: Read values - V=%.2f - A=%.2f - W=%.2f - VAR=%.2f - VA=%.2f - Pf%%=%.2f - Ws=%.2f"),
-                               p076_hvoltage, p076_hcurrent, p076_hpowerActive, p076_hpowerReactive, p076_hpowerApparent, p076_hpowfact, p076_henergy));
+                               p076_hvoltage,
+                               p076_hcurrent,
+                               p076_hpowerActive,
+                               p076_hpowerReactive,
+                               p076_hpowerApparent,
+                               p076_hpowfact,
+                               p076_henergy));
           # endif // if PLUGIN_076_DEBUG
 
           // Plugin_076_hlw->toggleMode();
@@ -502,7 +509,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       const uint8_t SEL_PIN = CONFIG_PIN1;
 
       if (validGpio(CF_PIN) && validGpio(CF1_PIN) && validGpio(SEL_PIN)) {
-        Plugin_076_hlw = new (std::nothrow) HLW8012;
+        Plugin_076_hlw = new(std::nothrow) HLW8012;
 
         if (Plugin_076_hlw) {
           const uint8_t currentRead = PCONFIG(4);
@@ -551,11 +558,11 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           Scheduler.schedule_task_device_timer(event->TaskIndex, millis() + 5000);
 
           // Set default querys if not set
-          if ( P076_QUERY1 == 0 && P076_QUERY2 == 0 && P076_QUERY3 == 0 && P076_QUERY4 == 0 ) {
-            P076_QUERY1    = P076_QUERY1_DFLT;
-            P076_QUERY2    = P076_QUERY2_DFLT;
-            P076_QUERY3    = P076_QUERY3_DFLT;
-            P076_QUERY4    = P076_QUERY4_DFLT;
+          if ((P076_QUERY1 == 0) && (P076_QUERY2 == 0) && (P076_QUERY3 == 0) && (P076_QUERY4 == 0)) {
+            P076_QUERY1 = P076_QUERY1_DFLT;
+            P076_QUERY2 = P076_QUERY2_DFLT;
+            P076_QUERY3 = P076_QUERY3_DFLT;
+            P076_QUERY4 = P076_QUERY4_DFLT;
           }
           success = true;
         }
@@ -625,7 +632,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
 
 void Plugin076_ResetEnergy() {
   if (Plugin_076_hlw) {
-    Plugin_076_hlw -> resetEnergy();
+    Plugin_076_hlw->resetEnergy();
     # if PLUGIN_076_DEBUG
     addLog(LOG_LEVEL_INFO, F("P076: Reset Energy counter to zero"));
     # endif // if PLUGIN_076_DEBUG
@@ -646,19 +653,19 @@ void Plugin076_SaveMultipliers() {
   if (StoredTaskIndex < 0) {
     return; // Not yet initialized.
   }
-  ESPEASY_RULES_FLOAT_TYPE hlwMultipliers[3]{};
+  ESPEASY_RULES_FLOAT_TYPE hlwMultipliers[3] {};
 
   if (Plugin076_ReadMultipliers(hlwMultipliers[0], hlwMultipliers[1], hlwMultipliers[2])) {
     # if FEATURE_USE_DOUBLE_AS_ESPEASY_RULES_FLOAT_TYPE
-    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast<const uint8_t *>(&hlwMultipliers),
+    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast < const uint8_t * > (&hlwMultipliers),
                            sizeof(hlwMultipliers));
     # else // if FEATURE_USE_DOUBLE_AS_ESPEASY_RULES_FLOAT_TYPE
-    double hlwMultipliers_d[3]{};
+    double hlwMultipliers_d[3] {};
     hlwMultipliers_d[0] = hlwMultipliers[0];
     hlwMultipliers_d[1] = hlwMultipliers[1];
     hlwMultipliers_d[2] = hlwMultipliers[2];
 
-    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast<const uint8_t *>(&hlwMultipliers_d),
+    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast < const uint8_t * > (&hlwMultipliers_d),
                            sizeof(hlwMultipliers_d));
     # endif // if FEATURE_USE_DOUBLE_AS_ESPEASY_RULES_FLOAT_TYPE
   }
@@ -689,7 +696,7 @@ bool Plugin076_LoadMultipliers(taskIndex_t               TaskIndex,
   }
   double hlwMultipliers[3];
 
-  LoadCustomTaskSettings(TaskIndex, reinterpret_cast<uint8_t *>(&hlwMultipliers),
+  LoadCustomTaskSettings(TaskIndex, reinterpret_cast < uint8_t * > (&hlwMultipliers),
                          sizeof(hlwMultipliers));
 
   if (hlwMultipliers[0] > 1.0) {
@@ -719,13 +726,13 @@ void Plugin076_Reset(taskIndex_t TaskIndex) {
   p076_read_stage = 0;
   p076_timer      = 0;
 
-  p076_hcurrent = 0.0f;
-  p076_hvoltage = 0.0f;
+  p076_hcurrent       = 0.0f;
+  p076_hvoltage       = 0.0f;
   p076_hpowerActive   = 0.0f;
-  p076_hpowerReactive   = 0.0f;
-  p076_hpowerApparent   = 0.0f;
-  p076_hpowfact = 0.0f;
-  p076_henergy   = 0.0f;
+  p076_hpowerReactive = 0.0f;
+  p076_hpowerApparent = 0.0f;
+  p076_hpowfact       = 0.0f;
+  p076_henergy        = 0.0f;
 }
 
 // When using interrupts we have to call the library entry point
