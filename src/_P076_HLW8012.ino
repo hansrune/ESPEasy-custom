@@ -61,7 +61,7 @@ float p076_henergy{};
 # define P076_QUERY1_DFLT     0 // Voltage (V)
 # define P076_QUERY2_DFLT     1 // Current (A)
 # define P076_QUERY3_DFLT     2 // Active Power (W)
-# define P076_QUERY4_DFLT     6 // Energy (Ws)
+# define P076_QUERY4_DFLT     5 // Power Factor (cosphi)
 
 # define P076_Custom       0
 
