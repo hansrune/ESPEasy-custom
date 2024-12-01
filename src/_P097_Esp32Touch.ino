@@ -1,4 +1,5 @@
 #include "_Plugin_Helper.h"
+
 #ifdef USES_P097
 
 // #######################################################################################################
@@ -8,21 +9,20 @@
 
 # if defined(ESP32) && !defined(ESP32C2) && !defined(ESP32C3) && !defined(ESP32C6)
 
-#  ifdef ESP32_CLASSIC
-  #   define HAS_T0_INPUT  1
-  #   define HAS_T10_TO_T14 0
-  #   define LAST_TOUCH_INPUT_INDEX 10
-  #   define P097_MAX_THRESHOLD_VALUE         4095
-#  endif // ifdef ESP32_CLASSIC
-#  if defined(ESP32S2) || defined(ESP32S3)
-  #   define HAS_T0_INPUT  0
+// Device-specific configuration
+#  if defined(ESP32_CLASSIC)
+  #   define HAS_T0_INPUT             1
+  #   define HAS_T10_TO_T14           0
+  #   define LAST_TOUCH_INPUT_INDEX   10
+  #   define P097_MAX_THRESHOLD_VALUE 4095
+#  elif defined(ESP32S2) || defined(ESP32S3)
+  #   define HAS_T0_INPUT             0
 
-// temporary disabled since T10 to T14 are causing problems
-  #   define HAS_T10_TO_T14 0
-  #   define LAST_TOUCH_INPUT_INDEX 14
-  #   define P097_MAX_THRESHOLD_VALUE         500000 // couldn't find a max value but threshold for ESP32S2 & ESP32S3 is uint32_t
-#  endif // if defined(ESP32S2) || defined(ESP32S3)
-
+// Temporary disabled since T10 to T14 are causing problems
+    #   define HAS_T10_TO_T14           0
+    #   define LAST_TOUCH_INPUT_INDEX   14
+    #   define P097_MAX_THRESHOLD_VALUE 500000 // couldn't find a max value but threshold for ESP32S2 & ESP32S3 is uint32_t
+#  endif // if defined(ESP32_CLASSIC)
 
 #  define PLUGIN_097
 #  define PLUGIN_ID_097              97
@@ -30,7 +30,6 @@
 #  define PLUGIN_VALUENAME1_097      "Touch"
 #  define PLUGIN_VALUENAME2_097      "State"
 #  define P097_MAX_LONGPRESS_VALUE   10000
-
 
 
 #  define P097_SEND_TOUCH_EVENT      PCONFIG(0)
@@ -308,7 +307,7 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
 /**********************************************************************************
 * Touch pin callback functions
 **********************************************************************************/
-void P097_setEventParams(int pin, touch_value_t threshold) {
+void P097_setEventParams(int pin, uint32_t threshold) {
   int adc, ch, t;
 
   if (getADC_gpio_info(pin, adc, ch, t)) {
