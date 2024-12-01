@@ -743,9 +743,9 @@ const __FlashStringHelper* p076_getQueryString(uint8_t query) {
   {
     case 0: return F("Voltage_V");
     case 1: return F("Current_A");
-    case 2: return F("Active Power_W");
-    case 3: return F("Reactive Power_VAR");
-    case 4: return F("Apparent Power_VA");
+    case 2: return F("Active_Power_W");
+    case 3: return F("Reactive_Power_VAR");
+    case 4: return F("Apparent_Power_VA");
     case 5: return F("Power_Factor_cosphi");
     case 6: return F("Energy_Ws");
   }
