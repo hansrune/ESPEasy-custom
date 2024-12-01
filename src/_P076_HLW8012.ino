@@ -753,12 +753,12 @@ void IRAM_ATTR p076_hlw8012_cf_interrupt() {
 
 const __FlashStringHelper* p076_getQueryString(uint8_t value_nr, bool displayString) {
   switch (value_nr) {
-    case 0: return displayString ? F("Voltage") : F("V");
-    case 1: return displayString ? F("Current") : F("A");
-    case 2: return displayString ? F("Active Power") : F("W");
+    case 0: return displayString ? F("Voltage") : F("Voltage");
+    case 1: return displayString ? F("Current") : F("Current");
+    case 2: return displayString ? F("Active Power") : F("Power");
     case 3: return displayString ? F("Reactive Power") : F("VAR");
     case 4: return displayString ? F("Apparent Power") : F("VA");
-    case 5: return displayString ? F("Power Factor") : F("cosphi");
+    case 5: return displayString ? F("Power Factor") : F("PowerFactor");
     case 6: return displayString ? F("Energy") : F("Ws");
   }
   return F("");
