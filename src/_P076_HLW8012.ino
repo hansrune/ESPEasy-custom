@@ -19,11 +19,12 @@
 //
 
 /** Changelog:
- * 2024-11-24 dsiggi: - Added the ability to read reactive power, apparent power and energy
- *                    - Added ability to reset the energy counter with console command hlwresetenergy
  * 2024-12-01 dsiggi: - The old measurement values (voltage, current and power factor) are now again the default to support old setups.
  *                    - Removed spaces from value names
+ *                    - Seperated Output selector string an value string
  *                    - Uncrustify
+ * 2024-11-24 dsiggi: - Added the ability to read reactive power, apparent power and energy
+ *                    - Added ability to reset the energy counter with console command hlwresetenergy
  * 2023-01-03 tonhuisman: Uncrustify source, apply some code improvements
  *                        Older changelog not registered.
  */
@@ -85,7 +86,8 @@ float p076_henergy {};
 # define P076_Shelly_PLUG_S 10
 
 // Forward declaration helper function
-const __FlashStringHelper* p076_getQueryString(uint8_t query);
+const __FlashStringHelper* p076_getQueryString(uint8_t value_nr,
+                                               bool    displayString);
 
 # if ESP_IDF_VERSION_MAJOR >= 5
 
@@ -151,7 +153,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       for (uint8_t i = 0; i < VARS_PER_TASK; ++i) {
         if (i < P076_NR_OUTPUT_VALUES) {
           uint8_t choice = PCONFIG(i + P076_QUERY1_CONFIG_POS);
-          ExtraTaskSettings.setTaskDeviceValueName(i, p076_getQueryString(choice));
+          ExtraTaskSettings.setTaskDeviceValueName(i, p076_getQueryString(choice, false));
         } else {
           ExtraTaskSettings.clearTaskDeviceValueName(i);
         }
@@ -182,7 +184,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       const __FlashStringHelper *options[P076_NR_OUTPUT_OPTIONS];
 
       for (uint8_t i = 0; i < P076_NR_OUTPUT_OPTIONS; ++i) {
-        options[i] = p076_getQueryString(i);
+        options[i] = p076_getQueryString(i, true);
       }
 
       for (uint8_t i = 0; i < P076_NR_OUTPUT_VALUES; ++i) {
@@ -362,7 +364,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       for (uint8_t i = 0; i < P076_NR_OUTPUT_VALUES; ++i) {
         const uint8_t pconfigIndex = i + P076_QUERY1_CONFIG_POS;
         const uint8_t choice       = PCONFIG(pconfigIndex);
-        sensorTypeHelper_saveOutputSelector(event, pconfigIndex, i, p076_getQueryString(choice));
+        sensorTypeHelper_saveOutputSelector(event, pconfigIndex, i, p076_getQueryString(choice, false));
       }
 
       success = true;
@@ -749,16 +751,15 @@ void IRAM_ATTR p076_hlw8012_cf_interrupt() {
   }
 }
 
-const __FlashStringHelper* p076_getQueryString(uint8_t query) {
-  switch (query)
-  {
-    case 0: return F("Voltage_V");
-    case 1: return F("Current_A");
-    case 2: return F("Active_Power_W");
-    case 3: return F("Reactive_Power_VAR");
-    case 4: return F("Apparent_Power_VA");
-    case 5: return F("Power_Factor_cosphi");
-    case 6: return F("Energy_Ws");
+const __FlashStringHelper* p076_getQueryString(uint8_t value_nr, bool displayString) {
+  switch (value_nr) {
+    case 0: return displayString ? F("Voltage") : F("V");
+    case 1: return displayString ? F("Current") : F("A");
+    case 2: return displayString ? F("Active Power") : F("W");
+    case 3: return displayString ? F("Reactive Power") : F("VAR");
+    case 4: return displayString ? F("Apparent Power") : F("VA");
+    case 5: return displayString ? F("Power Factor") : F("cosphi");
+    case 6: return displayString ? F("Energy") : F("Ws");
   }
   return F("");
 }
