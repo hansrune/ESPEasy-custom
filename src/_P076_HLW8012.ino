@@ -19,6 +19,11 @@
 //
 
 /** Changelog:
+ * 2024-11-24 dsiggi: - Added the ability to read reactive power, apparent power and energy
+ *                    - Added ability to reset the energy counter with console command hlwresetenergy
+ * 2024-12-01 dsiggi: - The old measurement values (voltage, current and power factor) are now again the default to support old setups.
+ *                    - Removed spaces from value names
+ *                    - Uncrustify
  * 2023-01-03 tonhuisman: Uncrustify source, apply some code improvements
  *                        Older changelog not registered.
  */
@@ -368,7 +373,6 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
 
       if (Plugin_076_hlw) {
         bool valid = false;
-
         switch (p076_read_stage) {
           case 0:
             // The stage where we have to wait for a measurement to be started.
