@@ -1,10 +1,14 @@
 #include "_Plugin_Helper.h"
-
 #ifdef USES_P097
 
 // #######################################################################################################
 // #################################### Plugin 097: ESP32 Touch ##########################################
 // #######################################################################################################
+
+/** Changelog:
+ * 2024-12-11 chromoxdor: Added extra routine for ESP32S2 and ESP32S3.
+ *                        Added "Wake Up from Sleep", Switch like behaviour + toggle and long press option.
+ */
 
 
 # if defined(ESP32) && !defined(ESP32C2) && !defined(ESP32C3) && !defined(ESP32C6)
@@ -30,7 +34,6 @@
 #  define PLUGIN_VALUENAME1_097      "Touch"
 #  define PLUGIN_VALUENAME2_097      "State"
 #  define P097_MAX_LONGPRESS_VALUE   10000
-
 
 #  define P097_SEND_TOUCH_EVENT      PCONFIG(0)
 #  define P097_SEND_RELEASE_EVENT    PCONFIG(1)
@@ -111,14 +114,14 @@ boolean Plugin_097(uint8_t function, struct EventStruct *event, String& string)
       addFormNote(F("For now touch pins T10 to T14 are not supported!"));
       #  endif // if (defined(ESP32S2) || defined(ESP32S3)) && !HASS_T10_TO_T14
 
-      addFormCheckBox(F("Toggle State"),       F("typetoggle"),  P097_TYPE_TOGGLE);
+      addFormCheckBox(F("Toggle State"),          F("typetoggle"),    P097_TYPE_TOGGLE);
+      addFormCheckBox(F("Send Long Press Event"), F("sendlongpress"), P097_SEND_LONG_PRESS_EVENT);
+      addFormNumericBox(F("Long Press Time"), F("longpress"), P097_LONG_PRESS_TIME, 500, P097_MAX_LONGPRESS_VALUE);
+      addUnit(F("500..10000 msec."));
       addFormCheckBox(F("Wake Up from Sleep"), F("sleepwakeup"), P097_SLEEP_WAKEUP);
       #  if defined(ESP32S2) || defined(ESP32S3)
       addFormNote(F("Wake up from sleep is only supported on one touch pin!"));
       #  endif // if defined(ESP32S2) || defined(ESP32S3)
-      addFormCheckBox(F("Send Long Press Event"), F("sendlongpress"), P097_SEND_LONG_PRESS_EVENT);
-      addFormNumericBox(F("Long Press Time"), F("longpress"), P097_LONG_PRESS_TIME, 500, P097_MAX_LONGPRESS_VALUE);
-      addUnit(F("500..10000 msec."));
 
       addFormSubHeader(F("Touch Settings"));
 
