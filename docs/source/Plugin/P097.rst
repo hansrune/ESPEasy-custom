@@ -92,5 +92,5 @@ Change log
 
   |added| 2020-04-25
 
-  |improved| 2023/12/11 Added all settings, a distinction between ESP32 models and the event for <taskvar2>.
+  |improved| 2024/12/11 Added all settings, a distinction between ESP32 models and the event for <taskvar2>.
   
