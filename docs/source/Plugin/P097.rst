@@ -36,7 +36,7 @@ one of the GPIO pins labelled with ``T0`` ... ``T9``.
 
 A touch pad pin can be considered as an analog input pin.
 If the pin is not touched, it will report a relatively high value on an ESP32Classic (e.g. 100) and a relatively low value on an ESP32S2 or ESP32S3 (e.g. 15000) compared to the value when the pin is touched.
-This value is displayed in the settings of the touch plugin ("current pressue") and is reported as the first taskvalue (default name is "touch") whenever the pin is touched or released.
+This value is displayed in the settings of the touch plugin ("current pressure") and is reported as the first taskvalue (default name is "touch") whenever the pin is touched or released.
 
 
 Task settings
@@ -66,14 +66,13 @@ Threshold:
 ~~~~~~~~~~
 **ESP32Classic**:
 When touched, the capacity of the pin increases, which in return lowers the number of charge/discharge cycles.
-A typical value for a touched pin is lower than 20 (compared to the initial threshold value).
-A touch event occures when the touch value is lower then the  "base value" minus the threshold value.
-
+A typical value for a touched pin is lower than 20, compared to its initial (untouched) value.
+A touch event occurs when the touch value is less than the "base value" minus the threshold value.
 
 **ESP32S2** and **ESP32S3**:
-When touched, the threshold value increases.
-A typical value for a touched pin is higher than 1500 (compared to the initial threshold value).
-A touch event occures when the touch value is greater then the  "base value" plus the threshold value.
+When touched, the pin value increases.
+A typical value for a touched pin is higher than 1500, compared to its initial (untouched) value.
+A touch event occures when the touch value is greater then the "base value" plus the threshold value.
 
 The best value has to be determined by trial and error and may differ per use case.
 
