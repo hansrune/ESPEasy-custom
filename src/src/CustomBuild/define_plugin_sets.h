@@ -1747,6 +1747,9 @@ To create/register a plugin, you have to :
    #if !defined(USES_P148) && defined(ESP32)
      #define USES_P148   // Sonoff POWR3xxD and THR3xxD display
    #endif
+  #if !defined(USES_P176) && defined(ESP32)
+    #define USES_P176   // Communication - Victron VE.Direct
+  #endif
 
 #endif // ifdef PLUGIN_ENERGY_COLLECTION
 
@@ -2484,6 +2487,9 @@ To create/register a plugin, you have to :
   #endif
   #ifndef USES_P173
     #define USES_P173   // Environment - SHTC3
+  #endif
+  #ifndef USES_P176
+    #define USES_P176   // Communication - Victron VE.Direct
   #endif
   #ifndef USES_P175
     #define USES_P175   // Dust - PMSx003i I2C
