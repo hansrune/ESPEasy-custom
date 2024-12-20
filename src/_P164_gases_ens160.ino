@@ -6,7 +6,7 @@
 // #######################################################################################################
 // P164 "GASES - ENS16x (TVOC, eCO2)"
 // Plugin for ENS160 & ENS161 TVOC and eCO2 sensor with I2C interface from ScioSense
-// For documentation of the ENS160 hardware device see 
+// For documentation of the ENS160 hardware device see
 // https://www.sciosense.com/wp-content/uploads/documents/SC-001224-DS-9-ENS160-Datasheet.pdf
 //
 // PLugin code:
@@ -20,6 +20,7 @@
 # define PLUGIN_NAME_164       "Gases - ENS16x"
 # define PLUGIN_VALUENAME1_164 "TVOC"
 # define PLUGIN_VALUENAME2_164 "eCO2"
+# define PLUGIN_VALUENAME3_164 "AQI"
 
 boolean Plugin_164(uint8_t function, struct EventStruct *event, String& string)
 {
@@ -36,7 +37,7 @@ boolean Plugin_164(uint8_t function, struct EventStruct *event, String& string)
       Device[deviceCount].PullUpOption       = false;
       Device[deviceCount].InverseLogicOption = false;
       Device[deviceCount].FormulaOption      = true;
-      Device[deviceCount].ValueCount         = 2;
+      Device[deviceCount].ValueCount         = 3;
       Device[deviceCount].SendDataOption     = true;
       Device[deviceCount].TimerOption        = true;
       Device[deviceCount].GlobalSyncOption   = true;
@@ -54,6 +55,11 @@ boolean Plugin_164(uint8_t function, struct EventStruct *event, String& string)
     {
       strcpy_P(ExtraTaskSettings.TaskDeviceValueNames[0], PSTR(PLUGIN_VALUENAME1_164));
       strcpy_P(ExtraTaskSettings.TaskDeviceValueNames[1], PSTR(PLUGIN_VALUENAME2_164));
+      strcpy_P(ExtraTaskSettings.TaskDeviceValueNames[2], PSTR(PLUGIN_VALUENAME3_164));
+
+      for (int i = 0; i < 3; ++i) {
+        ExtraTaskSettings.TaskDeviceValueDecimals[i] = 0;
+      }
       break;
     }
 
@@ -85,7 +91,7 @@ boolean Plugin_164(uint8_t function, struct EventStruct *event, String& string)
     case PLUGIN_SET_DEFAULTS:
     {
       P164_PCONFIG_I2C_ADDR = P164_ENS160_I2CADDR_1;
-      success = true;
+      success               = true;
       break;
     }
 
@@ -107,10 +113,11 @@ boolean Plugin_164(uint8_t function, struct EventStruct *event, String& string)
         break;
       }
 
-      float temperature = 20.0f;  // A reasonable value in case temperature source task is invalid
-      float humidity = 50.0f;     // A reasonable value in case humidity source task is invalid
-      float tvoc = 0.0f;          // tvoc value to be retrieved from device
-      float eco2 = 0.0f;          // eCO2 value to be retrieved from device
+      float temperature = 20.0f; // A reasonable value in case temperature source task is invalid
+      float humidity    = 50.0f; // A reasonable value in case humidity source task is invalid
+      float tvoc        = 0.0f;  // tvoc value to be retrieved from device
+      float eco2        = 0.0f;  // eCO2 value to be retrieved from device
+      float aqi         = 0.0f;  // AQI value to be retrieved from device
 
       if (validTaskIndex(P164_PCONFIG_TEMP_TASK) && validTaskIndex(P164_PCONFIG_HUM_TASK))
       {
@@ -118,9 +125,10 @@ boolean Plugin_164(uint8_t function, struct EventStruct *event, String& string)
         temperature = UserVar.getFloat(P164_PCONFIG_TEMP_TASK, P164_PCONFIG_TEMP_VAL); // in degrees C
         humidity    = UserVar.getFloat(P164_PCONFIG_HUM_TASK, P164_PCONFIG_HUM_VAL);   // in % relative
       }
-      success = P164_data->read(tvoc, eco2, temperature, humidity);
+      success = P164_data->read(tvoc, eco2, aqi, temperature, humidity);
       UserVar.setFloat(event->TaskIndex, 0, tvoc);
       UserVar.setFloat(event->TaskIndex, 1, eco2);
+      UserVar.setFloat(event->TaskIndex, 2, aqi);
       break;
     }
 
@@ -140,6 +148,7 @@ boolean Plugin_164(uint8_t function, struct EventStruct *event, String& string)
     {
       P164_data_struct *P164_data =
         static_cast<P164_data_struct *>(getPluginTaskData(event->TaskIndex));
+
       if (nullptr == P164_data) {
         break;
       }
