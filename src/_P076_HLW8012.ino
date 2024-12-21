@@ -69,6 +69,10 @@ float p076_henergy {};
 # define P076_QUERY3_DFLT     2 // Active Power (W)
 # define P076_QUERY4_DFLT     5 // Power Factor (cosphi)
 
+# define P076_FLAGS           PCONFIG_ULONG(0)
+# define P076_FLAG_TOZERO     0
+# define P076_TOZERO          bitRead(P076_FLAGS, P076_FLAG_TOZERO)
+
 # define P076_Custom       0
 
 // HLW8012 Devices
@@ -304,6 +308,9 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
                        , 25);
       }
 
+      addFormSubHeader(F("Measuring options"));
+      addFormCheckBox(F("Set values to zero if nothing is measured"), F("tozero"), P076_TOZERO);
+
       success = true;
       break;
     }
@@ -338,7 +345,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       hlwMultipliers[2] = getFormItemFloat(F("powmult"));
 
       if ((hlwMultipliers[0] > 1.0) && (hlwMultipliers[1] > 1.0) && (hlwMultipliers[2] > 1.0)) {
-        SaveCustomTaskSettings(event->TaskIndex, reinterpret_cast < const uint8_t * > (&hlwMultipliers),
+        SaveCustomTaskSettings(event->TaskIndex, reinterpret_cast<const uint8_t *>(&hlwMultipliers),
                                sizeof(hlwMultipliers));
         # if PLUGIN_076_DEBUG
         addLog(LOG_LEVEL_INFO, F("P076: Saved Calibration from Config Page"));
@@ -366,6 +373,9 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
         const uint8_t choice       = PCONFIG(pconfigIndex);
         sensorTypeHelper_saveOutputSelector(event, pconfigIndex, i, p076_getQueryString(choice, false));
       }
+
+      // Save ToZero-Flag
+      bitWrite(P076_FLAGS, P076_FLAG_TOZERO, isFormItemChecked(F("tozero")));
 
       success = true;
       break;
@@ -401,7 +411,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
               p076_hpowerActive   = Plugin_076_hlw->getActivePower(valid);
               p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
               p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
-              p076_hpowfact       = static_cast < int > (100 * Plugin_076_hlw->getPowerFactor(valid));
+              p076_hpowfact       = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
               p076_henergy        = Plugin_076_hlw->getEnergy();
               ++p076_read_stage;
 
@@ -428,42 +438,42 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           float HLW[7];
           p076_hpowerActive = Plugin_076_hlw->getActivePower(valid);
 
-          if (valid) {
+          if (valid || P076_TOZERO) {
             HLW[2]  = p076_hpowerActive;
             success = true;
           }
 
           p076_hvoltage = Plugin_076_hlw->getVoltage(valid);
 
-          if (valid) {
+          if (valid || P076_TOZERO) {
             HLW[0]  = p076_hvoltage;
             success = true;
           }
 
           p076_hcurrent = Plugin_076_hlw->getCurrent(valid);
 
-          if (valid) {
+          if (valid || P076_TOZERO) {
             HLW[1]  = p076_hcurrent;
             success = true;
           }
 
-          p076_hpowfact = static_cast < int > (100 * Plugin_076_hlw->getPowerFactor(valid));
+          p076_hpowfact = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
 
-          if (valid) {
+          if (valid || P076_TOZERO) {
             HLW[5]  = p076_hpowfact;
             success = true;
           }
 
           p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
 
-          if (valid) {
+          if (valid || P076_TOZERO) {
             HLW[3]  = p076_hpowerReactive;
             success = true;
           }
 
           p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
 
-          if (valid) {
+          if (valid || P076_TOZERO) {
             HLW[4]  = p076_hpowerApparent;
             success = true;
           }
@@ -482,13 +492,13 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           # if PLUGIN_076_DEBUG
           addLogMove(LOG_LEVEL_INFO,
                      strformat(F("P076: Read values - V=%.2f - A=%.2f - W=%.2f - VAR=%.2f - VA=%.2f - Pf%%=%.2f - Ws=%.2f"),
-                               p076_hvoltage,
-                               p076_hcurrent,
-                               p076_hpowerActive,
-                               p076_hpowerReactive,
-                               p076_hpowerApparent,
-                               p076_hpowfact,
-                               p076_henergy));
+                               HLW[0],
+                               HLW[1],
+                               HLW[2],
+                               HLW[3],
+                               HLW[4],
+                               HLW[5],
+                               HLW[6]));
           # endif // if PLUGIN_076_DEBUG
 
           // Plugin_076_hlw->toggleMode();
@@ -659,7 +669,7 @@ void Plugin076_SaveMultipliers() {
 
   if (Plugin076_ReadMultipliers(hlwMultipliers[0], hlwMultipliers[1], hlwMultipliers[2])) {
     # if FEATURE_USE_DOUBLE_AS_ESPEASY_RULES_FLOAT_TYPE
-    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast < const uint8_t * > (&hlwMultipliers),
+    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast<const uint8_t *>(&hlwMultipliers),
                            sizeof(hlwMultipliers));
     # else // if FEATURE_USE_DOUBLE_AS_ESPEASY_RULES_FLOAT_TYPE
     double hlwMultipliers_d[3] {};
@@ -667,7 +677,7 @@ void Plugin076_SaveMultipliers() {
     hlwMultipliers_d[1] = hlwMultipliers[1];
     hlwMultipliers_d[2] = hlwMultipliers[2];
 
-    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast < const uint8_t * > (&hlwMultipliers_d),
+    SaveCustomTaskSettings(StoredTaskIndex, reinterpret_cast<const uint8_t *>(&hlwMultipliers_d),
                            sizeof(hlwMultipliers_d));
     # endif // if FEATURE_USE_DOUBLE_AS_ESPEASY_RULES_FLOAT_TYPE
   }
@@ -698,7 +708,7 @@ bool Plugin076_LoadMultipliers(taskIndex_t               TaskIndex,
   }
   double hlwMultipliers[3];
 
-  LoadCustomTaskSettings(TaskIndex, reinterpret_cast < uint8_t * > (&hlwMultipliers),
+  LoadCustomTaskSettings(TaskIndex, reinterpret_cast<uint8_t *>(&hlwMultipliers),
                          sizeof(hlwMultipliers));
 
   if (hlwMultipliers[0] > 1.0) {
