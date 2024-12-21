@@ -57,6 +57,14 @@ float p076_hpowerApparent {};
 float p076_hpowfact {};
 float p076_henergy {};
 
+# define P076_INDEX_VOLT      0
+# define P076_INDEX_CURR      1
+# define P076_INDEX_POWR      2
+# define P076_INDEX_VAR       3
+# define P076_INDEX_VA        4
+# define P076_INDEX_PF        5
+# define P076_INDEX_ENER      6
+
 # define P076_NR_OUTPUT_VALUES   4
 # define P076_NR_OUTPUT_OPTIONS  7
 # define P076_QUERY1_CONFIG_POS  0
@@ -64,10 +72,10 @@ float p076_henergy {};
 # define P076_QUERY2          PCONFIG(1)
 # define P076_QUERY3          PCONFIG(2)
 # define P076_QUERY4          PCONFIG(3)
-# define P076_QUERY1_DFLT     0 // Voltage (V)
-# define P076_QUERY2_DFLT     1 // Current (A)
-# define P076_QUERY3_DFLT     2 // Active Power (W)
-# define P076_QUERY4_DFLT     5 // Power Factor (cosphi)
+# define P076_QUERY1_DFLT     P076_INDEX_VOLT // Voltage (V)
+# define P076_QUERY2_DFLT     P076_INDEX_CURR // Current (A)
+# define P076_QUERY3_DFLT     P076_INDEX_POWR // Active Power (W)
+# define P076_QUERY4_DFLT     P076_INDEX_PF // Power Factor (cosphi)
 
 # define P076_FLAGS           PCONFIG_ULONG(0)
 # define P076_FLAG_TOZERO     0
@@ -436,50 +444,51 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           //      } else if (p076_read_stage > 3) {
           bool  valid = false;
           float HLW[7];
+
           p076_hpowerActive = Plugin_076_hlw->getActivePower(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[2]  = p076_hpowerActive;
+            HLW[P076_INDEX_POWR]  = p076_hpowerActive;
             success = true;
           }
 
           p076_hvoltage = Plugin_076_hlw->getVoltage(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[0]  = p076_hvoltage;
+            HLW[P076_INDEX_VOLT]  = p076_hvoltage;
             success = true;
           }
 
           p076_hcurrent = Plugin_076_hlw->getCurrent(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[1]  = p076_hcurrent;
+            HLW[P076_INDEX_CURR]  = p076_hcurrent;
             success = true;
           }
 
           p076_hpowfact = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
 
           if (valid || P076_TOZERO) {
-            HLW[5]  = p076_hpowfact;
+            HLW[P076_INDEX_PF]  = p076_hpowfact;
             success = true;
           }
 
           p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[3]  = p076_hpowerReactive;
+            HLW[P076_INDEX_VAR]  = p076_hpowerReactive;
             success = true;
           }
 
           p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[4]  = p076_hpowerApparent;
+            HLW[P076_INDEX_VA]  = p076_hpowerApparent;
             success = true;
           }
 
           p076_henergy = Plugin_076_hlw->getEnergy();
-          HLW[6]       = p076_henergy;
+          HLW[P076_INDEX_ENER]       = p076_henergy;
 
           UserVar.setFloat(event->TaskIndex, 0, HLW[P076_QUERY1]);
           UserVar.setFloat(event->TaskIndex, 1, HLW[P076_QUERY2]);
@@ -492,13 +501,13 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           # if PLUGIN_076_DEBUG
           addLogMove(LOG_LEVEL_INFO,
                      strformat(F("P076: Read values - V=%.2f - A=%.2f - W=%.2f - VAR=%.2f - VA=%.2f - Pf%%=%.2f - Ws=%.2f"),
-                               HLW[0],
-                               HLW[1],
-                               HLW[2],
-                               HLW[3],
-                               HLW[4],
-                               HLW[5],
-                               HLW[6]));
+                               HLW[P076_INDEX_VOLD],
+                               HLW[P076_INDEX_CURR],
+                               HLW[P076_INDEX_POWR],
+                               HLW[P076_INDEX_VAR],
+                               HLW[P076_INDEX_VA],
+                               HLW[P076_INDEX_PF],
+                               HLW[P076_INDEX_ENER]));
           # endif // if PLUGIN_076_DEBUG
 
           // Plugin_076_hlw->toggleMode();
@@ -763,13 +772,13 @@ void IRAM_ATTR p076_hlw8012_cf_interrupt() {
 
 const __FlashStringHelper* p076_getQueryString(uint8_t value_nr, bool displayString) {
   switch (value_nr) {
-    case 0: return displayString ? F("Voltage") : F("Voltage");
-    case 1: return displayString ? F("Current") : F("Current");
-    case 2: return displayString ? F("Active Power") : F("Power");
-    case 3: return displayString ? F("Reactive Power") : F("VAR");
-    case 4: return displayString ? F("Apparent Power") : F("VA");
-    case 5: return displayString ? F("Power Factor") : F("PowerFactor");
-    case 6: return displayString ? F("Energy") : F("Ws");
+    case P076_INDEX_VOLT: return displayString ? F("Voltage") : F("Voltage");
+    case P076_INDEX_CURR: return displayString ? F("Current") : F("Current");
+    case P076_INDEX_POWR: return displayString ? F("Active Power") : F("Power");
+    case P076_INDEX_VAR: return displayString ? F("Reactive Power") : F("VAR");
+    case P076_INDEX_VA: return displayString ? F("Apparent Power") : F("VA");
+    case P076_INDEX_PF: return displayString ? F("Power Factor") : F("PowerFactor");
+    case P076_INDEX_ENER: return displayString ? F("Energy") : F("Ws");
   }
   return F("");
 }
