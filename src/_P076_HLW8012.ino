@@ -501,7 +501,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           # if PLUGIN_076_DEBUG
           addLogMove(LOG_LEVEL_INFO,
                      strformat(F("P076: Read values - V=%.2f - A=%.2f - W=%.2f - VAR=%.2f - VA=%.2f - Pf%%=%.2f - Ws=%.2f"),
-                               HLW[P076_INDEX_VOLD],
+                               HLW[P076_INDEX_VOLT],
                                HLW[P076_INDEX_CURR],
                                HLW[P076_INDEX_POWR],
                                HLW[P076_INDEX_VAR],
