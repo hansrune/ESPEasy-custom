@@ -10,9 +10,9 @@
  *                        Added "Wake Up from Sleep", Switch like behaviour + toggle and long press option.
  */
 
+#if defined(SOC_TOUCH_SENSOR_SUPPORTED) && SOC_TOUCH_SENSOR_SUPPORTED
 
-# if defined(ESP32) && !defined(ESP32C2) && !defined(ESP32C3) && !defined(ESP32C6)
-
+# define LAST_TOUCH_INPUT_INDEX SOC_TOUCH_SENSOR_NUM
 // Device-specific configuration
 #  if defined(ESP32_CLASSIC)
   #   define HAS_T0_INPUT             1
