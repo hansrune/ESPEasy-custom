@@ -77,7 +77,7 @@ bool RulesCalculate_t::is_quinary_operator(char c)
 {
   const UnaryOperator op = static_cast<UnaryOperator>(c);
 
-  return op == UnaryOperator::Map;
+  return op == UnaryOperator::Map || op == UnaryOperator::MapC;
 }
 
 CalculateReturnCode RulesCalculate_t::push(ESPEASY_RULES_FLOAT_TYPE value)
@@ -280,8 +280,13 @@ ESPEASY_RULES_FLOAT_TYPE RulesCalculate_t::apply_quinary_operator(char op,
   ESPEASY_RULES_FLOAT_TYPE ret{};
   const UnaryOperator qu_op = static_cast<UnaryOperator>(op);
 
-  if (UnaryOperator::Map == qu_op) {
-    return mapADCtoFloat(first, second, third, fourth, fifth);
+  if (UnaryOperator::Map == qu_op || UnaryOperator::MapC == qu_op) {
+    ret = mapADCtoFloat(first, second, third, fourth, fifth);
+
+    // Clamp the result if the operator is MapC
+    if (qu_op == UnaryOperator::MapC) {
+      ret = std::clamp(ret, std::min(fourth, fifth), std::max(fourth, fifth));
+    }
   }
   return ret;
 }
@@ -656,6 +661,8 @@ const __FlashStringHelper* toString(UnaryOperator op)
       return F("atan_d");
     case UnaryOperator::Map:
       return F("map");
+    case UnaryOperator::MapC:
+      return F("mapc");
   }
   return F("");
 }
@@ -692,6 +699,7 @@ String RulesCalculate_t::preProces(const String& input)
     ,UnaryOperator::Tan_d
     #endif // if FEATURE_TRIGONOMETRIC_FUNCTIONS_RULES
     ,UnaryOperator::Map
+    ,UnaryOperator::MapC
 
   };
 
