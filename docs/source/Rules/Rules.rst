@@ -1425,7 +1425,7 @@ Basic Math Functions
 * ``^`` The caret is used as the exponentiation operator for calculating the value of x to the power of y (x\ :sup:`y`). 
 
 * ``map(value:fromLow:fromHigh:toLow:toHigh)`` Maps value x in the fromLow/fromHigh range to toLow/toHigh values. Similar to the Arduino map() function. See examples below. (Using a colon as an argument separator to not interfere with regular argument processing)
-* ``mapc(value:fromLow:fromHigh:toLow:toHigh)`` same as map, but constrains s the result to the toLow/toHigh range.
+* ``mapc(value:fromLow:fromHigh:toLow:toHigh)`` same as map, but constrains the result to the toLow/toHigh range.
 
 
 Rules example:
