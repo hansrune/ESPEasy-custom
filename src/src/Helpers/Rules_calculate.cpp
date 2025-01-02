@@ -284,7 +284,7 @@ ESPEASY_RULES_FLOAT_TYPE RulesCalculate_t::apply_quinary_operator(char op,
 
     // Clamp the result if the operator is MapC
     if (qu_op == UnaryOperator::MapC) {
-      first = constrain(first, second, third);
+      first = constrain(first, min(second, third), max(second, third));;
     }
     ret = mapADCtoFloat(first, second, third, fourth, fifth);
   }
