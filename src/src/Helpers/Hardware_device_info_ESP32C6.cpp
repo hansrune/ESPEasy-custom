@@ -14,9 +14,14 @@ bool isFlashInterfacePin_ESPEasy(int gpio) {
   // FIXME TD-er: Must know whether we have internal or external flash
 
   // For chip variants with an in-package flash, this pin can not be used.
+
+  // FIXME TD-er: No idea where these pins come from. Disabled for now.
+  // See: https://github.com/letscontrolit/ESPEasy/issues/5220
+  /*
   if ((gpio == 10) || (gpio == 11)) {
     return true;
   }
+  */
 
   // For chip variants without an in-package flash, this pin can not be used.
   //  if (gpio == 14)
