@@ -75,7 +75,9 @@ void esp32Tone(uint8_t pin, unsigned int frq, unsigned long duration) {
 }
 
 void esp32ToneSetup(uint8_t pin) {
-  attachLedChannel(pin); // Use defaults
+  const uint8_t channel = attachLedChannel(pin); // Use defaults
+
+  setToneChannel(channel);                       // Claim channel for Tone use
 }
 
 static uint8_t rtttlPin = 255;
@@ -118,11 +120,11 @@ bool play_rtttl(int8_t _pin, const char *p) {
   #   endif // if FEATURE_RTTTL_EVENTS
   #  else // if FEATURE_ANYRTTTL_ASYNC
   anyrtttl::blocking::play(_pin, p);
-  #   if ESP32
+  #   ifdef ESP32
   esp32NoTone(_pin);
   detachLedChannel(_pin);
   setInternalGPIOPullupMode(_pin);
-  #   endif // if ESP32
+  #   endif // ifdef ESP32
   #  endif // if FEATURE_ANYRTTTL_ASYNC
   #  ifndef BUILD_NO_RAM_TRACKER
   checkRAM(F("play_rtttl2"));
@@ -137,11 +139,11 @@ void update_rtttl() {
   if (anyrtttl::nonblocking::isPlaying()) {
     anyrtttl::nonblocking::play();
   } else {
-    #   if ESP32
+    #   ifdef ESP32
     esp32NoTone(rtttlPin);
     detachLedChannel(rtttlPin);
     setInternalGPIOPullupMode(rtttlPin);
-    #   endif // if ESP32
+    #   endif // ifdef ESP32
     #   if FEATURE_RTTTL_EVENTS
 
     if (rtttlPlaying) {
