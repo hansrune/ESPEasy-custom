@@ -35,14 +35,11 @@
 
 HLW8012 *Plugin_076_hlw = nullptr;
 
+
 # define PLUGIN_076
 # define PLUGIN_ID_076         76
 # define PLUGIN_076_DEBUG      false // activate extra log info in the debug
 # define PLUGIN_NAME_076       "Energy (AC) - HLW8012/BL0937"
-//# define PLUGIN_VALUENAME1_076 "Voltage"
-//# define PLUGIN_VALUENAME2_076 "Current"
-//# define PLUGIN_VALUENAME3_076 "Power"
-//# define PLUGIN_VALUENAME4_076 "PowerFactor"
 
 # define HLW_DELAYREADING 500
 
@@ -51,17 +48,6 @@ HLW8012 *Plugin_076_hlw = nullptr;
 # define HLW_VOLTAGE_RESISTOR_UP (5 * 470000) // Real: 2280k
 # define HLW_VOLTAGE_RESISTOR_DOWN (1000)     // Real 1.009k
 // -----------------------------------------------------------------------------------------------
-int StoredTaskIndex = -1;
-uint8_t p076_read_stage {};
-unsigned long p076_timer {};
-
-float p076_hcurrent {};
-float p076_hvoltage {};
-float p076_hpowerActive {};
-float p076_hpowerReactive {};
-float p076_hpowerApparent {};
-float p076_hpowfact {};
-float p076_henergy {};
 
 # define P076_INDEX_VOLT      0
 # define P076_INDEX_CURR      1
@@ -81,7 +67,13 @@ float p076_henergy {};
 # define P076_QUERY1_DFLT     P076_INDEX_VOLT // Voltage (V)
 # define P076_QUERY2_DFLT     P076_INDEX_CURR // Current (A)
 # define P076_QUERY3_DFLT     P076_INDEX_POWR // Active Power (W)
-# define P076_QUERY4_DFLT     P076_INDEX_PF // Power Factor (cosphi)
+# define P076_QUERY4_DFLT     P076_INDEX_PF   // Power Factor (cosphi)
+
+
+# define P076_SEL_CUR_READ    PCONFIG(4)
+# define P076_CF_TRIGGER      PCONFIG(5)
+# define P076_CF1_TRIGGER     PCONFIG(6)
+# define P076_PREDEFINED      PCONFIG(7)
 
 # define P076_FLAGS           PCONFIG_ULONG(0)
 # define P076_FLAG_TOZERO     0
@@ -103,6 +95,21 @@ float p076_henergy {};
 # define P076_Gosund       9
 # define P076_Shelly_PLUG_S 10
 # define P076_Shelly_Plus_PLUG_S 11
+
+
+float p076_values[P076_NR_OUTPUT_OPTIONS]{};
+int StoredTaskIndex = -1;
+uint8_t p076_read_stage {};
+unsigned long p076_timer {};
+
+float p076_hcurrent {};
+float p076_hvoltage {};
+float p076_hpowerActive {};
+float p076_hpowerReactive {};
+float p076_hpowerApparent {};
+float p076_hpowfact {};
+float p076_henergy {};
+
 
 // Forward declaration helper function
 const __FlashStringHelper* p076_getQueryString(uint8_t value_nr,
@@ -163,6 +170,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       dev.TimerOption    = true;
       dev.PluginStats    = true;
       dev.setPin1Direction(gpio_direction::gpio_output);
+      dev.OutputDataType = Output_Data_type_t::Simple;
       break;
     }
 
@@ -220,7 +228,8 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
     }
 
     case PLUGIN_WEBFORM_LOAD: {
-      uint8_t devicePinSettings = PCONFIG(7);
+      uint8_t devicePinSettings = P076_PREDEFINED;
+      p076_checkdefault_queries(event);
 
       addFormSubHeader(F("Predefined Pin settings"));
       {
@@ -290,7 +299,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           HIGH,
         };
 
-        uint8_t currentRead = PCONFIG(4);
+        uint8_t currentRead = P076_SEL_CUR_READ;
 
         if ((currentRead != LOW) && (currentRead != HIGH)) {
           currentRead = LOW;
@@ -299,9 +308,9 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
         addFormSelector(F("SEL Current (A) Reading"), F("curr_read"), 2,
                         modeCurr, modeCurrValues, currentRead);
         addFormSelector(F("CF1  Interrupt Edge"),     F("cf1_edge"),  4,
-                        modeRaise, modeValues, PCONFIG(6));
+                        modeRaise, modeValues, P076_CF1_TRIGGER);
         addFormSelector(F("CF Interrupt Edge"),       F("cf_edge"),   4,
-                        modeRaise, modeValues, PCONFIG(5));
+                        modeRaise, modeValues, P076_CF_TRIGGER);
       }
 
 
@@ -343,22 +352,22 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       // Set Pin settings
       uint8_t selectedDevice = getFormItemInt(F("preDefDevSel"));
 
-      PCONFIG(7) = selectedDevice;
+      P076_PREDEFINED = selectedDevice;
       {
         uint8_t SEL_Pin, CF_Pin, CF1_Pin, Cur_read, CF_Trigger, CF1_Trigger;
 
         if ((selectedDevice != 0) && p076_getDeviceParameters(selectedDevice, SEL_Pin, CF_Pin, CF1_Pin, Cur_read, CF_Trigger, CF1_Trigger)) {
-          PCONFIG(4) = Cur_read;
-          PCONFIG(5) = CF_Trigger;
-          PCONFIG(6) = CF1_Trigger;
+          P076_SEL_CUR_READ = Cur_read;
+          P076_CF_TRIGGER   = CF_Trigger;
+          P076_CF1_TRIGGER  = CF1_Trigger;
 
           CONFIG_PIN1 = SEL_Pin;
           CONFIG_PIN2 = CF1_Pin;
           CONFIG_PIN3 = CF_Pin;
         } else {
-          PCONFIG(4) = getFormItemInt(F("curr_read"));
-          PCONFIG(5) = getFormItemInt(F("cf_edge"));
-          PCONFIG(6) = getFormItemInt(F("cf1_edge"));
+          P076_SEL_CUR_READ = getFormItemInt(F("curr_read"));
+          P076_CF_TRIGGER   = getFormItemInt(F("cf_edge"));
+          P076_CF1_TRIGGER  = getFormItemInt(F("cf1_edge"));
         }
       }
 
@@ -388,7 +397,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
 
       # if PLUGIN_076_DEBUG
       addLogMove(LOG_LEVEL_INFO, strformat(F("P076: PIN Settings  curr_read: %d cf_edge: %d cf1_edge: %d"),
-                                           PCONFIG(4),  PCONFIG(5),  PCONFIG(6)));
+                                           P076_SEL_CUR_READ,  P076_CF_TRIGGER,  P076_CF1_TRIGGER));
       # endif // if PLUGIN_076_DEBUG
 
       // Save output selector parameters.
@@ -458,58 +467,57 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           // Force a measurement start.
           //        ++p076_read_stage;
           //      } else if (p076_read_stage > 3) {
-          bool  valid = false;
-          float HLW[7];
+          bool valid = false;
 
           p076_hpowerActive = Plugin_076_hlw->getActivePower(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[P076_INDEX_POWR]  = p076_hpowerActive;
-            success = true;
+            p076_values[P076_INDEX_POWR] = p076_hpowerActive;
+            success                      = true;
           }
 
           p076_hvoltage = Plugin_076_hlw->getVoltage(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[P076_INDEX_VOLT]  = p076_hvoltage;
-            success = true;
+            p076_values[P076_INDEX_VOLT] = p076_hvoltage;
+            success                      = true;
           }
 
           p076_hcurrent = Plugin_076_hlw->getCurrent(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[P076_INDEX_CURR]  = p076_hcurrent;
-            success = true;
+            p076_values[P076_INDEX_CURR] = p076_hcurrent;
+            success                      = true;
           }
 
           p076_hpowfact = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
 
           if (valid || P076_TOZERO) {
-            HLW[P076_INDEX_PF]  = p076_hpowfact;
-            success = true;
+            p076_values[P076_INDEX_PF] = p076_hpowfact;
+            success                    = true;
           }
 
           p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[P076_INDEX_VAR]  = p076_hpowerReactive;
-            success = true;
+            p076_values[P076_INDEX_VAR] = p076_hpowerReactive;
+            success                     = true;
           }
 
           p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
 
           if (valid || P076_TOZERO) {
-            HLW[P076_INDEX_VA]  = p076_hpowerApparent;
-            success = true;
+            p076_values[P076_INDEX_VA] = p076_hpowerApparent;
+            success                    = true;
           }
 
-          p076_henergy = Plugin_076_hlw->getEnergy();
-          HLW[P076_INDEX_ENER]       = p076_henergy;
+          p076_henergy                 = Plugin_076_hlw->getEnergy();
+          p076_values[P076_INDEX_ENER] = p076_henergy;
 
-          UserVar.setFloat(event->TaskIndex, 0, HLW[P076_QUERY1]);
-          UserVar.setFloat(event->TaskIndex, 1, HLW[P076_QUERY2]);
-          UserVar.setFloat(event->TaskIndex, 2, HLW[P076_QUERY3]);
-          UserVar.setFloat(event->TaskIndex, 3, HLW[P076_QUERY4]);
+          UserVar.setFloat(event->TaskIndex, 0, p076_values[P076_QUERY1]);
+          UserVar.setFloat(event->TaskIndex, 1, p076_values[P076_QUERY2]);
+          UserVar.setFloat(event->TaskIndex, 2, p076_values[P076_QUERY3]);
+          UserVar.setFloat(event->TaskIndex, 3, p076_values[P076_QUERY4]);
 
           // Measurement is complete.
           p076_read_stage = 0;
@@ -517,13 +525,13 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           # if PLUGIN_076_DEBUG
           addLogMove(LOG_LEVEL_INFO,
                      strformat(F("P076: Read values - V=%.2f - A=%.2f - W=%.2f - VAR=%.2f - VA=%.2f - Pf%%=%.2f - Ws=%.2f"),
-                               HLW[P076_INDEX_VOLT],
-                               HLW[P076_INDEX_CURR],
-                               HLW[P076_INDEX_POWR],
-                               HLW[P076_INDEX_VAR],
-                               HLW[P076_INDEX_VA],
-                               HLW[P076_INDEX_PF],
-                               HLW[P076_INDEX_ENER]));
+                               p076_values[P076_INDEX_VOLT],
+                               p076_values[P076_INDEX_CURR],
+                               p076_values[P076_INDEX_POWR],
+                               p076_values[P076_INDEX_VAR],
+                               p076_values[P076_INDEX_VA],
+                               p076_values[P076_INDEX_PF],
+                               p076_values[P076_INDEX_ENER]));
           # endif // if PLUGIN_076_DEBUG
 
           // Plugin_076_hlw->toggleMode();
@@ -549,9 +557,11 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
         Plugin_076_hlw = new(std::nothrow) HLW8012;
 
         if (Plugin_076_hlw) {
-          const uint8_t currentRead = PCONFIG(4);
-          const uint8_t cf_trigger  = PCONFIG(5);
-          const uint8_t cf1_trigger = PCONFIG(6);
+          p076_checkdefault_queries(event);
+
+          const uint8_t currentRead = P076_SEL_CUR_READ;
+          const uint8_t cf_trigger  = P076_CF_TRIGGER;
+          const uint8_t cf1_trigger = P076_CF1_TRIGGER;
 
           Plugin_076_hlw->begin(CF_PIN, CF1_PIN, SEL_PIN, currentRead,
                                 true); // set use_interrupts to true to use
@@ -594,13 +604,6 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           // Need a few seconds to read the first sample, so trigger a new read a few seconds after init.
           Scheduler.schedule_task_device_timer(event->TaskIndex, millis() + 5000);
 
-          // Set default querys if not set
-          if ((P076_QUERY1 == 0) && (P076_QUERY2 == 0) && (P076_QUERY3 == 0) && (P076_QUERY4 == 0)) {
-            P076_QUERY1 = P076_QUERY1_DFLT;
-            P076_QUERY2 = P076_QUERY2_DFLT;
-            P076_QUERY3 = P076_QUERY3_DFLT;
-            P076_QUERY4 = P076_QUERY4_DFLT;
-          }
           success = true;
         }
       }
@@ -788,15 +791,28 @@ void IRAM_ATTR p076_hlw8012_cf_interrupt() {
 
 const __FlashStringHelper* p076_getQueryString(uint8_t value_nr, bool displayString) {
   switch (value_nr) {
-    case P076_INDEX_VOLT: return displayString ? F("Voltage") : F("Voltage");
-    case P076_INDEX_CURR: return displayString ? F("Current") : F("Current");
-    case P076_INDEX_POWR: return displayString ? F("Active Power") : F("Power");
-    case P076_INDEX_VAR: return displayString ? F("Reactive Power") : F("VAR");
-    case P076_INDEX_VA: return displayString ? F("Apparent Power") : F("VA");
-    case P076_INDEX_PF: return displayString ? F("Power Factor") : F("PowerFactor");
-    case P076_INDEX_ENER: return displayString ? F("Energy") : F("Ws");
+    case P076_INDEX_VOLT: return displayString ? F("Voltage")        : F("Voltage");
+    case P076_INDEX_CURR: return displayString ? F("Current")        : F("Current");
+    case P076_INDEX_POWR: return displayString ? F("Active Power")   : F("Power");
+    case P076_INDEX_VAR:  return displayString ? F("Reactive Power") : F("VAR");
+    case P076_INDEX_VA:   return displayString ? F("Apparent Power") : F("VA");
+    case P076_INDEX_PF:   return displayString ? F("Power Factor")   : F("PowerFactor");
+    case P076_INDEX_ENER: return displayString ? F("Energy")         : F("Ws");
   }
   return F("");
+}
+
+void p076_checkdefault_queries(struct EventStruct *event)
+{
+  // Set default querys if not set
+  // Required to perform settings transition to init taskvalue output selection
+  // which was added later in PR #5169
+  if ((P076_QUERY1 == 0) && (P076_QUERY2 == 0) && (P076_QUERY3 == 0) && (P076_QUERY4 == 0)) {
+    P076_QUERY1 = P076_QUERY1_DFLT;
+    P076_QUERY2 = P076_QUERY2_DFLT;
+    P076_QUERY3 = P076_QUERY3_DFLT;
+    P076_QUERY4 = P076_QUERY4_DFLT;
+  }
 }
 
 #endif // USES_P076
