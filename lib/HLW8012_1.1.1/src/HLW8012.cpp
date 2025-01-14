@@ -30,12 +30,65 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
     #endif
   #endif
 
+
+#define HLW8012_MINIMUM_SAMPLE_DURATION_USEC  1000000   // 1 sec
+#define HLW8012_MAXIMUM_SAMPLE_DURATION_USEC  10000000  // 10 sec
+
+void HLW8012_sample::reset() {
+    count = 0;
+    last_pulse_usec = 0;
+    first_pulse_usec = 0;
+    start_usec = micros();
+}
+
+
+HLW8012_sample::result_e HLW8012_sample::add() {
+    const uint32_t now = micros();
+    ++count;
+    last_pulse_usec = now;
+    if (first_pulse_usec == 0) {
+        count = 0;
+        first_pulse_usec = now;
+        return HLW8012_sample::result_e::NotEnough;
+    }
+
+    return enoughData();
+}
+
+HLW8012_sample::result_e HLW8012_sample::enoughData() const
+{
+    const int32_t duration_since_start_usec(timeDiff(start_usec, last_pulse_usec));
+    if (duration_since_start_usec >= HLW8012_MAXIMUM_SAMPLE_DURATION_USEC && count == 0) {
+      return HLW8012_sample::result_e::Expired;
+    } 
+    const int32_t duration_usec(timeDiff(first_pulse_usec, last_pulse_usec));
+    if (duration_usec >= HLW8012_MINIMUM_SAMPLE_DURATION_USEC && count > 0) {
+        return HLW8012_sample::result_e::Enough;
+    }
+    return HLW8012_sample::result_e::NotEnough;
+}
+
+
+HLW8012_sample::result_e HLW8012_sample::getPulseFreq(float& pulsefreq) const
+{
+    const result_e res = enoughData();
+    if (res == result_e::Enough) {
+        const int32_t duration_usec(timeDiff(first_pulse_usec, last_pulse_usec));
+        pulsefreq = count;
+        pulsefreq /= duration_usec;
+    } else {
+        pulsefreq = 0.0f;
+    }
+    return res;
+}
+
+
+
 void HLW8012::begin(
     unsigned char cf_pin,
     unsigned char cf1_pin,
     unsigned char sel_pin,
     unsigned char currentWhen,
-    bool use_interrupts,
     unsigned long pulse_timeout
     ) {
 
@@ -43,7 +96,6 @@ void HLW8012::begin(
     _cf1_pin = cf1_pin;
     _sel_pin = sel_pin;
     _current_mode = currentWhen;
-    _use_interrupts = use_interrupts;
     _pulse_timeout = pulse_timeout;
 
     pinMode(_cf_pin, INPUT_PULLUP);
@@ -53,9 +105,8 @@ void HLW8012::begin(
     _calculateDefaultMultipliers();
 
     _mode = _current_mode;
+    _current_sample.reset();
     digitalWrite(_sel_pin, _mode);
-
-
 }
 
 void HLW8012::setMode(hlw8012_mode_t mode) {
@@ -63,15 +114,13 @@ void HLW8012::setMode(hlw8012_mode_t mode) {
     if (_mode == newMode) {
       return;
     }
+    if (newMode == _current_mode) {
+        _current_sample.reset();
+    } else {
+        _voltage_sample.reset();
+    }
     _mode = newMode;
     DIRECT_pinWrite(_sel_pin, _mode);
-    if (_use_interrupts) {
-        const unsigned long now = micros();
-        _cf1_switched = now;
-        _last_cf1_interrupt = now;
-        _first_cf1_interrupt = 0;
-        _cf1_pulse_count = 0;
-    }
 }
 
 hlw8012_mode_t HLW8012::getMode() {
@@ -91,7 +140,6 @@ float HLW8012::getCurrent(bool &valid) {
     getActivePower(valid);
     if (_power == 0) {
         _current = 0;
-        _current_pulse_width = 0;
         return _current;
     }
     if (valid) {
@@ -105,16 +153,11 @@ float HLW8012::getCurrent(bool &valid) {
 }
 
 float HLW8012::getCF1Current(bool &valid) {
-    if (_use_interrupts) {
-        _checkCF1Signal();
+    _checkCF1Signal();
 
-    } else if (_mode == _current_mode) {
-        _current_pulse_width = pulseIn(_cf1_pin, HIGH, _pulse_timeout);
-    }
-
-    const unsigned int current_pulse_width = _current_pulse_width;
-    if (current_pulse_width > 0) {
-      _current = _current_multiplier / static_cast<float>(current_pulse_width) / 2.0f;
+    float pulsefreq{};
+    if (_current_sample.getPulseFreq(pulsefreq) == HLW8012_sample::result_e::Enough) {
+      _current = pulsefreq * _current_multiplier / 2.0f;
       valid = true;
     } else {
       _current = 0.0f;
@@ -125,14 +168,10 @@ float HLW8012::getCF1Current(bool &valid) {
 
 
 float HLW8012::getVoltage(bool &valid) {
-    if (_use_interrupts) {
-        _checkCF1Signal();
-    } else if (_mode != _current_mode) {
-        _voltage_pulse_width = pulseIn(_cf1_pin, HIGH, _pulse_timeout);
-    }
-    const unsigned int voltage_pulse_width = _voltage_pulse_width;
-    if (voltage_pulse_width > 0) {
-      _voltage = _voltage_multiplier / static_cast<float>(voltage_pulse_width) / 2.0f;
+    _checkCF1Signal();
+    float pulsefreq{};
+    if (_voltage_sample.getPulseFreq(pulsefreq) == HLW8012_sample::result_e::Enough) {
+      _voltage = pulsefreq * _voltage_multiplier / 2.0f;
       valid = true;
     } else {
       _voltage = 0.0f;
@@ -142,12 +181,7 @@ float HLW8012::getVoltage(bool &valid) {
 }
 
 float HLW8012::getActivePower(bool &valid) {
-    if (_use_interrupts) {
-        _checkCFSignal();
-    } else {
-        _power = 0.0f;
-        valid = false;
-    }
+    _checkCFSignal();
     const long count_diff = (long) (_cf_pulse_count_total_prev[0] - _cf_pulse_count_total_prev[1]);
     const long time_diff_usec = (long) (_cf_pulse_count_total_prev_timestamp[0] - _cf_pulse_count_total_prev_timestamp[1]);
     if (count_diff <= 0 || time_diff_usec <= 0) {
@@ -197,10 +231,6 @@ float HLW8012::getPowerFactor(bool &valid) {
 }
 
 float HLW8012::getEnergy() {
-
-    // Counting pulses only works in IRQ mode
-    if (!_use_interrupts) return 0;
-
     /*
     Pulse count is directly proportional to energy:
     P = m*f (m=power multiplier, f = Frequency)
@@ -209,7 +239,6 @@ float HLW8012::getEnergy() {
     */
     const float pulse_count = _cf_pulse_count_total;
     return pulse_count * _power_multiplier / 1000000.0f / 2.0f;
-
 }
 
 void HLW8012::resetEnergy() {
@@ -271,7 +300,7 @@ void IRAM_ATTR HLW8012::cf_interrupt() {
     if (time_since_cf_switch > _pulse_timeout) {
         // When power consumption is really low,
         // extend the period upto 10 sec, so we can get as low as 1.2 Watt
-        const bool canExtend = (time_since_cf_switch < (10000000)) && (_cf_pulse_count_total - _cf_pulse_count_total_prev[0]) < 3;
+        const bool canExtend = (time_since_cf_switch < (HLW8012_MAXIMUM_SAMPLE_DURATION_USEC)) && (_cf_pulse_count_total - _cf_pulse_count_total_prev[0]) < 3;
         if (!canExtend) {
             _cf_switched = now;
             _cf_pulse_count_total_prev[1] = _cf_pulse_count_total_prev[0];
@@ -283,69 +312,25 @@ void IRAM_ATTR HLW8012::cf_interrupt() {
 }
 
 void IRAM_ATTR HLW8012::cf1_interrupt() {
-    ++_cf1_pulse_count;
+    const unsigned char mode = _mode;
 
-    const unsigned long now = micros();
-
-    // Copy last interrupt time as soon as possible
-    // to make sure interrupts do not interfere with each other.
-    const unsigned long last_cf1_interrupt = _last_cf1_interrupt;
-    _last_cf1_interrupt = now;
-    if (_first_cf1_interrupt == 0) {
-        _cf1_pulse_count = 0;
-        _first_cf1_interrupt = now;
+    const auto res = (mode == _current_mode) 
+        ? _current_sample.add()
+        : _voltage_sample.add();
+    
+    if (res == HLW8012_sample::result_e::NotEnough) {
+        return;
     }
 
-    // The first few pulses after switching will be unstable
-    // Collect pulses in this mode for some time
-    // On very few pulses, use the last one collected in this period.
-    // On many pulses, compute the average over a longer period to get a more stable reading.
-    // This may also increase resolution on higher frequencies.
-    const long time_since_cf1_switch = (long) (now - _cf1_switched);
-    if (time_since_cf1_switch > _pulse_timeout) {
-        // Copy values first as it is volatile
-        const unsigned long first_cf1_interrupt = _first_cf1_interrupt;
-        const unsigned long pulse_count = _cf1_pulse_count;
-
-        const bool canExtend = (time_since_cf1_switch < (10000000)) && pulse_count < 3;
-
-        const unsigned char mode = _mode;
-
-        if (!canExtend) {
-            const unsigned char newMode = 1 - mode;
-
-            // Keep track of when the SEL pin was switched.
-            _cf1_switched = now;
-            _first_cf1_interrupt = 0;
-            _cf1_pulse_count = 0;
-
-            DIRECT_pinWrite_ISR(_sel_pin, newMode);
-            _mode = newMode;
-        }
-
-        if (last_cf1_interrupt == first_cf1_interrupt || pulse_count < 3) {
-            if (mode == _current_mode) {
-                _current_pulse_width = 0;
-            } else {
-                _voltage_pulse_width = 0;
-            }
-        } else {
-            const long time_since_first = (long) (now - first_cf1_interrupt);
-            const unsigned long pulse_width = (pulse_count < 3) 
-                ? (now - last_cf1_interrupt) // long pulses, use the last one as it is probably the most stable one
-                : (time_since_first / pulse_count);
-            
-            // Perform some IIR filtering
-            // new = (old + 3 * new) / 4
-            if (mode == _current_mode) {
-                //_current_pulse_width = filter(_current_pulse_width, pulse_width);
-                _current_pulse_width = pulse_width;
-            } else {
-                //_voltage_pulse_width = filter(_voltage_pulse_width, pulse_width);
-                _voltage_pulse_width = pulse_width;
-            }
-        }        
+    // switch to other mode.
+    const unsigned char newMode = 1 - mode;
+    if (newMode == _current_mode) {
+        _current_sample.reset();
+    } else {
+        _voltage_sample.reset();
     }
+    DIRECT_pinWrite_ISR(_sel_pin, newMode);
+    _mode = newMode;
 }
 
 void HLW8012::_checkCFSignal() {
@@ -354,7 +339,7 @@ void HLW8012::_checkCFSignal() {
 
     // If we conclude here there was no switch triggered via interrupt callback, 
     // then we must conclude there was no new pulse and thus energy consumption was 0.
-    if (time_since_cf_switch > (2 * 10000000)) {
+    if (time_since_cf_switch > (2 * HLW8012_MAXIMUM_SAMPLE_DURATION_USEC)) {
         _cf_pulse_count_total_prev[1] = _cf_pulse_count_total;
         _cf_pulse_count_total_prev[0] = _cf_pulse_count_total;
         _cf_pulse_count_total_prev_timestamp[1] = _cf_switched;
@@ -364,24 +349,11 @@ void HLW8012::_checkCFSignal() {
 }
 
 void HLW8012::_checkCF1Signal() {
-    const unsigned long now = micros();
-    const long time_since_last = (long) (now - _last_cf1_interrupt);
-    if (time_since_last > (2 * 10000000)) {
-        if (_use_interrupts) {
-            _last_cf1_interrupt = now;
-            _cf1_switched = now;
-            _first_cf1_interrupt = 0;
-            _cf1_pulse_count = 0;
-        }
-        if (_mode == _current_mode) {
-            _current_pulse_width = 0;
-        } else {
-            _voltage_pulse_width = 0;
-        }
-        // Copy value first as it is volatile
-        const unsigned char mode = 1 - _mode;
-        DIRECT_pinWrite(_sel_pin, mode);
-        _mode = mode;
+    const auto res = (_mode == _current_mode) 
+        ? _current_sample.enoughData()
+        : _voltage_sample.enoughData();
+    if (res == HLW8012_sample::result_e::Expired) {
+        toggleMode();
     }
 }
 

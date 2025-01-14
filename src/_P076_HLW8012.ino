@@ -522,10 +522,8 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
           const uint8_t currentRead    = P076_SEL_CUR_READ;
           const uint8_t cf_trigger     = P076_CF_TRIGGER;
           const uint8_t cf1_trigger    = P076_CF1_TRIGGER;
-          const bool    use_interrupts = true; // set use_interrupts to true to use interrupts to monitor pulse widths
 
           Plugin_076_hlw->begin(CF_PIN, CF1_PIN, SEL_PIN, currentRead,
-                                use_interrupts,
                                 HLW_DELAYREADING * 1000); // in usec
           # if PLUGIN_076_DEBUG
           addLog(LOG_LEVEL_INFO, F("P076: Init object done"));
