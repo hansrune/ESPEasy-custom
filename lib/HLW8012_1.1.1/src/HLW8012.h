@@ -135,6 +135,7 @@ class HLW8012 {
         float _power_multiplier{};   // Unit: us/W
 
         long _pulse_timeout = PULSE_TIMEOUT;    //Unit: us
+        HLW8012_sample _power_sample{}; //Unit: us
         HLW8012_sample _voltage_sample{}; //Unit: us
         HLW8012_sample _current_sample{}; //Unit: us
 
@@ -146,11 +147,6 @@ class HLW8012 {
         unsigned char _current_mode = HIGH;
         HLW8012_VOLATILE_UCHAR _mode{};
         HLW8012_VOLATILE_UINT32 _cf_pulse_count_total{};
-        HLW8012_VOLATILE_UINT32 _cf_pulse_count_total_prev[2]{};
-        HLW8012_VOLATILE_UINT32 _cf_pulse_count_total_prev_timestamp[2]{};
-
-        // CF = Active power
-        HLW8012_VOLATILE_UINT32 _cf_switched{};
 
         void _checkCFSignal();
         void _checkCF1Signal();

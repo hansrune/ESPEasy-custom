@@ -11,13 +11,16 @@
 
 bool HLW8012_finished_sample::getPulseFreq(float &pulseFreq) const
 {
-    if (duration_usec == 0 || count == 0)
+    // Copy volatile values first before checking
+    const int32_t dur = duration_usec;
+    const uint32_t cnt = count;
+    if (dur == 0 || cnt == 0)
     {
         pulseFreq = 0.0f;
         return false;
     }
-    pulseFreq = count;
-    pulseFreq /= duration_usec;
+    pulseFreq = cnt;
+    pulseFreq /= dur;
     return true;
 }
 
@@ -27,7 +30,7 @@ void HLW8012_sample::reset()
     const uint32_t prev = first_pulse_usec;
     const uint32_t next = last_pulse_usec;
     const uint32_t cnt = count;
-    if (enoughData() == HLW8012_sample::result_e::Enough)
+    if (getState() == HLW8012_sample::result_e::Enough)
     {
         finished.duration_usec = timeDiff(prev, next);
         finished.count = cnt;
@@ -48,23 +51,21 @@ HLW8012_sample::result_e HLW8012_sample::add()
     ++count;
     last_pulse_usec = now;
 
-    const auto res = enoughData();
-    if (res == HLW8012_sample::result_e::NoisePeriod)
+    const auto res = getState();
+    if (res == HLW8012_sample::result_e::NoisePeriod ||
+        first_pulse_usec == 0)
     {
         count = 0;
-        first_pulse_usec = 0;
-    }
-    else if (first_pulse_usec == 0)
-    {
-        count = 0;
-        first_pulse_usec = now;
+        first_pulse_usec =
+            (res == HLW8012_sample::result_e::NoisePeriod)
+                ? 0
+                : now;
         return HLW8012_sample::result_e::NotEnough;
     }
-
     return res;
 }
 
-HLW8012_sample::result_e HLW8012_sample::enoughData() const
+HLW8012_sample::result_e HLW8012_sample::getState() const
 {
     if (last_pulse_usec == 0)
     {

@@ -57,7 +57,7 @@ struct HLW8012_sample
     result_e add() HLW8012_IRAM;
 
     // Check to make sure we have long enough duration and at least 1 sample
-    result_e enoughData() const HLW8012_IRAM;
+    result_e getState() const HLW8012_IRAM;
 
     result_e getPulseFreq(float &pulsefreq) const;
 

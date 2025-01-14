@@ -106,7 +106,7 @@ float HLW8012::getCF1Current(bool &valid) {
     } else if (res == HLW8012_sample::result_e::Cleared ||
                res == HLW8012_sample::result_e::Expired) {
       _cf1_current = 0.0f;
-      valid = false;
+      valid = res == HLW8012_sample::result_e::Expired;
     }
     return _cf1_current;
 }
@@ -122,6 +122,8 @@ float HLW8012::getVoltage(bool &valid) {
     } else if (res == HLW8012_sample::result_e::Cleared ||
                res == HLW8012_sample::result_e::Expired) {
       _voltage = 0.0f;
+      // Do not claim voltage is valid as it is highly unlikely the voltage will ever be 0.
+      // The device will then not be powered.
       valid = false;
     }
     return _voltage;
@@ -129,16 +131,15 @@ float HLW8012::getVoltage(bool &valid) {
 
 float HLW8012::getActivePower(bool &valid) {
     _checkCFSignal();
-    const long count_diff = (long) (_cf_pulse_count_total_prev[0] - _cf_pulse_count_total_prev[1]);
-    const long time_diff_usec = (long) (_cf_pulse_count_total_prev_timestamp[0] - _cf_pulse_count_total_prev_timestamp[1]);
-    if (count_diff <= 0 || time_diff_usec <= 0) {
-        // Either 0 consumption, or volatile values may have been updated.
-        _power = 0.0f;
-        valid = false;
-    } else {
-        float energy = count_diff * _power_multiplier / 2.0f;
-        _power = energy / static_cast<float>(time_diff_usec);
-        valid = true;
+    float pulsefreq{};
+    const auto res = _power_sample.getPulseFreq(pulsefreq);
+    valid = true; 
+    if (res == HLW8012_sample::result_e::Enough) {
+        _power = pulsefreq * _power_multiplier / 2.0f;
+    } else if (res == HLW8012_sample::result_e::Cleared ||
+               res == HLW8012_sample::result_e::Expired) {
+      _power = 0.0f;
+      valid = res == HLW8012_sample::result_e::Expired;
     }
     return _power;
 }
@@ -173,7 +174,7 @@ float HLW8012::getPowerFactor(bool &valid) {
     valid = valid_active && valid_apparent;
     if (!valid) return 0.0f;
     if (active > apparent) return 1.0f;
-    if (apparent == 0) return 0.0f;
+    if (static_cast<int>(apparent) == 0) return 0.0f;
     return active / apparent;
 }
 
@@ -195,19 +196,22 @@ void HLW8012::resetEnergy() {
 void HLW8012::expectedCurrent(float value) {
     bool valid = false;
     if (static_cast<int>(_current) == 0) getCurrent(valid);
-    if (valid && static_cast<int>(_current) > 0) _current_multiplier *= (value / _current);
+    const float current = _current; // Copy volatile
+    if (valid && static_cast<int>(current) > 0) _current_multiplier *= (value / current);
 }
 
 void HLW8012::expectedVoltage(float value) {
     bool valid = false;
     if (static_cast<int>(_voltage) == 0) getVoltage(valid);
-    if (valid && static_cast<int>(_voltage) > 0) _voltage_multiplier *= (value / _voltage);
+    const float voltage = _voltage;
+    if (valid && static_cast<int>(voltage) > 0) _voltage_multiplier *= (value / voltage);
 }
 
 void HLW8012::expectedActivePower(float value) {
     bool valid = false;
     if (static_cast<int>(_power) == 0) getActivePower(valid);
-    if (valid && static_cast<int>(_power) > 0) _power_multiplier *= (value / _power);
+    const float power = _power;
+    if (valid && static_cast<int>(power) > 0) _power_multiplier *= (value / power);
 }
 
 void HLW8012::resetMultipliers() {
@@ -237,24 +241,10 @@ unsigned long IRAM_ATTR HLW8012::filter(unsigned long oldvalue, unsigned long ne
 
 void IRAM_ATTR HLW8012::cf_interrupt() {
   	++_cf_pulse_count_total;
-
-    const unsigned long now = micros();
-    const long time_since_cf_switch = (long) (now - _cf_switched);
-
-    // CF pulses correlate with amount of energy used.
-    // For power a frequency of 1Hz means around 12W
-    // Keep track of last 2 timestamps + total counts covering a roughly constant interval.
-    if (time_since_cf_switch > _pulse_timeout) {
-        // When power consumption is really low,
-        // extend the period upto 10 sec, so we can get as low as 1.2 Watt
-        const bool canExtend = (time_since_cf_switch < (HLW8012_MAXIMUM_SAMPLE_DURATION_USEC)) && (_cf_pulse_count_total - _cf_pulse_count_total_prev[0]) < 3;
-        if (!canExtend) {
-            _cf_switched = now;
-            _cf_pulse_count_total_prev[1] = _cf_pulse_count_total_prev[0];
-            _cf_pulse_count_total_prev_timestamp[1] = _cf_pulse_count_total_prev_timestamp[0];
-        }
-        _cf_pulse_count_total_prev[0] = _cf_pulse_count_total;
-        _cf_pulse_count_total_prev_timestamp[0] = now;
+    
+    const auto res = _power_sample.add();
+    if (res != HLW8012_sample::result_e::NotEnough) {
+        _power_sample.reset();
     }
 }
 
@@ -281,33 +271,19 @@ void IRAM_ATTR HLW8012::cf1_interrupt() {
 }
 
 void HLW8012::_checkCFSignal() {
-    const unsigned long now = micros();
-    const long time_since_cf_switch = (long) (now - _cf_switched);
-
-    // If we conclude here there was no switch triggered via interrupt callback, 
-    // then we must conclude there was no new pulse and thus energy consumption was 0.
-    if (time_since_cf_switch > (2 * HLW8012_MAXIMUM_SAMPLE_DURATION_USEC)) {
-        _cf_pulse_count_total_prev[1] = _cf_pulse_count_total;
-        _cf_pulse_count_total_prev[0] = _cf_pulse_count_total;
-        _cf_pulse_count_total_prev_timestamp[1] = _cf_switched;
-        _cf_pulse_count_total_prev_timestamp[0] = now;
-        _cf_switched = now;
+    const auto res = _power_sample.getState();
+    if (res == HLW8012_sample::result_e::Expired) {
+        // Mark as invalid
+        _power_sample.reset();
     }
 }
 
 void HLW8012::_checkCF1Signal() {
     const auto res = (_mode == _current_mode) 
-        ? _current_sample.enoughData()
-        : _voltage_sample.enoughData();
-/*
-    auto current_sample = (_mode == _current_mode) 
-        ? &_current_sample
-        : &_voltage_sample;
-    const auto res = current_sample->enoughData();
-*/
+        ? _current_sample.getState()
+        : _voltage_sample.getState();
     if (res == HLW8012_sample::result_e::Expired) {
         // Mark as invalid
-  //      current_sample->reset();
         // Switch to other
         toggleMode();
     }
