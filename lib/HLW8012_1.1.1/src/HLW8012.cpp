@@ -91,7 +91,7 @@ float HLW8012::getCurrent(bool &valid) {
             return _current;
         }
     } 
-    return getCF1Current(valid);
+    return _current;
 }
 
 float HLW8012::getCF1Current(bool &valid) {
@@ -107,6 +107,14 @@ float HLW8012::getCF1Current(bool &valid) {
                res == HLW8012_sample::result_e::Expired) {
       _cf1_current = 0.0f;
       valid = res == HLW8012_sample::result_e::Expired;
+    }
+    // Add limit for CF1 current 
+    // as it is highly unlikely any cos-phi will ever be worse than 0.25 
+    bool tmpvalid{};
+    const float upperLimit = 4.0f * getCurrent(tmpvalid);
+    valid |= tmpvalid;
+    if (upperLimit < _cf1_current) {
+        _cf1_current = upperLimit;
     }
     return _cf1_current;
 }
