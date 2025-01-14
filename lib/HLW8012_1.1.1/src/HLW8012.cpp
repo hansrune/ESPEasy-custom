@@ -31,8 +31,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #endif
 
 
-#define HLW8012_MINIMUM_SAMPLE_DURATION_USEC  1000000   // 1 sec
-#define HLW8012_MAXIMUM_SAMPLE_DURATION_USEC  10000000  // 10 sec
+#define HLW8012_UNSTABLE_SAMPLE_DURATION_USEC 20000    // 20 msec
+#define HLW8012_MINIMUM_SAMPLE_DURATION_USEC  1500000  // 1.5 sec
+#define HLW8012_MAXIMUM_SAMPLE_DURATION_USEC  10000000 // 10 sec
 
 void HLW8012_sample::reset() {
     count = 0;
@@ -46,21 +47,32 @@ HLW8012_sample::result_e HLW8012_sample::add() {
     const uint32_t now = micros();
     ++count;
     last_pulse_usec = now;
-    if (first_pulse_usec == 0) {
+
+    const auto res = enoughData();
+    if (res == HLW8012_sample::result_e::NoisePeriod) {
+        count = 0;
+        first_pulse_usec = 0;
+    } else if (first_pulse_usec == 0) {
         count = 0;
         first_pulse_usec = now;
         return HLW8012_sample::result_e::NotEnough;
     }
 
-    return enoughData();
+    return res;
 }
 
 HLW8012_sample::result_e HLW8012_sample::enoughData() const
 {
+    if (last_pulse_usec == 0) {
+        return HLW8012_sample::result_e::Cleared;
+    }
     const int32_t duration_since_start_usec(timeDiff(start_usec, last_pulse_usec));
+    if (duration_since_start_usec < HLW8012_UNSTABLE_SAMPLE_DURATION_USEC && count == 0) {
+      return HLW8012_sample::result_e::NoisePeriod;
+    } 
     if (duration_since_start_usec >= HLW8012_MAXIMUM_SAMPLE_DURATION_USEC && count == 0) {
       return HLW8012_sample::result_e::Expired;
-    } 
+    }
     const int32_t duration_usec(timeDiff(first_pulse_usec, last_pulse_usec));
     if (duration_usec >= HLW8012_MINIMUM_SAMPLE_DURATION_USEC && count > 0) {
         return HLW8012_sample::result_e::Enough;
@@ -156,24 +168,29 @@ float HLW8012::getCF1Current(bool &valid) {
     _checkCF1Signal();
 
     float pulsefreq{};
+    const auto res = _current_sample.getPulseFreq(pulsefreq);
+    valid = true; 
+
     if (_current_sample.getPulseFreq(pulsefreq) == HLW8012_sample::result_e::Enough) {
-      _current = pulsefreq * _current_multiplier / 2.0f;
-      valid = true;
-    } else {
-      _current = 0.0f;
+      _cf1_current = pulsefreq * _current_multiplier / 2.0f;
+    } else if (res == HLW8012_sample::result_e::Cleared ||
+               res == HLW8012_sample::result_e::Expired) {
+      _cf1_current = 0.0f;
       valid = false;
     }
-    return _current;
+    return _cf1_current;
 }
 
 
 float HLW8012::getVoltage(bool &valid) {
     _checkCF1Signal();
     float pulsefreq{};
-    if (_voltage_sample.getPulseFreq(pulsefreq) == HLW8012_sample::result_e::Enough) {
+    const auto res = _voltage_sample.getPulseFreq(pulsefreq);
+    valid = true; 
+    if (res == HLW8012_sample::result_e::Enough) {
       _voltage = pulsefreq * _voltage_multiplier / 2.0f;
-      valid = true;
-    } else {
+    } else if (res == HLW8012_sample::result_e::Cleared ||
+               res == HLW8012_sample::result_e::Expired) {
       _voltage = 0.0f;
       valid = false;
     }
@@ -352,7 +369,16 @@ void HLW8012::_checkCF1Signal() {
     const auto res = (_mode == _current_mode) 
         ? _current_sample.enoughData()
         : _voltage_sample.enoughData();
+/*
+    auto current_sample = (_mode == _current_mode) 
+        ? &_current_sample
+        : &_voltage_sample;
+    const auto res = current_sample->enoughData();
+*/
     if (res == HLW8012_sample::result_e::Expired) {
+        // Mark as invalid
+  //      current_sample->reset();
+        // Switch to other
         toggleMode();
     }
 }

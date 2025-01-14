@@ -80,6 +80,8 @@ struct HLW8012_sample {
 
     enum class result_e {
         NotEnough = 0,
+        Cleared,
+        NoisePeriod,
         Enough,
         Expired
     };
@@ -183,6 +185,7 @@ class HLW8012 {
         HLW8012_sample _current_sample{}; //Unit: us
 
         float _current{};
+        float _cf1_current{};
         float _voltage{};
         float _power{};
 
