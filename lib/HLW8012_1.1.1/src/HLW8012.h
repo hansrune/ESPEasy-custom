@@ -24,6 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <Arduino.h>
 
+#include "HLW8012_sample.h"
+
 // Internal voltage reference value
 #define V_REF               2.43
 
@@ -57,60 +59,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define ICACHE_RAM_ATTR     
 #endif
 
-#if ESP_IDF_VERSION_MAJOR >= 5
-#include <atomic>
-typedef std::atomic<uint32_t> HLW8012_VOLATILE_UINT32;
-typedef std::atomic<unsigned char> HLW8012_VOLATILE_UCHAR;
-
-#define HLW8012_IRAM
-#else
-typedef volatile uint32_t HLW8012_VOLATILE_UINT32;
-typedef volatile unsigned char HLW8012_VOLATILE_UCHAR;
-
-#define HLW8012_IRAM IRAM_ATTR
-#endif
 
 // CF1 mode
 typedef enum {
     MODE_CURRENT,
     MODE_VOLTAGE
 } hlw8012_mode_t;
-
-struct HLW8012_sample {
-
-    enum class result_e {
-        NotEnough = 0,
-        Cleared,
-        NoisePeriod,
-        Enough,
-        Expired
-    };
-
-    HLW8012_sample() = default;
-
-    void reset() HLW8012_IRAM;
-
-    // Add a new recorded pulse
-    // Return true when enough has been captured
-    result_e add() HLW8012_IRAM;
-
-    // Check to make sure we have long enough duration and at least 1 sample
-    result_e enoughData() const HLW8012_IRAM;
-
-    result_e getPulseFreq(float& pulsefreq) const;
-
-
-private:
-    static inline int32_t timeDiff(const unsigned long prev, const unsigned long next) {
-        return ((int32_t) (next - prev));
-    }
-
-    HLW8012_VOLATILE_UINT32 count{};
-    HLW8012_VOLATILE_UINT32 last_pulse_usec{};
-    HLW8012_VOLATILE_UINT32 first_pulse_usec{};
-
-    HLW8012_VOLATILE_UINT32 start_usec{};
-};
 
 class HLW8012 {
 
