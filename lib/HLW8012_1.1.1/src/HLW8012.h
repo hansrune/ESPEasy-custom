@@ -45,9 +45,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // Maximum pulse with in microseconds
 // If longer than this pulse width is reset to 0
 // This value is purely experimental.
-// Higher values allow for a better precission but reduce sampling rate
+// Higher values allow for a better precision but reduce sampling rate
 // and response speed to change
-// Lower values increase sampling rate but reduce precission
+// Lower values increase sampling rate but reduce precision
 // Values below 0.5s are not recommended since current and voltage output
 // will have no time to stabilise
 #define PULSE_TIMEOUT       2000000
@@ -93,6 +93,9 @@ class HLW8012 {
         hlw8012_mode_t toggleMode();
 
         float getCurrent(bool &valid);
+    private:
+        float getCF1Current(bool &valid);
+    public:
         float getVoltage(bool &valid);
         float getActivePower(bool &valid);
         float getApparentPower(bool &valid);
@@ -136,7 +139,7 @@ class HLW8012 {
         long _pulse_timeout = PULSE_TIMEOUT;    //Unit: us
         volatile unsigned long _voltage_pulse_width = 0; //Unit: us
         volatile unsigned long _current_pulse_width = 0; //Unit: us
-        volatile unsigned long _power_pulse_width = 0;   //Unit: us
+//        volatile unsigned long _power_pulse_width = 0;   //Unit: us
 
         float _current{};
         float _voltage{};
@@ -151,8 +154,13 @@ class HLW8012 {
         #else
         volatile unsigned long _cf_pulse_count_total = 0;
         #endif
+        volatile unsigned long _cf_pulse_count_total_prev[2]{};
+        volatile unsigned long _cf_pulse_count_total_prev_timestamp[2]{};
+
 
         // CF = Active power
+        volatile unsigned long _cf_switched = 0;
+/*
         volatile unsigned long _first_cf_interrupt = 0;
         volatile unsigned long _last_cf_interrupt = 0;
 
@@ -161,9 +169,10 @@ class HLW8012 {
         #else
         volatile unsigned long _cf_pulse_count = 0;
         #endif
-
+*/
 
         // CF1 toggles between voltage and current measurement
+        volatile unsigned long _cf1_switched = 0;
         volatile unsigned long _first_cf1_interrupt = 0;
         volatile unsigned long _last_cf1_interrupt = 0;
 

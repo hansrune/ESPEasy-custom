@@ -35,13 +35,18 @@
 
 HLW8012 *Plugin_076_hlw = nullptr;
 
+# if FEATURE_PLUGIN_STATS
+#  include "src/DataStructs/PluginTaskData_base.h"
+# endif // if FEATURE_PLUGIN_STATS
+# include "src/Helpers/OversamplingHelper.h"
+
 
 # define PLUGIN_076
 # define PLUGIN_ID_076         76
 # define PLUGIN_076_DEBUG      false // activate extra log info in the debug
 # define PLUGIN_NAME_076       "Energy (AC) - HLW8012/BL0937"
 
-# define HLW_DELAYREADING 500
+# define HLW_DELAYREADING 2000
 
 // These are the nominal values for the resistors in the circuit
 # define HLW_CURRENT_RESISTOR 0.001
@@ -97,19 +102,10 @@ HLW8012 *Plugin_076_hlw = nullptr;
 # define P076_Shelly_Plus_PLUG_S 11
 
 
-float p076_values[P076_NR_OUTPUT_OPTIONS]{};
+OversamplingHelper<float>p076_values[P076_NR_OUTPUT_OPTIONS]{};
 int StoredTaskIndex = -1;
 uint8_t p076_read_stage {};
 unsigned long p076_timer {};
-
-float p076_hcurrent {};
-float p076_hvoltage {};
-float p076_hpowerActive {};
-float p076_hpowerReactive {};
-float p076_hpowerApparent {};
-float p076_hpowfact {};
-float p076_henergy {};
-
 
 // Forward declaration helper function
 const __FlashStringHelper* p076_getQueryString(uint8_t value_nr,
@@ -171,6 +167,8 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
       dev.PluginStats    = true;
       dev.setPin1Direction(gpio_direction::gpio_output);
       dev.OutputDataType = Output_Data_type_t::Simple;
+
+      //      dev.TaskLogsOwnPeaks = true;
       break;
     }
 
@@ -417,45 +415,58 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
     case PLUGIN_TEN_PER_SECOND:
 
       if (Plugin_076_hlw) {
-        bool valid = false;
-
+        /*
         switch (p076_read_stage) {
-          case 0:
-            // The stage where we have to wait for a measurement to be started.
-            break;
-          case 1: // Set mode to read current
+          case 0: // Set mode to read current
             Plugin_076_hlw->setMode(MODE_CURRENT);
             p076_timer = millis() + HLW_DELAYREADING;
             ++p076_read_stage;
             break;
-          case 2: // Read current + set mode to read voltage
+          case 1: // Read current + set mode to read voltage
 
             if (timeOutReached(p076_timer)) {
-              p076_hcurrent = Plugin_076_hlw->getCurrent(valid);
+              bool valid        = false;
+              const float value = Plugin_076_hlw->getCurrent(valid);
+
+              if (valid || P076_TOZERO) {
+                p076_addValue(event, P076_INDEX_CURR, value);
+              }
               Plugin_076_hlw->setMode(MODE_VOLTAGE);
               p076_timer = millis() + HLW_DELAYREADING;
               ++p076_read_stage;
             }
             break;
-          case 3: // Read voltage + active power + power factor
+          case 2: // Read voltage + active power + power factor
 
             if (timeOutReached(p076_timer)) {
-              p076_hvoltage       = Plugin_076_hlw->getVoltage(valid);
-              p076_hpowerActive   = Plugin_076_hlw->getActivePower(valid);
-              p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
-              p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
-              p076_hpowfact       = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
-              p076_henergy        = Plugin_076_hlw->getEnergy();
-              ++p076_read_stage;
+            */
+              for (uint8_t i = 0; i < P076_NR_OUTPUT_OPTIONS; ++i) {
+                bool  valid = false;
+                float value{};
 
-              // Measurement is done, schedule a new PLUGIN_READ call
-              Scheduler.schedule_task_device_timer(event->TaskIndex, millis() + 10);
+                switch (i) {
+                  case P076_INDEX_VOLT: value = Plugin_076_hlw->getVoltage(valid); break;
+                  case P076_INDEX_CURR: value = Plugin_076_hlw->getCurrent(valid); break;
+                  case P076_INDEX_POWR: value = Plugin_076_hlw->getActivePower(valid); break;
+                  case P076_INDEX_VAR:  value = Plugin_076_hlw->getReactivePower(valid); break;
+                  case P076_INDEX_VA:   value = Plugin_076_hlw->getApparentPower(valid); break;
+                  case P076_INDEX_PF:   value = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid)); break;
+                  case P076_INDEX_ENER: value = Plugin_076_hlw->getEnergy(); valid = true; break;
+                }
+
+                if (valid || P076_TOZERO) {
+                  p076_addValue(event, i, value);
+                }
+              }
+              /*
+              ++p076_read_stage;
             }
             break;
           default:
-            // The PLUGIN_READ should set the new timer and reset the read stage.
+            p076_read_stage = 0;
             break;
         }
+        */
       }
       success = true;
       break;
@@ -463,79 +474,28 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
     case PLUGIN_READ:
 
       if (Plugin_076_hlw) {
-        if (p076_read_stage == 0) {
-          // Force a measurement start.
-          //        ++p076_read_stage;
-          //      } else if (p076_read_stage > 3) {
-          bool valid = false;
+        for (taskVarIndex_t i = 0; i < 4; ++i) {
+          float value{};
 
-          p076_hpowerActive = Plugin_076_hlw->getActivePower(valid);
-
-          if (valid || P076_TOZERO) {
-            p076_values[P076_INDEX_POWR] = p076_hpowerActive;
-            success                      = true;
+          if (p076_values[PCONFIG(i)].get(value)) {
+            success = true;
+            UserVar.setFloat(event->TaskIndex, i, value);
           }
+        }
 
-          p076_hvoltage = Plugin_076_hlw->getVoltage(valid);
-
-          if (valid || P076_TOZERO) {
-            p076_values[P076_INDEX_VOLT] = p076_hvoltage;
-            success                      = true;
-          }
-
-          p076_hcurrent = Plugin_076_hlw->getCurrent(valid);
-
-          if (valid || P076_TOZERO) {
-            p076_values[P076_INDEX_CURR] = p076_hcurrent;
-            success                      = true;
-          }
-
-          p076_hpowfact = static_cast<int>(100 * Plugin_076_hlw->getPowerFactor(valid));
-
-          if (valid || P076_TOZERO) {
-            p076_values[P076_INDEX_PF] = p076_hpowfact;
-            success                    = true;
-          }
-
-          p076_hpowerReactive = Plugin_076_hlw->getReactivePower(valid);
-
-          if (valid || P076_TOZERO) {
-            p076_values[P076_INDEX_VAR] = p076_hpowerReactive;
-            success                     = true;
-          }
-
-          p076_hpowerApparent = Plugin_076_hlw->getApparentPower(valid);
-
-          if (valid || P076_TOZERO) {
-            p076_values[P076_INDEX_VA] = p076_hpowerApparent;
-            success                    = true;
-          }
-
-          p076_henergy                 = Plugin_076_hlw->getEnergy();
-          p076_values[P076_INDEX_ENER] = p076_henergy;
-
-          UserVar.setFloat(event->TaskIndex, 0, p076_values[P076_QUERY1]);
-          UserVar.setFloat(event->TaskIndex, 1, p076_values[P076_QUERY2]);
-          UserVar.setFloat(event->TaskIndex, 2, p076_values[P076_QUERY3]);
-          UserVar.setFloat(event->TaskIndex, 3, p076_values[P076_QUERY4]);
-
-          // Measurement is complete.
-          p076_read_stage = 0;
-
-          # if PLUGIN_076_DEBUG
-          addLogMove(LOG_LEVEL_INFO,
-                     strformat(F("P076: Read values - V=%.2f - A=%.2f - W=%.2f - VAR=%.2f - VA=%.2f - Pf%%=%.2f - Ws=%.2f"),
-                               p076_values[P076_INDEX_VOLT],
-                               p076_values[P076_INDEX_CURR],
-                               p076_values[P076_INDEX_POWR],
-                               p076_values[P076_INDEX_VAR],
-                               p076_values[P076_INDEX_VA],
-                               p076_values[P076_INDEX_PF],
-                               p076_values[P076_INDEX_ENER]));
+        # if PLUGIN_076_DEBUG
+        addLogMove(LOG_LEVEL_INFO,
+                   strformat(F("P076: Read values - V=%.2f - A=%.2f - W=%.2f - VAR=%.2f - VA=%.2f - Pf%%=%.2f - Ws=%.2f"),
+                             p076_values[P076_INDEX_VOLT],
+                             p076_values[P076_INDEX_CURR],
+                             p076_values[P076_INDEX_POWR],
+                             p076_values[P076_INDEX_VAR],
+                             p076_values[P076_INDEX_VA],
+                             p076_values[P076_INDEX_PF],
+                             p076_values[P076_INDEX_ENER]));
           # endif // if PLUGIN_076_DEBUG
 
-          // Plugin_076_hlw->toggleMode();
-        }
+        // Plugin_076_hlw->toggleMode();
       }
       break;
 
@@ -559,13 +519,14 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String& string) 
         if (Plugin_076_hlw) {
           p076_checkdefault_queries(event);
 
-          const uint8_t currentRead = P076_SEL_CUR_READ;
-          const uint8_t cf_trigger  = P076_CF_TRIGGER;
-          const uint8_t cf1_trigger = P076_CF1_TRIGGER;
+          const uint8_t currentRead    = P076_SEL_CUR_READ;
+          const uint8_t cf_trigger     = P076_CF_TRIGGER;
+          const uint8_t cf1_trigger    = P076_CF1_TRIGGER;
+          const bool    use_interrupts = true; // set use_interrupts to true to use interrupts to monitor pulse widths
 
           Plugin_076_hlw->begin(CF_PIN, CF1_PIN, SEL_PIN, currentRead,
-                                true); // set use_interrupts to true to use
-                                       // interrupts to monitor pulse widths
+                                use_interrupts,
+                                HLW_DELAYREADING * 1000); // in usec
           # if PLUGIN_076_DEBUG
           addLog(LOG_LEVEL_INFO, F("P076: Init object done"));
           # endif // if PLUGIN_076_DEBUG
@@ -766,13 +727,9 @@ void Plugin076_Reset(taskIndex_t TaskIndex) {
   p076_read_stage = 0;
   p076_timer      = 0;
 
-  p076_hcurrent       = 0.0f;
-  p076_hvoltage       = 0.0f;
-  p076_hpowerActive   = 0.0f;
-  p076_hpowerReactive = 0.0f;
-  p076_hpowerApparent = 0.0f;
-  p076_hpowfact       = 0.0f;
-  p076_henergy        = 0.0f;
+  for (uint8_t i = 0; i < P076_NR_OUTPUT_OPTIONS; ++i) {
+    p076_values[i].reset();
+  }
 }
 
 // When using interrupts we have to call the library entry point
@@ -813,6 +770,36 @@ void p076_checkdefault_queries(struct EventStruct *event)
     P076_QUERY3 = P076_QUERY3_DFLT;
     P076_QUERY4 = P076_QUERY4_DFLT;
   }
+}
+
+void p076_addValue(struct EventStruct *event, uint8_t index, float value)
+{
+  if (index >= P076_NR_OUTPUT_OPTIONS) {
+    return;
+  }
+  p076_values[index].add(value);
+# if FEATURE_PLUGIN_STATS
+
+  /*
+     // Disabled for now as it may cause fluke measurements to be recorded.
+     PluginTaskData_base *taskData = getPluginTaskData(event->TaskIndex);
+
+     if (taskData == nullptr) {
+      return;
+     }
+
+     for (taskVarIndex_t i = 0; i < 4; ++i) {
+      if (index == PCONFIG(i)) {
+        PluginStats *stats = taskData->getPluginStats(i);
+
+        if (stats != nullptr) {
+          stats->trackPeak(value);
+        }
+        return;
+      }
+     }
+   */
+# endif // if FEATURE_PLUGIN_STATS
 }
 
 #endif // USES_P076
