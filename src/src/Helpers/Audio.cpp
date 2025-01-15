@@ -71,7 +71,6 @@ void esp32NoTone(uint8_t pin) {
 
 void esp32Tone(uint8_t pin, unsigned int frq, unsigned long duration) {
   ledcWriteTone(pin, frq); // pin, freq
-  ledcWrite(pin, 255);     // pin, volume
 }
 
 void esp32ToneSetup(uint8_t pin) {
