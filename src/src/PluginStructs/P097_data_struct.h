@@ -1,5 +1,5 @@
-#ifndef PLUGINSTRUCTS_P098_DATA_STRUCT_H
-#define PLUGINSTRUCTS_P098_DATA_STRUCT_H
+#ifndef PLUGINSTRUCTS_P097_DATA_STRUCT_H
+#define PLUGINSTRUCTS_P097_DATA_STRUCT_H
 
 #include "../../_Plugin_Helper.h"
 #ifdef USES_P097
@@ -12,12 +12,18 @@
 #  if defined(ESP32_CLASSIC)
   #   define HAS_T0_INPUT                 1
   #   define HAS_T10_TO_T14               0
+  #   ifdef LAST_TOUCH_INPUT_INDEX
+  #    undef LAST_TOUCH_INPUT_INDEX
+  #   endif // ifdef LAST_TOUCH_INPUT_INDEX
   #   define LAST_TOUCH_INPUT_INDEX       10
   #   define P097_MAX_THRESHOLD_VALUE     4095
   #   define P097_DEFAULT_TOUCH_THRESHOLD 20
 #  elif defined(ESP32S2) || defined(ESP32S3)
   #   define HAS_T0_INPUT                 0
-  #   define HAS_T10_TO_T14               0      // Temporary disabled since T10 to T14 are causing problems
+  #   define HAS_T10_TO_T14               0 // Temporary disabled since T10 to T14 are causing problems
+  #   ifdef LAST_TOUCH_INPUT_INDEX
+  #    undef LAST_TOUCH_INPUT_INDEX
+  #   endif // ifdef LAST_TOUCH_INPUT_INDEX
   #   define LAST_TOUCH_INPUT_INDEX       14
   #   define P097_MAX_THRESHOLD_VALUE     500000 // couldn't find a max value but threshold for ESP32S2 & ESP32S3 is uint32_t
   #   define P097_DEFAULT_TOUCH_THRESHOLD 1500
@@ -36,5 +42,5 @@
 
 # endif // if defined(SOC_TOUCH_SENSOR_SUPPORTED) && SOC_TOUCH_SENSOR_SUPPORTED
 
-#endif // ifdef USES_P098
-#endif // ifndef PLUGINSTRUCTS_P098_DATA_STRUCT_H
+#endif // ifdef USES_P097
+#endif // ifndef PLUGINSTRUCTS_P097_DATA_STRUCT_H
