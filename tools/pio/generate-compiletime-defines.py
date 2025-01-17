@@ -145,3 +145,14 @@ if "esp32" in env.BoardConfig().get("build.core"):
 
 
 env.AddBuildMiddleware(gen_compiletime_defines)
+
+
+# --- Skip object files *.cpp.o files from build process
+# required since shorten includes were added:
+#  https://github.com/Jason2866/platform-espressif32/commit/6151a70bdb65dd33b7bd9cd93b9d4cf606ffbd33
+
+def skip_o_files_from_build(env, node):
+    # to ignore file from a build process, just return None
+    return None
+
+env.AddBuildMiddleware(skip_o_files_from_build, "*.cpp.o")
