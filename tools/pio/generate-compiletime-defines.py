@@ -98,7 +98,7 @@ def gen_compiletime_defines(node):
     """
 
     # do not modify node if file name does not contain "CompiletimeDefines.cpp"
-    if "CompiletimeDefines.cpp" not in node.name:
+    if not node.name.endswith("CompiletimeDefines.cpp"):
         return node
 
     # now, we can override ANY SCons variables (CPPDEFINES, CCFLAGS, etc.,) for the specific file
