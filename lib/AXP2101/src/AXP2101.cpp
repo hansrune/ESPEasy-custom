@@ -462,8 +462,8 @@ bool AXP2101::bitOnOff(bool    sw,
 /**
  * Convert a voltage to the indicated register-data, using the matching offset and range(s)
  */
-uint8_t voltageToRegister(uint16_t            voltage,
-                          AXP2101_registers_e reg) {
+uint8_t AXP2101::voltageToRegister(uint16_t            voltage,
+                                   AXP2101_registers_e reg) {
   uint16_t min = 500;
   uint16_t max = 0;
 
