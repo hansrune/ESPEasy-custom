@@ -53,10 +53,10 @@ void P139_data_struct::outputSettings(struct EventStruct *event) {
 
     if (!AXP2101_isPinDefault(pinState)) {
       if (AXP_pin_s::On == pinState) {
-        // axp2101->setPortVoltage(_settings.getVoltage(reg), reg);
-        // axp2101->setPortState(true, reg);  // Turn on after setting the voltage
+        axp2101->setPortVoltage(_settings.getVoltage(reg), reg);
+        axp2101->setPortState(true, reg);  // Turn on after setting the voltage
       } else {
-        // axp2101->setPortState(false, reg); // Turn off
+        axp2101->setPortState(false, reg); // Turn off
       }
       ++count;
 
@@ -265,16 +265,18 @@ bool P139_data_struct::plugin_write(struct EventStruct *event,
               const int min_ = AXP2101_minVoltage(reg);
 
               if (0 == event->Par3 /* < min_ */) {
-                // TODO Q: Turn off when A) 0 or B) below minimum voltage? Current answer: A)
-                // axp2101->setPortState(false, reg);
+                // Q: Turn off when A) 0 or B) below minimum voltage? Selected answer: A)
+                axp2101->setPortState(false, reg);
+
                 if (loglevelActiveFor(LOG_LEVEL_INFO)) {
                   addLog(LOG_LEVEL_INFO, strformat(F("AXP2101: Turn off port %s"), FsP(toString(reg))));
                 }
                 success = true;
               } else
               if ((event->Par3 >= min_) && (event->Par3 <= AXP2101_maxVoltage(reg))) {
-                // axp2101->setPortVoltage(event->Par3, reg);
-                // axp2101->setPortState(true, reg); // Turn on after setting the voltage
+                axp2101->setPortVoltage(event->Par3, reg);
+                axp2101->setPortState(true, reg); // Turn on after setting the voltage
+
                 if (loglevelActiveFor(LOG_LEVEL_INFO)) {
                   addLog(LOG_LEVEL_INFO, strformat(F("AXP2101: Set port %s to %dmV"), FsP(toString(reg)), event->Par3));
                 }
@@ -301,7 +303,8 @@ bool P139_data_struct::plugin_write(struct EventStruct *event,
                   addLog(LOG_LEVEL_ERROR, strformat(F("AXP2101: Port %s is %s"), FsP(toString(reg)), FsP(toString(pinState))));
                 }
               } else {
-                // axp2101->setPortState(stateOn, reg);
+                axp2101->setPortState(stateOn, reg);
+
                 if (loglevelActiveFor(LOG_LEVEL_INFO)) {
                   addLog(LOG_LEVEL_INFO, strformat(F("AXP2101: Switch port %s: %s"), FsP(toString(reg)), FsP(stateOn ? F("On") : F("Off"))));
                 }
@@ -324,10 +327,10 @@ bool P139_data_struct::plugin_write(struct EventStruct *event,
                                             P139_CONST_1_PERCENT, P139_CONST_100_PERCENT,
                                             _ranges[s][0], _ranges[s][1]);
 
-                // axp2101->setPortVoltage(_value, reg);
-                // axp2101->setPortState(true, reg);  // Turn on after setting the voltage
+                axp2101->setPortVoltage(_value, reg);
+                axp2101->setPortState(true, reg);  // Turn on after setting the voltage
               } else {
-                // axp2101->setPortState(false, reg); // Turn off
+                axp2101->setPortState(false, reg); // Turn off
               }
               success = true;
             }

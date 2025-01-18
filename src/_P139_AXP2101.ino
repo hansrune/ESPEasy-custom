@@ -9,6 +9,7 @@
 
 /**
  * Changelog:
+ * 2025-01-18 tonhuisman: Enable writing values to chip.
  * 2024-02-25 tonhuisman: Add I2C-enabled check on plugin startup, implement FsP macro
  * 2024-02-21 tonhuisman: Add support for ChipID and ChargingDetail data supplied by AXP2101
  * 2024-02-18 tonhuisman: Add setting for Generate events, support for chargestate and isBatteryDetected, fix some issues
