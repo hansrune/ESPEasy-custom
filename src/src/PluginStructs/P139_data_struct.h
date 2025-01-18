@@ -39,7 +39,8 @@ struct P139_data_struct : public PluginTaskData_base {
 public:
 
   P139_data_struct(struct EventStruct *event);
-  P139_data_struct() = delete;
+  P139_data_struct() {}
+
   ~P139_data_struct();
 
   bool plugin_read(struct EventStruct *event);
