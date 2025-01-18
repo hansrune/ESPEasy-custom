@@ -75,17 +75,18 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
   {
     case PLUGIN_DEVICE_ADD:
     {
-      Device[++deviceCount].Number       = PLUGIN_ID_139;
-      Device[deviceCount].Type           = DEVICE_TYPE_I2C;
-      Device[deviceCount].VType          = Sensor_VType::SENSOR_TYPE_QUAD;
-      Device[deviceCount].OutputDataType = Output_Data_type_t::Simple;
-      Device[deviceCount].PowerManager   = true; // So it can be started before SPI is initialized
-      Device[deviceCount].FormulaOption  = true;
-      Device[deviceCount].ValueCount     = 4;
-      Device[deviceCount].SendDataOption = true;
-      Device[deviceCount].TimerOption    = true;
-      Device[deviceCount].TimerOptional  = true;
-      Device[deviceCount].PluginStats    = true;
+      auto& dev = Device[++deviceCount];
+      def.Number         = PLUGIN_ID_139;
+      dev.Type           = DEVICE_TYPE_I2C;
+      dev.VType          = Sensor_VType::SENSOR_TYPE_QUAD;
+      dev.OutputDataType = Output_Data_type_t::Simple;
+      dev.PowerManager   = true; // So it can be started before SPI is initialized
+      dev.FormulaOption  = true;
+      dev.ValueCount     = 4;
+      dev.SendDataOption = true;
+      dev.TimerOption    = true;
+      dev.TimerOptional  = true;
+      dev.PluginStats    = true;
       break;
     }
 
@@ -109,7 +110,8 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
     {
       for (uint8_t i = 0; i < VARS_PER_TASK; ++i) {
         if (i < P139_NR_OUTPUT_VALUES) {
-          ExtraTaskSettings.setTaskDeviceValueName(i, toString(static_cast<AXP2101_registers_e>(PCONFIG(P139_CONFIG_BASE + i)), false));
+          const uint8_t choice = PCONFIG(P139_CONFIG_BASE + i);
+          ExtraTaskSettings.setTaskDeviceValueName(i, toString(static_cast<AXP2101_registers_e>(choice), false));
         } else {
           ExtraTaskSettings.clearTaskDeviceValueName(i);
         }
@@ -200,8 +202,9 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(AXP2101_chargeled_d::Flash_4Hz),
           static_cast<int>(AXP2101_chargeled_d::Steady_On),
         };
+        constexpr uint8_t valueCount = NR_ELEMENTS(chargeledValues);
         addFormSelector(F("Charge LED"), F("led"),
-                        NR_ELEMENTS(chargeledValues),
+                        valueCount,
                         chargeledNames, chargeledValues,
                         static_cast<int>(P139_data->_settings.getChargeLed()));
       }
@@ -233,8 +236,9 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(AXP2101_device_model_e::LilyGO_TBeamS3_v3),
           static_cast<int>(AXP2101_device_model_e::LilyGO_TPCie_v1_2),
           static_cast<int>(AXP2101_device_model_e::UserDefined) }; // keep last !!
+        constexpr uint8_t valueCount = NR_ELEMENTS(predefinedValues);
         addFormSelector(F("Predefined device configuration"), F("predef"),
-                        NR_ELEMENTS(predefinedValues),
+                        valueCount,
                         predefinedNames, predefinedValues, 0, !isPowerManagerTask);
 
         if (!isPowerManagerTask) {
@@ -326,12 +330,13 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
         valOptions[r + 1] = toString(reg);
         valValues[r + 1]  = static_cast<int>(reg);
       }
+      constexpr uint8_t valueCount = NR_ELEMENTS(valValues);
 
       for (uint8_t i = 0; i < P139_NR_OUTPUT_VALUES; ++i) {
         sensorTypeHelper_loadOutputSelector(event,
                                             P139_CONFIG_BASE + i,
                                             i,
-                                            NR_ELEMENTS(valValues),
+                                            valueCount,
                                             valOptions,
                                             valValues);
       }
@@ -390,15 +395,15 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
         P139_data_struct *P139_init = static_cast<P139_data_struct *>(getPluginTaskData(event->TaskIndex));
 
         if (nullptr != P139_init) {
-        #  ifndef BUILD_NO_DEBUG
+          #  ifndef BUILD_NO_DEBUG
           addLogMove(LOG_LEVEL_INFO, F("P139: Already initialized, skipped."));
-        #  endif // ifndef BUILD_NO_DEBUG
+          #  endif // ifndef BUILD_NO_DEBUG
           // has been initialized so nothing to do here
           success = true; // Still was successful (to keep plugin enabled!)
         } else {
-        #  ifndef BUILD_NO_DEBUG
+          #  ifndef BUILD_NO_DEBUG
           addLogMove(LOG_LEVEL_DEBUG, F("P139: PLUGIN_INIT"));
-        #  endif // ifndef BUILD_NO_DEBUG
+          #  endif // ifndef BUILD_NO_DEBUG
           success = initPluginTaskData(event->TaskIndex, new (std::nothrow) P139_data_struct(event));
         }
       } else {

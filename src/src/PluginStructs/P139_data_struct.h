@@ -13,8 +13,8 @@
 #  define P139_CONFIG_BASE        0 // Uses PCONFIG(0)..PCONFIG(3) to store the selection for 4 output values
 #  define P139_SENSOR_TYPE_INDEX  (P139_CONFIG_BASE + VARS_PER_TASK)
 #  define P139_NR_OUTPUT_VALUES   getValueCountFromSensorType(static_cast<Sensor_VType>(PCONFIG(P139_SENSOR_TYPE_INDEX)))
-#  define P139_CONFIG_DECIMALS    PCONFIG(P139_CONFIG_BASE + VARS_PER_TASK + 1)
-#  define P139_CONFIG_PREDEFINED  PCONFIG(P139_CONFIG_BASE + VARS_PER_TASK + 2)
+#  define P139_CONFIG_DECIMALS    PCONFIG(P139_SENSOR_TYPE_INDEX + 1)
+#  define P139_CONFIG_PREDEFINED  PCONFIG(P139_SENSOR_TYPE_INDEX + 2)
 #  define P139_CURRENT_PREDEFINED PCONFIG_FLOAT(0)
 
 #  define P139_FLAGS              PCONFIG_ULONG(0)
@@ -39,7 +39,7 @@ struct P139_data_struct : public PluginTaskData_base {
 public:
 
   P139_data_struct(struct EventStruct *event);
-  P139_data_struct();
+  P139_data_struct() = delete;
   ~P139_data_struct();
 
   bool plugin_read(struct EventStruct *event);
