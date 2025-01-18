@@ -1446,7 +1446,7 @@ To create/register a plugin, you have to :
     #define USES_P073   // 7DGT
     #define USES_P079   // Wemos Motoshield
 
-    #if !defined(USES_P152) && (defined(ESP32_CLASSIC) || defined(ESP32S2)) // Only supported on ESP32 and ESP32-S2
+    #if defined(SOC_DAC_SUPPORTED) && SOC_DAC_SUPPORTED // Only supported on ESP32 and ESP32-S2
       #define USES_P152 // ESP32 DAC
     #endif
 #endif
@@ -1689,6 +1689,9 @@ To create/register a plugin, you have to :
   #endif
   #if !defined(USES_P173) && defined(ESP32)
     #define USES_P173   // Environment - SHTC3
+  #endif
+  #if !defined(USES_P178) && defined(ESP32)
+    #define USES_P178   // Extra IO - LU9685 Servo controller
   #endif
 #endif // ifdef PLUGIN_SET_COLLECTION_G
 
@@ -2027,6 +2030,10 @@ To create/register a plugin, you have to :
   #if !defined(USES_P175) && defined(ESP32)
     #define USES_P175   // Dust - PMSx003i I2C
   #endif
+  #if !defined(USES_P178) && defined(ESP32)
+    #define USES_P178   // Extra IO - LU9685 Servo controller
+  #endif
+
   
   // Controllers
   #ifndef USES_C011
@@ -2457,7 +2464,7 @@ To create/register a plugin, you have to :
   #ifndef USES_P151
     #define USES_P151   // Environment - I2C Honeywell Pressure
   #endif
-  #if !defined(USES_P152) && (defined(ESP32_CLASSIC) || defined(ESP32S2)) // Only supported on ESP32 and ESP32-S2
+  #if defined(SOC_DAC_SUPPORTED) && SOC_DAC_SUPPORTED // Only supported on ESP32 and ESP32-S2
     #define USES_P152   // ESP32 DAC
   #endif
   #ifndef USES_P153
@@ -2505,6 +2512,9 @@ To create/register a plugin, you have to :
   #endif
   #ifndef USES_P175
     #define USES_P175   // Dust - PMSx003i I2C
+  #endif
+  #ifndef USES_P178
+    #define USES_P178   // Extra IO - LU9685 Servo controller
   #endif
 
   // Controllers
@@ -2557,7 +2567,7 @@ To create/register a plugin, you have to :
 #if defined(USES_P044) && !defined(USES_P020) // P020 is used to replace/emulate P044
   #define USES_P020
 #endif
-#if defined(USES_P020) || defined(USES_P049) || defined(USES_P052) || defined(USES_P053) || defined(USES_P056)  || defined(USES_P065) || defined(USES_P071) || defined(USES_P075) || defined(USES_P077) || defined(USES_P078) || defined(USES_P082) || defined(USES_P085) || defined(USES_P087) || defined(USES_P093)|| defined(USES_P094) || defined(USES_P102) || defined(USES_P105) || defined(USES_P108) || defined(USES_P144) || defined(USES_C018)
+#if defined(USES_P020) || defined(USES_P049) || defined(USES_P052) || defined(USES_P053) || defined(USES_P056)  || defined(USES_P065) || defined(USES_P071) || defined(USES_P075) || defined(USES_P077) || defined(USES_P078) || defined(USES_P082) || defined(USES_P085) || defined(USES_P087) || defined(USES_P093)|| defined(USES_P094) || defined(USES_P102) || defined(USES_P108) || defined(USES_P134) || defined(USES_P144) || defined(USES_P159) || defined(USES_P176) || defined(USES_C018)
   // At least one plugin uses serial.
   #ifndef PLUGIN_USES_SERIAL
     #define PLUGIN_USES_SERIAL
@@ -3639,5 +3649,18 @@ To create/register a plugin, you have to :
       #define FEATURE_THINGSPEAK_EVENT 1
     #endif
   #endif
+
+  #if !(defined(SOC_DAC_SUPPORTED) && SOC_DAC_SUPPORTED)
+    #ifdef USES_P152
+      #undef USES_P152
+    #endif
+  #endif
+
+  #if !(defined(SOC_TOUCH_SENSOR_SUPPORTED) && SOC_TOUCH_SENSOR_SUPPORTED)
+    #ifdef USES_P097
+      #undef USES_P097
+    #endif
+  #endif
+
 
 #endif // CUSTOMBUILD_DEFINE_PLUGIN_SETS_H
