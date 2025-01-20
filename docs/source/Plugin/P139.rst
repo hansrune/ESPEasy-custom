@@ -114,6 +114,8 @@ Available options: *Single* (1), *Dual* (2), *Triple* (3) and *Quad* (4).
 
 .. image:: P139_ValueOptions.png
 
+.. image:: P139_ValueOptionsB.png
+
 Available options:
 
 * *None*: To leave the value empty/0.00
@@ -122,7 +124,7 @@ Available options:
 
 * *ChargeLed*: The state of the Charge LED, 0 = Off, 1 = Flash 1Hz, 2 = Flash 4Hz, 3 = Steady On.
 
-* *BatCharge*: The current that the battery is being charged or discharged with.
+* *BatCharge*: The charge state percentage of the battery.
 
 * *ChargingState*: The state of charging, -1 = discharging, 0 = standby, 1 = charging.
 
@@ -138,6 +140,17 @@ Available options:
   * 3: ``constant voltage (CV)``
   * 4: ``charge done``
   * 5: ``not charging``
+
+* *BatVoltage*: The battery voltage.
+
+* *BatTemp*: The temperature of the battery, (if a battery-temperature sensor is installed).
+
+* *BusVoltage*: The bus-voltage.
+
+* *SysVoltage*: The system-voltage.
+
+* *ChipTemp*: The internal temperature of the chip.
+
 
 .. note:: Not all options hold usable values for all boards, some may even be not connected. Check the board documentation for available values.
 

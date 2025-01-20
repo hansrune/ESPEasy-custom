@@ -3,9 +3,9 @@
     :widths: 20, 30
 
     "
-    Every value option can be appended with ``.status`` (or ``.state`` for ``BatCharge`` and any of the ports)
+    Most value options can be appended with ``.status`` (or ``.state`` for ``BatCharge`` and any of the ports)
     ","
-    | ``.status``: A text representation of the value will be returned.
+    | ``.status``: A text representation of the value will be returned, where applicable.
     | ``.state``: A numeric representation of the value will be returned (usually the same as if the plain value name was used.)
 
     | Example: ``[<taskname>#ChargingDetail.status]`` will return ``constant charge (CC)`` for ``ChargingDetail`` = 2.
@@ -23,7 +23,7 @@
     "
     ``[<taskname>#BatCharge]``
     ","
-    | The current that the battery is being charged or discharged with.
+    | The charge state percentage of the battery.
     "
     "
     ``[<taskname>#ChargingState]``
@@ -51,4 +51,29 @@
     * 3: ``constant voltage (CV)``
     * 4: ``charge done``
     * 5: ``not charging``
+    "
+    "
+    ``[<taskname>#BatVoltage]``
+    ","
+    | The current voltage of the battery.
+    "
+    "
+    ``[<taskname>#BatTemp]``
+    ","
+    | The temperature of the battery, (if a battery-temperature sensor is installed).
+    "
+    "
+    ``[<taskname>#VBus]``
+    ","
+    | The bus-voltage.
+    "
+    "
+    ``[<taskname>#VSys]``
+    ","
+    | The charge state percentage of the battery.
+    "
+    "
+    ``[<taskname>#ChipTemp]``
+    ","
+    | The internal temperature of the chip.
     "
