@@ -242,7 +242,7 @@ AXP2101_settings::AXP2101_settings(uint16_t _dcdc1, uint16_t _dcdc2, uint16_t _d
 {
   registers.dcdc1 = _dcdc1; registers.dcdc2 = _dcdc2; registers.dcdc3 = _dcdc3; registers.dcdc4 = _dcdc4; registers.dcdc5 = _dcdc5;
   registers.aldo1 = _aldo1; registers.aldo2 = _aldo2; registers.aldo3 = _aldo3; registers.aldo4 = _aldo4;
-  registers.bldo1 = _bldo1; registers.bldo1 = _bldo2; registers.dldo1 = _dldo1; registers.dldo2 = _dldo2; registers.cpuldos = _cpuldos;
+  registers.bldo1 = _bldo1; registers.bldo2 = _bldo2; registers.dldo1 = _dldo1; registers.dldo2 = _dldo2; registers.cpuldos = _cpuldos;
 
   pinStates.en_dcdc1  = static_cast<uint8_t>(_en_dcdc1); pinStates.en_dcdc2 = static_cast<uint8_t>(_en_dcdc2);
   pinStates.en_dcdc3  = static_cast<uint8_t>(_en_dcdc3); pinStates.en_dcdc4 = static_cast<uint8_t>(_en_dcdc4);
