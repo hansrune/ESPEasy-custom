@@ -47,6 +47,13 @@ const __FlashStringHelper* toString(AXP2101_registers_e reg,
     case AXP2101_registers_e::batpresent: return displayString ? F("BatPresent") : F("batpresent");
     case AXP2101_registers_e::chipid: return displayString ? F("ChipID") : F("chipid");
     case AXP2101_registers_e::chargedet: return displayString ? F("ChargingDetail") : F("chargingdet");
+
+    case AXP2101_registers_e::vbat: return displayString ? F("BatVoltage") : F("vbat");
+    case AXP2101_registers_e::battemp: return displayString ? F("BatTemp") : F("battemp");
+    case AXP2101_registers_e::vbus: return displayString ? F("BusVoltage") : F("vbus");
+    case AXP2101_registers_e::vsys: return displayString ? F("SysVoltage") : F("vsys");
+    case AXP2101_registers_e::chiptemp: return displayString ? F("ChipTemp") : F("chiptemp");
+
   }
   return F("");
 }
@@ -123,6 +130,12 @@ AXP2101_registers_e AXP2101_intToRegister(int reg) {
     case 17: return AXP2101_registers_e::batpresent;
     case 18: return AXP2101_registers_e::chipid;
     case 19: return AXP2101_registers_e::chargedet;
+
+    case 20: return AXP2101_registers_e::vbat;
+    case 21: return AXP2101_registers_e::battemp;
+    case 22: return AXP2101_registers_e::vbus;
+    case 23: return AXP2101_registers_e::vsys;
+    case 24: return AXP2101_registers_e::chiptemp;
   }
   return AXP2101_registers_e::dcdc1; // we shouldn't get here, just defaulting to the first value
 }
@@ -151,6 +164,12 @@ uint16_t AXP2101_minVoltage(AXP2101_registers_e reg) {
     case AXP2101_registers_e::batpresent:
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
+
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
       break;
   }
   return 0u;
@@ -180,6 +199,12 @@ uint16_t AXP2101_maxVoltage(AXP2101_registers_e reg) {
     case AXP2101_registers_e::batpresent:
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
+
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
       break;
   }
   return 0u;
@@ -254,6 +279,11 @@ void AXP2101_settings::setVoltage(AXP2101_registers_e reg,
     case AXP2101_registers_e::batpresent:
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
       break;
   }
 }
@@ -283,6 +313,11 @@ int AXP2101_settings::getVoltage(AXP2101_registers_e reg,
     case AXP2101_registers_e::batpresent:
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
       return 0;
   }
   return 0xFFFFF == result ? (realValue ? 0 : -1) : result;
@@ -313,6 +348,11 @@ void AXP2101_settings::setState(AXP2101_registers_e reg,
     case AXP2101_registers_e::batpresent:
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
       break;
   }
 }
@@ -340,6 +380,12 @@ AXP_pin_s AXP2101_settings::getState(AXP2101_registers_e reg) {
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
       return AXP_pin_s::Protected;
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
+      break;
   }
   return AXP_pin_s::Default;
 }
@@ -545,6 +591,14 @@ uint8_t AXP2101::voltageToRegister(uint16_t            voltage,
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
       break;
+
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
+      break;
+
   }
   return 0u;
 }
@@ -602,8 +656,69 @@ uint16_t AXP2101::registerToVoltage(uint8_t             data,
     case AXP2101_registers_e::chipid:
     case AXP2101_registers_e::chargedet:
       break;
+
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::battemp:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+    case AXP2101_registers_e::chiptemp:
+      break;
   }
   return 0u;
+}
+
+// Values in mVolt, raw ADC data is expressed in 0.5 mV
+constexpr uint16_t axp2101_TS_LUT[] {
+  3150, // -20
+  2508, // -15
+  2013, // -10
+  1628, // -5
+  1325, // 0
+  1084, // 5
+  889,  // 10
+  732,  // 15
+  604,  // 20
+  500,  // 25
+  416,  // 30
+  348,  // 35
+  292,  // 40
+  246,  // 45
+  209,  // 50
+  177,  // 55
+  152}; // 60
+
+uint16_t AXP2101::TS_tempToRegister(float temp_C)
+{
+  constexpr int NR_LUTS = sizeof(axp2101_TS_LUT) / sizeof(axp2101_TS_LUT[0]);
+  const int index_lo = (temp_C + 20) / 5;
+  const int index_hi = index_lo + 1;
+  if (index_lo < 0) return 0xFFFF;
+  if (index_hi >= NR_LUTS) return 0;
+
+  const int mod5 = (static_cast<int>(temp_C)) % 5;
+  const int offset = ((axp2101_TS_LUT[index_hi] - axp2101_TS_LUT[index_lo]) * mod5) / 5;
+
+  // Need to apply a factor 2, to convert from mV to regvalue.
+  return 2* (axp2101_TS_LUT[index_lo] + offset);
+}
+
+float AXP2101::TS_registerToTemp(uint16_t regValue)
+{
+  regValue /= 2; // Convert from regvalue to mV as used in LUT
+  constexpr int NR_LUTS = sizeof(axp2101_TS_LUT) / sizeof(axp2101_TS_LUT[0]);
+  if (regValue > axp2101_TS_LUT[0]) return -20.0f;
+  for (int index_hi = 1; index_hi < NR_LUTS; ++index_hi) {
+    if (regValue > axp2101_TS_LUT[index_hi]) {
+      const int index_lo = index_hi - 1;
+      const int step_lo = axp2101_TS_LUT[index_lo] - regValue;
+      const int step_hi = regValue - axp2101_TS_LUT[index_hi];
+      float avg = axp2101_TS_LUT[index_hi] * step_hi + axp2101_TS_LUT[index_lo] * step_lo;
+      avg /= (step_hi + step_lo);
+      return avg;
+    }
+  }
+
+  return 60.0f;
 }
 
 /**
@@ -660,6 +775,48 @@ bool AXP2101::getPortState(AXP2101_registers_e reg) {
     result = bitGet(ctrl, mask);
   }
   return result;
+}
+
+bool AXP2101::enableADC(AXP2101_registers_e reg, bool enable)
+{
+  uint8_t ctrl   = 0;
+  uint8_t mask   = 0;
+  getControlRegisterMask(reg, ctrl, mask);
+
+  if (ctrl != AXP2101_ADC_ENABLE_REG) {
+    return false;
+  }
+
+  uint8_t val = readRegister8(AXP2101_ADDR, AXP2101_ADC_ENABLE_REG);
+
+  const bool bit_set = ((val & mask) != 0);
+  if (bit_set != enable) {
+
+    if (enable) {
+      val |= mask;
+    } else {
+      val &= ~mask;
+    }
+    writeRegister8(AXP2101_ADDR, AXP2101_ADC_ENABLE_REG, val);
+  }
+  return true;
+}
+
+uint16_t AXP2101::getADCVoltage(AXP2101_registers_e reg)
+{
+  if (!enableADC(reg, true)) return 0;
+  if (reg == AXP2101_registers_e::vbus && !isVbusIn()) {
+    return 0;
+  }
+  if (reg == AXP2101_registers_e::vbat && !isBatteryDetected()) {
+    return 0;
+  }
+
+  const uint16_t mask = reg == AXP2101_registers_e::vbat ? 0x1F : 0x3F;
+
+  const uint16_t hi = readRegister8(AXP2101_ADDR, static_cast<uint8_t>(reg));
+  const uint16_t lo = readRegister8(AXP2101_ADDR, static_cast<uint8_t>(reg) + 1);
+  return ((hi & mask) << 8) | lo;
 }
 
 /**
@@ -779,6 +936,15 @@ AXP2101_chargingState_e AXP2101::getChargingState() {
 
 bool AXP2101::isBatteryDetected() {
   return (readRegister8(_addr, AXP2101_COM_STAT0_REG) >> 3) & 0x01;
+}
+
+bool AXP2101::isVbusGood() {
+  return bitGet(AXP2101_COM_STAT0_REG, (1 << 5));
+}
+
+
+bool AXP2101::isVbusIn() {
+  return !bitGet(AXP2101_COM_STAT1_REG, (1 << 3)) && isVbusGood();
 }
 
 AXP2101_chargingDetail_e AXP2101::getChargingDetail() {
@@ -911,6 +1077,28 @@ void AXP2101::getControlRegisterMask(AXP2101_registers_e reg,
     case AXP2101_registers_e::chargedet:
       ctrl = AXP2101_COM_STAT1_REG;
       mask = 0b00000111;
+      break;
+
+
+    case AXP2101_registers_e::vbat:
+      ctrl = AXP2101_ADC_ENABLE_REG;
+      mask = AXP2101_VBAT_CTRL_MASK;
+      break;
+    case AXP2101_registers_e::battemp:
+      ctrl = AXP2101_ADC_ENABLE_REG;
+      mask = AXP2101_BATTEMP_CTRL_MASK;
+      break;
+    case AXP2101_registers_e::vbus:
+      ctrl = AXP2101_ADC_ENABLE_REG;
+      mask = AXP2101_VBUS_CTRL_MASK;
+      break;
+    case AXP2101_registers_e::vsys:
+      ctrl = AXP2101_ADC_ENABLE_REG;
+      mask = AXP2101_VSYS_CTRL_MASK;
+      break;
+    case AXP2101_registers_e::chiptemp:
+      ctrl = AXP2101_ADC_ENABLE_REG;
+      mask = AXP2101_TDIE_CTRL_MASK;
       break;
   }
 }

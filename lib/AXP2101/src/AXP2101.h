@@ -43,6 +43,35 @@
 #define AXP2101_DLDO2_VOLTAGE_REG       (0x9A)
 #define AXP2101_CPUSLDO_VOLTAGE_REG     (0x98)
 
+// Measure V battery
+#define AXP2101_VBAT_H_ADC_REG          (0x34)
+#define AXP2101_VBAT_L_ADC_REG          (0x35)
+
+// Measure (optional) temperature sensor
+#define AXP2101_TS_H_ADC_REG            (0x36)
+#define AXP2101_TS_L_ADC_REG            (0x37)
+
+// Measure Vbus
+#define AXP2101_VBUS_H_ADC_REG          (0x38)
+#define AXP2101_VBUS_L_ADC_REG          (0x39)
+
+// Measure Vsys
+#define AXP2101_VSYS_H_ADC_REG          (0x3A)
+#define AXP2101_VSYS_L_ADC_REG          (0x3B)
+
+// Measure chip die temperature
+#define AXP2101_TDIE_H_ADC_REG          (0x3C)
+#define AXP2101_TDIE_L_ADC_REG          (0x3D)
+
+
+#define AXP2101_VBAT_CTRL_MASK          (1 << 0)
+#define AXP2101_BATTEMP_CTRL_MASK       (1 << 1)
+#define AXP2101_VBUS_CTRL_MASK          (1 << 2)
+#define AXP2101_VSYS_CTRL_MASK          (1 << 3)
+#define AXP2101_TDIE_CTRL_MASK          (1 << 4)
+// What to do with bit 5: "general purpose ADC channel enable"?
+
+
 #define AXP2101_COM_STAT0_REG           (0x00)
 #define AXP2101_COM_STAT1_REG           (0x01)
 #define AXP2101_CHIP_ID_REG             (0x03)
@@ -132,6 +161,13 @@ enum class AXP2101_registers_e : uint8_t {
   dldo2   = AXP2101_DLDO2_VOLTAGE_REG,
   cpuldos = AXP2101_CPUSLDO_VOLTAGE_REG,
 
+  // ADC inputs
+  vbat     = AXP2101_VBAT_H_ADC_REG,
+  battemp  = AXP2101_TS_H_ADC_REG,
+  vbus     = AXP2101_VBUS_H_ADC_REG,
+  vsys     = AXP2101_VSYS_H_ADC_REG,
+  chiptemp = AXP2101_TDIE_H_ADC_REG,
+
   // Above are settable pinstates/voltages of the AXP2101
   // Below are non-voltage and read-only values of the AXP2101, also update AXP2101_register_count when adding values
   chargeled  = AXP2101_CHGLED_REG,
@@ -142,7 +178,7 @@ enum class AXP2101_registers_e : uint8_t {
   chargedet  = AXP2101_CHARGE_DET_REG,
 };
 constexpr int AXP2101_settings_count = 14; // Changeable settings
-constexpr int AXP2101_register_count = 20; // All registers
+constexpr int AXP2101_register_count = 25; // All registers
 
 enum class AXP_pin_s : uint8_t {
   Off       = 0x00,                        // Max. 3 bits can be stored in settings!
@@ -336,6 +372,11 @@ public:
                                              AXP2101_registers_e reg);
   uint16_t                 registerToVoltage(uint8_t             data,
                                              AXP2101_registers_e reg);
+
+  // Convertion between NTC temperature sensor raw value and temperature
+  uint16_t                 TS_tempToRegister(float temp_C);
+  float                    TS_registerToTemp(uint16_t regValue);
+
   uint8_t                  get_dcdc_status(void);
   bool                     setPortVoltage(uint16_t            voltage,
                                           AXP2101_registers_e reg);
@@ -344,11 +385,16 @@ public:
                                         AXP2101_registers_e reg);
   bool                     getPortState(AXP2101_registers_e reg);
 
+  bool                     enableADC(AXP2101_registers_e reg, bool enable);
+  uint16_t                 getADCVoltage(AXP2101_registers_e reg);
+
   bool                     setChargeLed(AXP2101_chargeled_d led);
   AXP2101_chargeled_d      getChargeLed();
   uint8_t                  getBatCharge();
   AXP2101_chargingState_e  getChargingState();
   bool                     isBatteryDetected();
+  bool                     isVbusGood();
+  bool                     isVbusIn();
   AXP2101_chargingDetail_e getChargingDetail();
   uint8_t                  getChipIDRaw();
   AXP2101_chipid_e         getChipID();

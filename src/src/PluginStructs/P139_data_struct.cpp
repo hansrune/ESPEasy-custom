@@ -124,25 +124,35 @@ bool P139_data_struct::plugin_read(struct EventStruct *event) {
 // **************************************************************************/
 float P139_data_struct::read_value(AXP2101_registers_e value) {
   if (isInitialized()) {
-    if (AXP2101_registers_e::chargeled == value) {
+    switch (value)
+    {
+    case AXP2101_registers_e::chargeled:
       return static_cast<float>(axp2101->getChargeLed());
-    } else
-    if (AXP2101_registers_e::batcharge == value) {
+    case AXP2101_registers_e::batcharge:
       return static_cast<float>(axp2101->getBatCharge());
-    } else
-    if (AXP2101_registers_e::charging == value) {
+    case AXP2101_registers_e::charging:
       return static_cast<float>(axp2101->getChargingState());
-    } else
-    if (AXP2101_registers_e::batpresent == value) {
+    case AXP2101_registers_e::batpresent:
       return static_cast<float>(axp2101->isBatteryDetected());
-    } else
-    if (AXP2101_registers_e::chipid == value) {
+    case AXP2101_registers_e::chipid:
       return static_cast<float>(axp2101->getChipIDRaw());
-    } else
-    if (AXP2101_registers_e::chargedet == value) {
+    case AXP2101_registers_e::chargedet:
       return static_cast<float>(axp2101->getChargingDetail());
+
+    case AXP2101_registers_e::vbat:
+    case AXP2101_registers_e::vbus:
+    case AXP2101_registers_e::vsys:
+      return static_cast<float>(axp2101->getADCVoltage(value));
+
+    case AXP2101_registers_e::battemp:
+      return axp2101->TS_registerToTemp(axp2101->getADCVoltage(value));
+
+    case AXP2101_registers_e::chiptemp:
+      return (22.0f + (7274 - axp2101->getADCVoltage(value)) / 20.0f);
+
+    default:
+      return static_cast<float>(axp2101->getPortVoltage(value));
     }
-    return static_cast<float>(axp2101->getPortVoltage(value));
   }
   return 0.0f;
 }
@@ -397,27 +407,12 @@ bool P139_data_struct::plugin_get_config_value(struct EventStruct *event,
     const AXP2101_registers_e reg = AXP2101_intToRegister(r);
 
     if (equals(command, toString(reg, false))) { // Voltage (mV) / numeric state
-      if (r >= AXP2101_settings_count) {
-        if (AXP2101_registers_e::chargeled == reg) {
-          string = static_cast<uint8_t>(axp2101->getChargeLed());
-        } else
-        if (AXP2101_registers_e::batcharge == reg) {
-          string = axp2101->getBatCharge();
-        } else
-        if (AXP2101_registers_e::charging == reg) {
-          string = static_cast<int8_t>(axp2101->getChargingState());
-        } else
-        if (AXP2101_registers_e::batpresent == reg) {
-          string = axp2101->isBatteryDetected();
-        } else
-        if (AXP2101_registers_e::chipid == reg) {
-          string = axp2101->getChipIDRaw();
-        } else
-        if (AXP2101_registers_e::chargedet == reg) {
-          string = static_cast<int8_t>(axp2101->getChargingDetail());
-        }
+      if (reg == AXP2101_registers_e::battemp ||
+          reg == AXP2101_registers_e::chiptemp) 
+      {
+        string = floatToString(read_value(reg), 2);
       } else {
-        string = axp2101->getPortVoltage(reg);
+        string = read_value(reg);
       }
       success = true;
     } else

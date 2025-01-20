@@ -113,10 +113,14 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
         if (i < P139_NR_OUTPUT_VALUES) {
           const uint8_t choice = PCONFIG(P139_CONFIG_BASE + i);
           ExtraTaskSettings.setTaskDeviceValueName(i, toString(static_cast<AXP2101_registers_e>(choice), false));
+          if (choice != (static_cast<uint8_t>(AXP2101_registers_e::battemp)) &&
+              choice != (static_cast<uint8_t>(AXP2101_registers_e::chiptemp))) {
+            ExtraTaskSettings.TaskDeviceValueDecimals[i] = 0;            
+          }
         } else {
           ExtraTaskSettings.clearTaskDeviceValueName(i);
+          ExtraTaskSettings.TaskDeviceValueDecimals[i] = 0;
         }
-        ExtraTaskSettings.TaskDeviceValueDecimals[i] = 0; // No values have decimals
       }
       break;
     }
