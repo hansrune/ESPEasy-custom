@@ -398,6 +398,77 @@ AXP2101_chargeled_d AXP2101_settings::getChargeLed() {
   return static_cast<AXP2101_chargeled_d>(pinStates.chargeled);
 }
 
+bool AXP2101_settings::getTS_disabled() {
+  return pinStates.dis_TS_pin;
+}
+
+void AXP2101_settings::setTS_disabled(bool val) {
+  pinStates.dis_TS_pin = val;
+}
+
+
+uint16_t AXP2101_settings::getPreChargeCurrentLimit() const {
+  return chargeStates.pre_chg_cur * 25;
+}
+
+void AXP2101_settings::setPreChargeCurrentLimit(uint16_t current_mA) {
+  if (current_mA > 200) {
+    current_mA = 200;
+  }
+  chargeStates.pre_chg_cur = current_mA / 25;
+}
+
+uint16_t AXP2101_settings::getConstChargeCurrentLimit() const {
+  if (chargeStates.const_cur_lim <= 8) {
+    return chargeStates.const_cur_lim * 25;
+  }
+  return (chargeStates.const_cur_lim - 8) * 100 + 200;
+}
+
+void AXP2101_settings::setConstChargeCurrentLimit(uint16_t current_mA) {
+  if (current_mA > 1000) {
+    current_mA = 1000;
+  }
+  if (current_mA <= 200) {
+    chargeStates.const_cur_lim = current_mA / 25;
+  } else {
+    chargeStates.const_cur_lim = ((current_mA - 200) / 100) + 8;
+  }
+}
+
+uint16_t AXP2101_settings::getTerminationChargeCurrentLimit() const {
+  return chargeStates.term_cur_lim * 25;
+}
+
+void AXP2101_settings::setTerminationChargeCurrentLimit(uint16_t current_mA) {
+  if (current_mA > 200) {
+    current_mA = 200;
+  }
+  chargeStates.term_cur_lim = current_mA / 25;
+}
+
+
+AXP2101_CV_charger_voltage_e AXP2101_settings::getCV_chargeVoltage() const {
+  return static_cast<AXP2101_CV_charger_voltage_e>(chargeStates.chg_volt_lim);
+}
+
+void AXP2101_settings::setCV_chargeVoltage(AXP2101_CV_charger_voltage_e voltage_mV) {
+  chargeStates.chg_volt_lim = static_cast<uint8_t>(voltage_mV);
+  if (chargeStates.chg_volt_lim > static_cast<uint8_t>(AXP2101_CV_charger_voltage_e::limit_4_40V)) {
+    // Set to a default safe limit
+    chargeStates.chg_volt_lim = static_cast<uint8_t>(AXP2101_CV_charger_voltage_e::limit_4_20V);
+  }
+}
+
+AXP2101_Linear_Charger_Vsys_dpm_e AXP2101_settings::getCV_chargerVoltage() const {
+  return static_cast<AXP2101_Linear_Charger_Vsys_dpm_e>(chargeStates.min_sys_voltage);
+}
+
+void AXP2101_settings::setCV_chargerVoltage(AXP2101_Linear_Charger_Vsys_dpm_e voltage) {
+  chargeStates.min_sys_voltage = static_cast<uint8_t>(voltage);
+}
+
+
 /**
  * AXP2101 device class
  */
@@ -924,6 +995,15 @@ AXP2101_chargeled_d AXP2101::getChargeLed() {
   return static_cast<AXP2101_chargeled_d>((readRegister8(_addr, AXP2101_CHGLED_REG) >> 4) & 0x07);
 }
 
+bool AXP2101::getTS_disabled() {
+  return bitGet(AXP2101_TS_PIN_CTRL, 0b00010000);  
+}
+
+void AXP2101::setTS_disabled(bool val) {
+  bitOnOff(val, AXP2101_TS_PIN_CTRL, 0b00010000);
+}
+
+
 uint8_t AXP2101::getBatCharge() {
   return readRegister8(_addr, AXP2101_BAT_CHARGE_REG);
 }
@@ -967,6 +1047,26 @@ bool AXP2101::set_charger_constant_current_to_50mA(void) {
   return writeRegister8(AXP2101_ADDR, AXP2101_ICC_CHARGER_SETTING_REG, 2);
 }
 
+bool AXP2101::set_charger_constant_current(uint16_t current_mA)
+{
+  if (current_mA > 1000) {
+    current_mA = 1000;
+  }
+  const uint8_t regValue = (current_mA <= 200) 
+    ? current_mA / 25
+    : ((current_mA - 200) / 100) + 8;
+  return writeRegister8(AXP2101_ADDR, AXP2101_ICC_CHARGER_SETTING_REG, regValue);  
+}
+
+uint16_t AXP2101::get_charger_constant_current()
+{
+  const uint8_t regValue = readRegister8(AXP2101_ADDR, AXP2101_ICC_CHARGER_SETTING_REG);
+  if (regValue <= 8) {
+    return regValue * 25;
+  }
+  return 200 * (100 * (regValue - 8));
+}
+
 void AXP2101::set_bat_charge(bool enable) {
   uint8_t val = 0;
 
@@ -979,6 +1079,14 @@ bool AXP2101::enable_pwrok_resets(void) {
   return bitOn(AXP2101_ADDR,
                AXP2101_PMU_CONFIG_REG,
                1 << 3);
+}
+
+void AXP2101::set_IRQ_enable_0(uint8_t val) {
+  // Clear any IRQ flags
+  writeRegister8(AXP2101_ADDR, AXP2101_IRQ_STATUS_0_REG, 0);
+  writeRegister8(AXP2101_ADDR, AXP2101_IRQ_STATUS_1_REG, 0);
+  writeRegister8(AXP2101_ADDR, AXP2101_IRQ_STATUS_2_REG, 0);
+  writeRegister8(AXP2101_ADDR, AXP2101_IRQ_EN_0_REG, val);
 }
 
 void AXP2101::power_off(void) {

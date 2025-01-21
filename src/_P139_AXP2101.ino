@@ -214,6 +214,13 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
                         static_cast<int>(P139_data->_settings.getChargeLed()));
       }
 
+      {
+        addFormCheckBox(F("Disable TS pin"), F("dis_TS"), P139_data->_settings.getTS_disabled());
+
+      //addFormNumericBox(F("Charge Current"))
+
+      }
+
       addFormCheckBox(F("Generate events"), F("events"), P139_GET_GENERATE_EVENTS);
 
       addFormSubHeader(F("Hardware outputs AXP2101"));
@@ -383,6 +390,7 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
       }
 
       P139_data->_settings.setChargeLed(static_cast<AXP2101_chargeled_d>(getFormItemInt(F("led"))));
+      P139_data->_settings.setTS_disabled(isFormItemChecked(F("dis_TS")));
 
       P139_data->saveSettings(event);
 

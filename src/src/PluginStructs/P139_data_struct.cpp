@@ -74,6 +74,9 @@ void P139_data_struct::outputSettings(struct EventStruct *event) {
   if (loglevelActiveFor(LOG_LEVEL_INFO)) {
     addLog(LOG_LEVEL_INFO, strformat(F("AXP2101: Set %d values to port(s)"), count));
   }
+  axp2101->setTS_disabled(_settings.getTS_disabled());
+//  axp2101->set_IRQ_enable_0(0b11110000); // Disable temperature checks
+  axp2101->set_charger_constant_current(800);
 }
 
 // **************************************************************************/
