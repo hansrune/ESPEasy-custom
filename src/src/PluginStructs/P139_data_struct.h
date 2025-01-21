@@ -56,6 +56,9 @@ public:
   void   outputSettings(struct EventStruct *event);
   bool   applySettings(AXP2101_device_model_e device);
 
+  void   webform_load(struct EventStruct *event);
+  void   webform_save(struct EventStruct *event);
+
   AXP2101_settings _settings;
 
 private:

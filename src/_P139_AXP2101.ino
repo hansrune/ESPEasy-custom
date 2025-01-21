@@ -180,7 +180,6 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
 
     case PLUGIN_WEBFORM_LOAD:
     {
-      const bool isPowerManagerTask = Settings.isPowerManagerTask(event->TaskIndex);
       bool created_new              = false;
       P139_data_struct *P139_data   = static_cast<P139_data_struct *>(getPluginTaskData(event->TaskIndex));
 
@@ -190,258 +189,16 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
         created_new = true;
       }
 
-      if (nullptr == P139_data) {
-        break;
-      }
+      if (nullptr != P139_data) {
+        P139_data->webform_load(event);
 
-      {
-        const __FlashStringHelper *chargeledNames[] = {
-          toString(AXP2101_chargeled_d::Off),
-          toString(AXP2101_chargeled_d::Flash_1Hz),
-          toString(AXP2101_chargeled_d::Flash_4Hz),
-          toString(AXP2101_chargeled_d::Steady_On),
-        };
-        const int chargeledValues[] = {
-          static_cast<int>(AXP2101_chargeled_d::Off),
-          static_cast<int>(AXP2101_chargeled_d::Flash_1Hz),
-          static_cast<int>(AXP2101_chargeled_d::Flash_4Hz),
-          static_cast<int>(AXP2101_chargeled_d::Steady_On),
-        };
-        constexpr uint8_t valueCount = NR_ELEMENTS(chargeledValues);
-        addFormSelector(F("Charge LED"), F("led"),
-                        valueCount,
-                        chargeledNames, chargeledValues,
-                        static_cast<int>(P139_data->_settings.getChargeLed()));
-      }
-
-      {
-        const __FlashStringHelper *names[] = {
-          toString(AXP2101_CV_charger_voltage_e::limit_4_00V),
-          toString(AXP2101_CV_charger_voltage_e::limit_4_10V),
-          toString(AXP2101_CV_charger_voltage_e::limit_4_20V),
-          toString(AXP2101_CV_charger_voltage_e::limit_4_35V),
-          toString(AXP2101_CV_charger_voltage_e::limit_4_40V),
-        };
-        const int values[] = {
-          static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_00V),
-          static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_10V),
-          static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_20V),
-          static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_35V),
-          static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_40V),
-        };
-        constexpr uint8_t valueCount = NR_ELEMENTS(values);
-        addFormSelector(F("CV Charger Voltage"), F("cv_volt"),
-                        valueCount,
-                        names, values,
-                        static_cast<int>(P139_data->_settings.getCV_chargeVoltage()));
-        addUnit(F("V"));
-      }
-      {
-        const __FlashStringHelper *names[] = {
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_1V),
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_2V),
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_3V),
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_4V),
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_5V),
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_6V),
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_7V),
-          toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_8V),
-        };
-        const int values[] = {
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_1V),
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_2V),
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_3V),
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_4V),
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_5V),
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_6V),
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_7V),
-          static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_8V),
-        };
-        constexpr uint8_t valueCount = NR_ELEMENTS(values);
-        addFormSelector(F("Minimum System Voltage"), F("min_vsys"),
-                        valueCount,
-                        names, values,
-                        static_cast<int>(P139_data->_settings.getLinear_Charger_Vsys_dpm()));
-        addUnit(F("V"));
-      }
-
-      {
-        const __FlashStringHelper *names[] = {
-          toString(AXP2101_VINDPM_e::Vin_3_88V),
-          toString(AXP2101_VINDPM_e::Vin_3_96V),
-          toString(AXP2101_VINDPM_e::Vin_4_04V),
-          toString(AXP2101_VINDPM_e::Vin_4_12V),
-          toString(AXP2101_VINDPM_e::Vin_4_20V),
-          toString(AXP2101_VINDPM_e::Vin_4_28V),
-          toString(AXP2101_VINDPM_e::Vin_4_36V),
-          toString(AXP2101_VINDPM_e::Vin_4_44V),
-          toString(AXP2101_VINDPM_e::Vin_4_52V),
-          toString(AXP2101_VINDPM_e::Vin_4_60V),
-          toString(AXP2101_VINDPM_e::Vin_4_68V),
-          toString(AXP2101_VINDPM_e::Vin_4_76V),
-          toString(AXP2101_VINDPM_e::Vin_4_84V),
-          toString(AXP2101_VINDPM_e::Vin_4_92V),
-          toString(AXP2101_VINDPM_e::Vin_5_00V),
-          toString(AXP2101_VINDPM_e::Vin_5_08V),
-        };
-        const int values[] = {
-          static_cast<int>(AXP2101_VINDPM_e::Vin_3_88V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_3_96V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_04V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_12V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_20V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_28V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_36V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_44V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_52V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_60V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_68V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_76V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_84V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_4_92V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_5_00V),
-          static_cast<int>(AXP2101_VINDPM_e::Vin_5_08V),
-        };
-        constexpr uint8_t valueCount = NR_ELEMENTS(values);
-        addFormSelector(F("Min Vin DPM Voltage"), F("vin_dpm"),
-                        valueCount,
-                        names, values,
-                        static_cast<int>(P139_data->_settings.getVin_DPM()));
-        addUnit(F("V"));
-      }
-
-      {
-        const __FlashStringHelper *names[] = {
-          toString(AXP2101_InputCurrentLimit_e::limit_100mA),
-          toString(AXP2101_InputCurrentLimit_e::limit_500mA),
-          toString(AXP2101_InputCurrentLimit_e::limit_900mA),
-          toString(AXP2101_InputCurrentLimit_e::limit_1000mA),
-          toString(AXP2101_InputCurrentLimit_e::limit_1500mA),
-          toString(AXP2101_InputCurrentLimit_e::limit_2000mA),
-        };
-        const int values[] = {
-          static_cast<int>(AXP2101_InputCurrentLimit_e::limit_100mA),
-          static_cast<int>(AXP2101_InputCurrentLimit_e::limit_500mA),
-          static_cast<int>(AXP2101_InputCurrentLimit_e::limit_900mA),
-          static_cast<int>(AXP2101_InputCurrentLimit_e::limit_1000mA),
-          static_cast<int>(AXP2101_InputCurrentLimit_e::limit_1500mA),
-          static_cast<int>(AXP2101_InputCurrentLimit_e::limit_2000mA),
-        };
-        constexpr uint8_t valueCount = NR_ELEMENTS(values);
-        addFormSelector(F("Input Current Limit"), F("cur_lim_in"),
-                        valueCount,
-                        names, values,
-                        static_cast<int>(P139_data->_settings.getInputCurrentLimit()));
-        addUnit(F("mA"));
-      }
-
-      addFormCheckBox(F("Disable TS pin"), F("dis_TS"), P139_data->_settings.getTS_disabled());
-
-      addFormCheckBox(F("Generate events"), F("events"), P139_GET_GENERATE_EVENTS);
-
-      addFormSubHeader(F("Hardware outputs AXP2101"));
-
-      {
-        if (P139_CONFIG_PREDEFINED > 0) {
-          P139_CURRENT_PREDEFINED = P139_CONFIG_PREDEFINED;
-          P139_CONFIG_PREDEFINED  = 0;
-          P139_data->applySettings(static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED));
-        }
-        const __FlashStringHelper *predefinedNames[] = {
-          toString(AXP2101_device_model_e::Unselected),
-          toString(AXP2101_device_model_e::M5Stack_Core2_v1_1),
-          toString(AXP2101_device_model_e::M5Stack_CoreS3),
-          toString(AXP2101_device_model_e::LilyGO_TBeam_v1_2),
-          toString(AXP2101_device_model_e::LilyGO_TBeamS3_v3),
-          toString(AXP2101_device_model_e::LilyGO_TPCie_v1_2),
-          toString(AXP2101_device_model_e::UserDefined) // keep last !!
-        };
-        const int predefinedValues[] = {
-          static_cast<int>(AXP2101_device_model_e::Unselected),
-          static_cast<int>(AXP2101_device_model_e::M5Stack_Core2_v1_1),
-          static_cast<int>(AXP2101_device_model_e::M5Stack_CoreS3),
-          static_cast<int>(AXP2101_device_model_e::LilyGO_TBeam_v1_2),
-          static_cast<int>(AXP2101_device_model_e::LilyGO_TBeamS3_v3),
-          static_cast<int>(AXP2101_device_model_e::LilyGO_TPCie_v1_2),
-          static_cast<int>(AXP2101_device_model_e::UserDefined) }; // keep last !!
-        constexpr uint8_t valueCount = NR_ELEMENTS(predefinedValues);
-        addFormSelector(F("Predefined device configuration"), F("predef"),
-                        valueCount,
-                        predefinedNames, predefinedValues, 0, !isPowerManagerTask);
-
-        if (!isPowerManagerTask) {
-          addFormNote(F("Page will reload when selection is changed."));
+        if (created_new) {
+          delete P139_data;
         }
 
-        const AXP2101_device_model_e device = static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED);
-
-        if (AXP2101_device_model_e::Unselected != device) {
-          addFormNote(concat(F("Last selected: "), toString(device)));
-
-          if (AXP2101_device_model_e::UserDefined == device) {
-            addHtml(F("<div class='note'><span style=\"color:red\">Warning: "
-                      "Configuring invalid values can damage your device or render it useless!</span></div>"));
-          }
-        }
+        success = true;
       }
 
-      {
-        const __FlashStringHelper *bootStates[] = {
-          toString(AXP_pin_s::Off),
-          toString(AXP_pin_s::On),
-          toString(AXP_pin_s::Default),
-        };
-        const int bootStateValues[] = {
-          static_cast<int>(AXP_pin_s::Off),
-          static_cast<int>(AXP_pin_s::On),
-          static_cast<int>(AXP_pin_s::Default),
-        };
-
-        // Don't include Disabled or Protected here, not user-selectable
-        constexpr int bootStatesCount = NR_ELEMENTS(bootStateValues);
-
-        addRowLabel(F("Output ports"));
-
-        html_table(EMPTY_STRING);
-        html_table_header(F("Name"),         100);
-        html_table_header(F("Voltage (mV)"), 270);
-        html_table_header(F("Pin state"),    150);
-
-        for (int s = 0; s < AXP2101_settings_count; ++s) {
-          const AXP2101_registers_e reg = AXP2101_intToRegister(s);
-          const AXP_pin_s pin           = P139_data->_settings.getState(reg);
-          html_TR_TD();
-          addHtml(toString(reg));
-          html_TD();
-          addNumericBox(toString(reg, false),
-                        P139_data->_settings.getVoltage(reg, false),
-                        -1,
-                        AXP2101_maxVoltage(reg),
-                        AXP2101_isPinDefault(pin));
-          addUnit(strformat(F("range %d - %d"), AXP2101_minVoltage(reg), AXP2101_maxVoltage(reg)));
-          html_TD();
-
-          if (AXP2101_isPinProtected(pin)) {
-            addUnit(toString(pin));
-          } else {
-            addSelector(concat(F("ps"), toString(reg, false)),
-                        bootStatesCount,
-                        bootStates,
-                        bootStateValues,
-                        nullptr,
-                        static_cast<int>(pin));
-          }
-        }
-        html_end_table();
-
-        addFormNote(F("Check your device documentation for what is connected to each output."));
-      }
-
-      if (created_new) {
-        delete P139_data;
-      }
-
-      success = true;
       break;
     }
 
@@ -475,14 +232,6 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
 
     case PLUGIN_WEBFORM_SAVE:
     {
-      for (uint8_t i = 0; i < P139_NR_OUTPUT_VALUES; ++i) {
-        sensorTypeHelper_saveOutputSelector(event, P139_CONFIG_BASE + i, i,
-                                            toString(static_cast<AXP2101_registers_e>(PCONFIG(P139_CONFIG_BASE + i)), false));
-      }
-
-      P139_CONFIG_PREDEFINED = getFormItemInt(F("predef"));
-      P139_SET_GENERATE_EVENTS(isFormItemChecked(F("events")));
-
       bool created_new            = false;
       P139_data_struct *P139_data = static_cast<P139_data_struct *>(getPluginTaskData(event->TaskIndex));
 
@@ -492,35 +241,16 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
         created_new = true;
       }
 
-      if (nullptr == P139_data) {
-        break;
-      }
+      if (nullptr != P139_data) {
+        P139_data->webform_save(event);
 
-      for (int s = 0; s < AXP2101_settings_count; ++s) {
-        const AXP2101_registers_e reg = AXP2101_intToRegister(s);
-
-        if (!AXP2101_isPinProtected(P139_data->_settings.getState(reg))) {
-          P139_data->_settings.setVoltage(reg, getFormItemInt(toString(reg, false)));
-          P139_data->_settings.setState(reg, static_cast<AXP_pin_s>(getFormItemInt(concat(F("ps"), toString(reg, false)))));
+        if (created_new) {
+          delete P139_data;
         }
+
+        success = true;
       }
 
-      P139_data->_settings.setChargeLed(static_cast<AXP2101_chargeled_d>(getFormItemInt(F("led"))));
-
-      P139_data->_settings.setCV_chargeVoltage(static_cast<AXP2101_CV_charger_voltage_e>(getFormItemInt(F("cv_volt"))));
-      P139_data->_settings.setLinear_Charger_Vsys_dpm(static_cast<AXP2101_Linear_Charger_Vsys_dpm_e>(getFormItemInt(F("min_vsys"))));
-      P139_data->_settings.setVin_DPM(static_cast<AXP2101_VINDPM_e>(getFormItemInt(F("vin_dpm"))));
-      P139_data->_settings.setInputCurrentLimit(static_cast<AXP2101_InputCurrentLimit_e>(getFormItemInt(F("cur_lim_in"))));
-
-      P139_data->_settings.setTS_disabled(isFormItemChecked(F("dis_TS")));
-
-      P139_data->saveSettings(event);
-
-      if (created_new) {
-        delete P139_data;
-      }
-
-      success = true;
       break;
     }
 
