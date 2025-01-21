@@ -284,7 +284,12 @@ const __FlashStringHelper* toString(AXP_pin_s pin);
 const __FlashStringHelper* toString(AXP2101_chargeled_d led);
 const __FlashStringHelper* toString(AXP2101_chargingState_e state);
 const __FlashStringHelper* toString(AXP2101_chipid_e chip);
-const __FlashStringHelper* toString(AXP2101_chargingDetail_e chip);
+const __FlashStringHelper* toString(AXP2101_chargingDetail_e charge);
+const __FlashStringHelper* toString(AXP2101_CV_charger_voltage_e voltage);
+const __FlashStringHelper* toString(AXP2101_Linear_Charger_Vsys_dpm_e vsys);
+const __FlashStringHelper* toString(AXP2101_VINDPM_e voltage);
+const __FlashStringHelper* toString(AXP2101_InputCurrentLimit_e current);
+
 
 class AXP2101_settings { // Voltages in mV, range 0..3700, max. depending on the AXP2101 pin/port used.
 public:
@@ -351,11 +356,16 @@ public:
   void setCV_chargeVoltage(AXP2101_CV_charger_voltage_e voltage_mV);
 
   // Reg 14: Minimum System Voltage Control
-  AXP2101_Linear_Charger_Vsys_dpm_e getCV_chargerVoltage() const;
-  void setCV_chargerVoltage(AXP2101_Linear_Charger_Vsys_dpm_e voltage);
+  AXP2101_Linear_Charger_Vsys_dpm_e getLinear_Charger_Vsys_dpm() const;
+  void setLinear_Charger_Vsys_dpm(AXP2101_Linear_Charger_Vsys_dpm_e voltage);
 
-  
+  // Reg 15: Input Voltage Limit
+  AXP2101_VINDPM_e getVin_DPM() const;
+  void setVin_DPM(AXP2101_VINDPM_e voltage);
 
+  // Reg 16: Input Current Limit
+  AXP2101_InputCurrentLimit_e getInputCurrentLimit() const;
+  void setInputCurrentLimit(AXP2101_InputCurrentLimit_e current);
 
 
 private:
