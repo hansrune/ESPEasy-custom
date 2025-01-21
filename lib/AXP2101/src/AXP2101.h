@@ -97,6 +97,36 @@ public:
   bool                     getTS_disabled();
   void                     setTS_disabled(bool val);
 
+    // Reg 61: Iprechg Charger Settings
+  uint16_t getPreChargeCurrentLimit() ;
+  void setPreChargeCurrentLimit(uint16_t current_mA);
+
+  // Reg 62: ICC Charger Settings
+  uint16_t getChargeCurrentLimit() ;
+  void setChargeCurrentLimit(uint16_t current_mA);
+
+  // Reg 63: Iterm Charger Settings and Control
+  // Enable/Disable via chargeStates.term_cur_lim_en
+  uint16_t getTerminationChargeCurrentLimit() ;
+  void setTerminationChargeCurrentLimit(uint16_t current_mA);
+  void setTerminationChargeCurrentLimit(uint16_t current_mA, bool enable);
+
+  // Reg 64: CV Charger Voltage Settings
+  AXP2101_CV_charger_voltage_e getCV_chargeVoltage() ;
+  void setCV_chargeVoltage(AXP2101_CV_charger_voltage_e voltage_mV);
+
+  // Reg 14: Minimum System Voltage Control
+  AXP2101_Linear_Charger_Vsys_dpm_e getLinear_Charger_Vsys_dpm() ;
+  void setLinear_Charger_Vsys_dpm(AXP2101_Linear_Charger_Vsys_dpm_e voltage);
+
+  // Reg 15: Input Voltage Limit
+  AXP2101_VINDPM_e getVin_DPM() ;
+  void setVin_DPM(AXP2101_VINDPM_e voltage);
+
+  // Reg 16: Input Current Limit
+  AXP2101_InputCurrentLimit_e getInputCurrentLimit() ;
+  void setInputCurrentLimit(AXP2101_InputCurrentLimit_e current);
+
 
   uint8_t                  getBatCharge();
   AXP2101_chargingState_e  getChargingState();

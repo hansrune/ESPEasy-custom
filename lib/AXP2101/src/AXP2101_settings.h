@@ -77,6 +77,9 @@
 #define AXP2101_CHIP_ID_REG             (0x03)
 #define AXP2101_CHARGE_DET_REG          (0x04) // Fake, not a usable register!
 #define AXP2101_PMU_CONFIG_REG          (0x10)
+#define AXP2101_MIN_VSYS_REG            (0x14)
+#define AXP2101_VIN_DPM_REG             (0x15)
+#define AXP2101_IN_CURRENT_LIMIT_REG    (0x16)
 #define AXP2101_CHARG_FGAUG_WDOG_REG    (0x18)
 #define AXP2101_PWROK_PWROFF_REG        (0x25)
 #define AXP2101_ADC_ENABLE_REG          (0x30)
@@ -86,9 +89,11 @@
 #define AXP2101_IRQ_STATUS_0_REG        (0x48)
 #define AXP2101_IRQ_STATUS_1_REG        (0x49)
 #define AXP2101_IRQ_STATUS_2_REG        (0x4A)
-#define AXP2101_TS_PIN_CTRL             (0x50)
+#define AXP2101_TS_PIN_CTRL_REG         (0x50)
+#define AXP2101_IPRECHG_REG             (0x61)
 #define AXP2101_ICC_CHARGER_SETTING_REG (0x62)
 #define AXP2101_CHARGER_SETTING_REG     (0x63)
+#define AXP2101_CV_CHARGER_SETTING_REG  (0x64)
 #define AXP2101_CHGLED_REG              (0x69)
 #define AXP2101_BAT_CHARGE_REG          (0xA4) /* pdf has a duplicate listed for register 0x04, should be 0xA4 */
 
