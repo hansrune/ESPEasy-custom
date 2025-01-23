@@ -513,7 +513,7 @@ void addFormSelector(const __FlashStringHelper * label,
                      int selectedIndex, 
                      bool reloadonchange)
 {
-  String options[optionCount]{};
+  String options[optionCount];
   for (int i = 0; i < optionCount; ++i) {
     options[i] = indices[i];
   }
