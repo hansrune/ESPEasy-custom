@@ -292,7 +292,20 @@ bool AXP2101_isPinProtected(AXP_pin_s pin) {
  */
 
 // constructor
-AXP2101_settings::AXP2101_settings() {}
+AXP2101_settings::AXP2101_settings() {
+  chargeStates.pre_chg_cur        = 0b0101;
+  chargeStates.const_cur_lim      = 0b01001; // 300 mA, however can be set via EFUSE
+  chargeStates.term_cur_lim_en    = 1;
+  chargeStates.term_cur_lim       = 0b0101; // 125 mA
+  chargeStates.chg_volt_lim       = 0b011; // 4.2V
+  chargeStates.thermal_thresh     = 0b10; // 100 deg
+  chargeStates.chg_timeout_ctrl   = 0b11100110;
+  chargeStates.bat_detection      = 1;
+  chargeStates.coincell_term_volt = 0b011;  // 2.9V
+  chargeStates.min_sys_voltage    = 0b110;  // 4.7V
+  chargeStates.inp_volt_limit     = 0b0110; // 4.36V
+  chargeStates.inp_cur_limit      = 0b100;  // 1500 mA
+}
 
 // constructor
 AXP2101_settings::AXP2101_settings(uint16_t _dcdc1, uint16_t _dcdc2, uint16_t _dcdc3, uint16_t _dcdc4, uint16_t _dcdc5,
@@ -315,6 +328,19 @@ AXP2101_settings::AXP2101_settings(uint16_t _dcdc1, uint16_t _dcdc2, uint16_t _d
   pinStates.en_bldo2  = static_cast<uint8_t>(_en_bldo2); pinStates.en_dldo1 = static_cast<uint8_t>(_en_dldo1);
   pinStates.en_dldo2  = static_cast<uint8_t>(_en_dldo2); pinStates.en_cpuldos = static_cast<uint8_t>(_en_cpuldos);
   pinStates.chargeled = static_cast<uint8_t>(_chargeled);
+
+  chargeStates.pre_chg_cur        = 0b0101;
+  chargeStates.const_cur_lim      = 0b01001; // 300 mA, however can be set via EFUSE
+  chargeStates.term_cur_lim_en    = 1;
+  chargeStates.term_cur_lim       = 0b0101; // 125 mA
+  chargeStates.chg_volt_lim       = 0b011; // 4.2V
+  chargeStates.thermal_thresh     = 0b10; // 100 deg
+  chargeStates.chg_timeout_ctrl   = 0b11100110;
+  chargeStates.bat_detection      = 1;
+  chargeStates.coincell_term_volt = 0b011;  // 2.9V
+  chargeStates.min_sys_voltage    = 0b110;  // 4.7V
+  chargeStates.inp_volt_limit     = 0b0110; // 4.36V
+  chargeStates.inp_cur_limit      = 0b100;  // 1500 mA
 }
 
 void AXP2101_settings::setVoltage(AXP2101_registers_e reg,
