@@ -538,7 +538,7 @@ void AXP2101::setPreChargeCurrentLimit(uint16_t current_mA) {
 }
 
 // Reg 62: ICC Charger settings
-uint16_t AXP2101::getChargeCurrentLimit()  {
+uint16_t AXP2101::getConstChargeCurrentLimit()  {
   // AXP2101_ICC_CHARGER_SETTING_REG
   // bit 4:0
   uint8_t reg = readRegister8(_addr, AXP2101_ICC_CHARGER_SETTING_REG);
@@ -548,7 +548,7 @@ uint16_t AXP2101::getChargeCurrentLimit()  {
   }
   return (reg - 8) * 100 + 200;
 }
-void AXP2101::setChargeCurrentLimit(uint16_t current_mA) {
+void AXP2101::setConstChargeCurrentLimit(uint16_t current_mA) {
   if (current_mA > 1000) {
     current_mA = 1000;
   }
@@ -568,28 +568,20 @@ uint16_t AXP2101::getTerminationChargeCurrentLimit()  {
   uint8_t reg = readRegister8(_addr,AXP2101_CHARGER_SETTING_REG);
   return (reg & 0b1111) * 25;
 }
+
 void AXP2101::setTerminationChargeCurrentLimit(uint16_t current_mA) {
-  setTerminationChargeCurrentLimit
-  setTerminationChargeCurrentLimit(current_mA)
-  if (current_mA > 200) {
-    current_mA = 200;
-  }
   constexpr uint8_t enable_mask = 0b00010000;
   const bool enabled = bitGet(AXP2101_CHARGER_SETTING_REG, enable_mask);
-  uint8_t reg = current_mA / 25;
-  if (enabled) {
-    reg &= enable_mask;
-  }
-  writeRegister8(_addr, AXP2101_CHARGER_SETTING_REG, reg);
+  setTerminationChargeCurrentLimit(current_mA, enabled);
 }
 
 void AXP2101::setTerminationChargeCurrentLimit(uint16_t current_mA, bool enable) {
   if (current_mA > 200) {
     current_mA = 200;
   }
-  constexpr uint8_t enable_mask = 0b00010000;
   uint8_t reg = current_mA / 25;
   if (enable) {
+    constexpr uint8_t enable_mask = 0b00010000;
     reg &= enable_mask;
   }
   writeRegister8(_addr, AXP2101_CHARGER_SETTING_REG, reg);
@@ -600,9 +592,9 @@ void AXP2101::setTerminationChargeCurrentLimit(uint16_t current_mA, bool enable)
 AXP2101_CV_charger_voltage_e AXP2101::getCV_chargeVoltage()  {
   // AXP2101_CV_CHARGER_SETTING_REG
   // bit 2:0
-    uint8_t reg = readRegister8(_addr,AXP2101_CV_CHARGER_SETTING_REG);
-    reg &= 0b111;
-    return static_cast<AXP2101_CV_charger_voltage_e>(reg);
+  uint8_t reg = readRegister8(_addr,AXP2101_CV_CHARGER_SETTING_REG);
+  reg &= 0b111;
+  return static_cast<AXP2101_CV_charger_voltage_e>(reg);
 }
 void AXP2101::setCV_chargeVoltage(AXP2101_CV_charger_voltage_e voltage_mV) {
   uint8_t reg = static_cast<uint8_t>(voltage_mV);
@@ -630,20 +622,31 @@ void AXP2101::setLinear_Charger_Vsys_dpm(AXP2101_Linear_Charger_Vsys_dpm_e volta
 
 // Reg 15: Input Voltage Limit
 AXP2101_VINDPM_e AXP2101::getVin_DPM()  {
-// AXP2101_VIN_DPM_REG
-// bit 3:0
+  // AXP2101_VIN_DPM_REG
+  // bit 3:0
+  uint8_t reg = readRegister8(_addr, AXP2101_VIN_DPM_REG);
+  reg &= 0b00001111;
+  return static_cast<AXP2101_VINDPM_e>(reg);
 }
 void AXP2101::setVin_DPM(AXP2101_VINDPM_e voltage) {
-
+  uint8_t reg = static_cast<uint8_t>(voltage);
+  reg &= 0b00001111;
+  writeRegister8(_addr, AXP2101_VIN_DPM_REG, reg);
 }
 
 // Reg 16: Input Current Limit
 AXP2101_InputCurrentLimit_e AXP2101::getInputCurrentLimit()  {
-// AXP2101_IN_CURRENT_LIMIT_REG
-// bit 2:0
+  // AXP2101_IN_CURRENT_LIMIT_REG
+  // bit 2:0
+  uint8_t reg = readRegister8(_addr, AXP2101_IN_CURRENT_LIMIT_REG);
+  reg &= 0b00000111;
+  return static_cast<AXP2101_InputCurrentLimit_e>(reg);
 }
-void AXP2101::setInputCurrentLimit(AXP2101_InputCurrentLimit_e current) {
 
+void AXP2101::setInputCurrentLimit(AXP2101_InputCurrentLimit_e current) {
+  uint8_t reg = static_cast<uint8_t>(current);
+  reg &= 0b00000111;
+  writeRegister8(_addr, AXP2101_IN_CURRENT_LIMIT_REG, reg);
 }
 
 uint8_t AXP2101::getBatCharge() {
@@ -685,28 +688,8 @@ bool AXP2101::set_charger_term_current_to_zero(void) {
   return bitOff(AXP2101_ADDR, AXP2101_CHARGER_SETTING_REG, 0b00001111);
 }
 
-bool AXP2101::set_charger_constant_current_to_50mA(void) {
+bool AXP2101::setConstChargeCurrentLimit_to_50mA(void) {
   return writeRegister8(AXP2101_ADDR, AXP2101_ICC_CHARGER_SETTING_REG, 2);
-}
-
-bool AXP2101::set_charger_constant_current(uint16_t current_mA)
-{
-  if (current_mA > 1000) {
-    current_mA = 1000;
-  }
-  const uint8_t regValue = (current_mA <= 200) 
-    ? current_mA / 25
-    : ((current_mA - 200) / 100) + 8;
-  return writeRegister8(AXP2101_ADDR, AXP2101_ICC_CHARGER_SETTING_REG, regValue);  
-}
-
-uint16_t AXP2101::get_charger_constant_current()
-{
-  const uint8_t regValue = readRegister8(AXP2101_ADDR, AXP2101_ICC_CHARGER_SETTING_REG);
-  if (regValue <= 8) {
-    return regValue * 25;
-  }
-  return 200 * (100 * (regValue - 8));
 }
 
 void AXP2101::set_bat_charge(bool enable) {

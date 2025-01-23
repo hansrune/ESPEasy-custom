@@ -354,7 +354,8 @@ public:
   // Reg 63: Iterm Charger Settings and Control
   // Enable/Disable via chargeStates.term_cur_lim_en
   uint16_t getTerminationChargeCurrentLimit() const;
-  void setTerminationChargeCurrentLimit(uint16_t current_mA);
+  bool getTerminationChargeCurrentLimitEnable() const;
+  void setTerminationChargeCurrentLimit(uint16_t current_mA, bool enable);
 
   // Reg 64: CV Charger Voltage Settings
   AXP2101_CV_charger_voltage_e getCV_chargeVoltage() const;

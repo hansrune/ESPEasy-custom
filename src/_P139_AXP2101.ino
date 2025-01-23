@@ -170,7 +170,7 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
       P139_data_struct *P139_data = new (std::nothrow) P139_data_struct();
 
       if (nullptr != P139_data) {
-        P139_data->applySettings(device);
+        P139_data->applyDeviceModelTemplate(device);
         P139_data->saveSettings(event);
         delete P139_data;
       }

@@ -102,8 +102,8 @@ public:
   void setPreChargeCurrentLimit(uint16_t current_mA);
 
   // Reg 62: ICC Charger Settings
-  uint16_t getChargeCurrentLimit() ;
-  void setChargeCurrentLimit(uint16_t current_mA);
+  uint16_t getConstChargeCurrentLimit() ;
+  void setConstChargeCurrentLimit(uint16_t current_mA);
 
   // Reg 63: Iterm Charger Settings and Control
   // Enable/Disable via chargeStates.term_cur_lim_en
@@ -149,9 +149,7 @@ public:
   void                     set_bat_charge(bool enable);
   void                     power_off(void);
   bool                     set_charger_term_current_to_zero(void);
-  bool                     set_charger_constant_current_to_50mA(void);
-  bool                     set_charger_constant_current(uint16_t current_mA);
-  uint16_t                 get_charger_constant_current();
+  bool                     setConstChargeCurrentLimit_to_50mA(void);
   bool                     enable_pwrok_resets(void);
 
   void                     set_IRQ_enable_0(uint8_t val);

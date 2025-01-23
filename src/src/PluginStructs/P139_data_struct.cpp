@@ -13,7 +13,7 @@ P139_data_struct::P139_data_struct(struct EventStruct *event) {
   if (isInitialized()) {                  // Functions based on:
     axp2101->begin(&Wire, AXP2101_ADDR, static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED));
     loadSettings(event);
-    outputSettings(event);
+    applySettings(event);
   } else {
     addLog(LOG_LEVEL_ERROR, F("AXP2101: Initialization failed"));
   }
@@ -42,9 +42,11 @@ String P139_data_struct::loadSettings(struct EventStruct *event) {
 }
 
 // **************************************************************************/
-// outputSettings: Write the current settings to AXP2101
+// applySettings: Write the current settings to AXP2101
 // **************************************************************************/
-void P139_data_struct::outputSettings(struct EventStruct *event) {
+void P139_data_struct::applySettings(struct EventStruct *event) {
+  if (!isInitialized()) 
+    return;
   uint8_t count = 0;
 
   for (int s = 0; s < AXP2101_settings_count; ++s) {
@@ -74,9 +76,33 @@ void P139_data_struct::outputSettings(struct EventStruct *event) {
   if (loglevelActiveFor(LOG_LEVEL_INFO)) {
     addLog(LOG_LEVEL_INFO, strformat(F("AXP2101: Set %d values to port(s)"), count));
   }
+  axp2101->setChargeLed(_settings.getChargeLed());
+
+  // Reg 61: Iprechg Charger Settings
+  axp2101->setPreChargeCurrentLimit(_settings.getPreChargeCurrentLimit());
+
+  // Reg 62: ICC Charger Settings
+  axp2101->setConstChargeCurrentLimit(_settings.getConstChargeCurrentLimit());
+
+  // Reg 63: Iterm Charger Settings and Control
+  axp2101->setTerminationChargeCurrentLimit(_settings.getTerminationChargeCurrentLimit(), _settings.getTerminationChargeCurrentLimitEnable());
+
+  // Reg 64: CV Charger Voltage Settings
+  axp2101->setCV_chargeVoltage(_settings.getCV_chargeVoltage());
+
+  // Reg 14: Minimum System Voltage Control
+  axp2101->setLinear_Charger_Vsys_dpm(_settings.getLinear_Charger_Vsys_dpm());
+
+  // Reg 15: Input Voltage Limit
+  axp2101->setVin_DPM(_settings.getVin_DPM());
+
+  // Reg 16: Input Current Limit
+  axp2101->setInputCurrentLimit(_settings.getInputCurrentLimit());
   axp2101->setTS_disabled(_settings.getTS_disabled());
+
+
 //  axp2101->set_IRQ_enable_0(0b11110000); // Disable temperature checks
-  axp2101->set_charger_constant_current(800);
+  axp2101->setConstChargeCurrentLimit(_settings.getConstChargeCurrentLimit());
 }
 
 // **************************************************************************/
@@ -94,7 +120,7 @@ String P139_data_struct::saveSettings(struct EventStruct *event) {
 // **************************************************************************/
 // applySettings: Update settings to defaults for selected device
 // **************************************************************************/
-bool P139_data_struct::applySettings(AXP2101_device_model_e device) {
+bool P139_data_struct::applyDeviceModelTemplate(AXP2101_device_model_e device) {
   const int idx = static_cast<int>(AXP2101_device_model_e::UserDefined == device ?
                                    AXP2101_device_model_e::MAX :
                                    device);
@@ -129,8 +155,79 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
                     chargeledNames, chargeledValues,
                     static_cast<int>(_settings.getChargeLed()));
   }
+  {
+    // Reg 61: Iprechg Charger Settings
+    // 0 .. 200 mA in 25 mA steps
+    const int values[] = {
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200
+    };
+    constexpr uint8_t valueCount = NR_ELEMENTS(values);
+    addFormSelector(F("Pre Charge Current"), F("iprechg"),
+                    valueCount,
+                    values,
+                    static_cast<int>(_settings.getPreChargeCurrentLimit()));
+    addUnit(F("mA"));
+  }
+  {
+    // Reg 62: ICC Charger Settings
+    const int values[] = {
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200,
+      300,
+      400,
+      500,
+      600,
+      700,
+      800,
+      900,
+      1000
+    };
+    constexpr uint8_t valueCount = NR_ELEMENTS(values);
+    addFormSelector(F("Constant Current Charge Limit"), F("iccchg"),
+                    valueCount,
+                    values,
+                    static_cast<int>(_settings.getConstChargeCurrentLimit()));
+    addUnit(F("mA"));
+  }
+  {
+    // Reg 63: Iterm Charger Settings and Control
+    // 0 .. 200 mA in 25 mA steps  + enable checkbox
+    const int values[] = {
+      0,
+      25,
+      50,
+      75,
+      100,
+      125,
+      150,
+      175,
+      200
+    };
+    constexpr uint8_t valueCount = NR_ELEMENTS(values);
+    addFormSelector(F("Term Charge Current"), F("iterm"),
+                    valueCount,
+                    values,
+                    static_cast<int>(_settings.getTerminationChargeCurrentLimit()));
+    addUnit(F("mA"));
+  }
 
   {
+    // Reg 64: CV Charger Voltage Settings
     const __FlashStringHelper *names[] = {
       toString(AXP2101_CV_charger_voltage_e::limit_4_00V),
       toString(AXP2101_CV_charger_voltage_e::limit_4_10V),
@@ -153,6 +250,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
     addUnit(F("V"));
   }
   {
+    // Reg 14: Minimum System Voltage Control
     const __FlashStringHelper *names[] = {
       toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_1V),
       toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_2V),
@@ -182,6 +280,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   }
 
   {
+    // Reg 15: Input Voltage Limit
     const __FlashStringHelper *names[] = {
       toString(AXP2101_VINDPM_e::Vin_3_88V),
       toString(AXP2101_VINDPM_e::Vin_3_96V),
@@ -227,6 +326,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   }
 
   {
+    // Reg 16: Input Current Limit
     const __FlashStringHelper *names[] = {
       toString(AXP2101_InputCurrentLimit_e::limit_100mA),
       toString(AXP2101_InputCurrentLimit_e::limit_500mA),
@@ -261,7 +361,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
     if (P139_CONFIG_PREDEFINED > 0) {
       P139_CURRENT_PREDEFINED = P139_CONFIG_PREDEFINED;
       P139_CONFIG_PREDEFINED  = 0;
-      applySettings(static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED));
+      applyDeviceModelTemplate(static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED));
     }
     const __FlashStringHelper *predefinedNames[] = {
       toString(AXP2101_device_model_e::Unselected),
@@ -375,9 +475,27 @@ void P139_data_struct::webform_save(struct EventStruct *event) {
 
   _settings.setChargeLed(static_cast<AXP2101_chargeled_d>(getFormItemInt(F("led"))));
 
+  // Reg 61: Iprechg Charger Settings
+  _settings.setPreChargeCurrentLimit(getFormItemInt(F("iprechg")));
+
+  // Reg 62: ICC Charger Settings
+  _settings.setConstChargeCurrentLimit(getFormItemInt(F("iccchg")));
+
+  // Reg 63: Iterm Charger Settings and Control
+  _settings.setTerminationChargeCurrentLimit(
+    getFormItemInt(F("iterm")),
+    isFormItemChecked(F("iterm_en")));
+
+  // Reg 64: CV Charger Voltage Settings
   _settings.setCV_chargeVoltage(static_cast<AXP2101_CV_charger_voltage_e>(getFormItemInt(F("cv_volt"))));
+
+  // Reg 14: Minimum System Voltage Control
   _settings.setLinear_Charger_Vsys_dpm(static_cast<AXP2101_Linear_Charger_Vsys_dpm_e>(getFormItemInt(F("min_vsys"))));
+
+  // Reg 15: Input Voltage Limit
   _settings.setVin_DPM(static_cast<AXP2101_VINDPM_e>(getFormItemInt(F("vin_dpm"))));
+
+  // Reg 16: Input Current Limit
   _settings.setInputCurrentLimit(static_cast<AXP2101_InputCurrentLimit_e>(getFormItemInt(F("cur_lim_in"))));
 
   _settings.setTS_disabled(isFormItemChecked(F("dis_TS")));

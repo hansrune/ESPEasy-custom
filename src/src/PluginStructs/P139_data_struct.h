@@ -53,8 +53,8 @@ public:
   bool   plugin_fifty_per_second(struct EventStruct *event);
   String loadSettings(struct EventStruct *event);
   String saveSettings(struct EventStruct *event);
-  void   outputSettings(struct EventStruct *event);
-  bool   applySettings(AXP2101_device_model_e device);
+  void   applySettings(struct EventStruct *event);
+  bool   applyDeviceModelTemplate(AXP2101_device_model_e device);
 
   void   webform_load(struct EventStruct *event);
   void   webform_save(struct EventStruct *event);

@@ -503,11 +503,16 @@ uint16_t AXP2101_settings::getTerminationChargeCurrentLimit() const {
   return chargeStates.term_cur_lim * 25;
 }
 
-void AXP2101_settings::setTerminationChargeCurrentLimit(uint16_t current_mA) {
+bool AXP2101_settings::getTerminationChargeCurrentLimitEnable() const {
+  return chargeStates.term_cur_lim_en;
+}
+
+void AXP2101_settings::setTerminationChargeCurrentLimit(uint16_t current_mA, bool enable) {
   if (current_mA > 200) {
     current_mA = 200;
   }
   chargeStates.term_cur_lim = current_mA / 25;
+  chargeStates.term_cur_lim_en = enable;
 }
 
 

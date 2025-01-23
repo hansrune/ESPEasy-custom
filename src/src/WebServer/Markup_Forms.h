@@ -303,6 +303,8 @@ void addFormSelector(const String& label,
                      #endif
                      );
 
+void addFormSelector(const __FlashStringHelper * label, const __FlashStringHelper * id, int optionCount, const int indices[], int selectedIndex, bool reloadonchange = false);
+
 void addFormSelector(const __FlashStringHelper * label, const __FlashStringHelper * id, int optionCount, const __FlashStringHelper * options[], const int indices[], int selectedIndex, bool reloadonchange = false);
 void addFormSelector(const __FlashStringHelper * label, const String& id, int optionCount, const __FlashStringHelper * options[], const int indices[], int selectedIndex, bool reloadonchange = false);
 void addFormSelector(const String& label, const String& id, int optionCount, const __FlashStringHelper * options[], const int indices[], int selectedIndex);
