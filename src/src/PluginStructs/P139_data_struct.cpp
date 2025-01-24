@@ -285,9 +285,10 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
       addFormSubHeader(F("Current State"));
 
       const AXP2101_registers_e registers[] = {
-        AXP2101_registers_e::vbat,
         AXP2101_registers_e::vbus,
         AXP2101_registers_e::vsys,
+        AXP2101_registers_e::vbat,
+        AXP2101_registers_e::batcharge,
         AXP2101_registers_e::battemp,
         AXP2101_registers_e::chiptemp
       };
@@ -302,12 +303,21 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
           addUnit(F("°C"));
         } else {
           addHtmlInt(static_cast<int>(read_value(registers[i])));
-          addUnit(F("mV"));
+          addUnit((registers[i] == AXP2101_registers_e::batcharge)
+            ? F("%") : F("mV"));
         }
       }
 
       addRowLabel(F("Charging State"));
-      addHtml(toString(axp2101->getChargingDetail()));
+
+      const AXP2101_chargingState_e chargingState = axp2101->getChargingState();
+
+      if (chargingState != AXP2101_chargingState_e::Charging) {
+        addHtml(toString(chargingState));
+      }
+      else {
+        addHtml(toString(axp2101->getChargingDetail()));
+      }
     }
   }
 }
