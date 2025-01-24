@@ -4,6 +4,8 @@
 
 # ifdef ESP32
 
+#include "../PluginStructs/P139_data_struct_formselectors.h"
+
 // **************************************************************************/
 // Constructors
 // **************************************************************************/
@@ -158,96 +160,23 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   {
     // Reg 61: Iprechg Charger Settings
     // 0 .. 200 mA in 25 mA steps
-    const int values[] = {
-      0,
-      25,
-      50,
-      75,
-      100,
-      125,
-      150,
-      175,
-      200
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(values);
-    addFormSelector(F("Pre Charge Current"), F("iprechg"),
-                    valueCount,
-                    values,
-                    static_cast<int>(_settings.getPreChargeCurrentLimit()));
-    addUnit(F("mA"));
+    AXP2101_PreChargeCurrentLimit_FormSelector selector(_settings.getPreChargeCurrentLimit());
   }
   {
     // Reg 62: ICC Charger Settings
-    const int values[] = {
-      0,
-      25,
-      50,
-      75,
-      100,
-      125,
-      150,
-      175,
-      200,
-      300,
-      400,
-      500,
-      600,
-      700,
-      800,
-      900,
-      1000
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(values);
-    addFormSelector(F("Constant Current Charge Limit"), F("iccchg"),
-                    valueCount,
-                    values,
-                    static_cast<int>(_settings.getConstChargeCurrentLimit()));
-    addUnit(F("mA"));
+    AXP2101_ConstChargeCurrentLimit_FormSelector selector(_settings.getConstChargeCurrentLimit());
   }
   {
     // Reg 63: Iterm Charger Settings and Control
     // 0 .. 200 mA in 25 mA steps  + enable checkbox
-    const int values[] = {
-      0,
-      25,
-      50,
-      75,
-      100,
-      125,
-      150,
-      175,
-      200
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(values);
-    addFormSelector(F("Term Charge Current"), F("iterm"),
-                    valueCount,
-                    values,
-                    static_cast<int>(_settings.getTerminationChargeCurrentLimit()));
-    addUnit(F("mA"));
+    AXP2101_PreChargeCurrentLimit_FormSelector selector(_settings.getTerminationChargeCurrentLimit());
+
+    // TODO TD-er: Must add 'enabled' checkbox
   }
 
   {
     // Reg 64: CV Charger Voltage Settings
-    const __FlashStringHelper *names[] = {
-      toString(AXP2101_CV_charger_voltage_e::limit_4_00V),
-      toString(AXP2101_CV_charger_voltage_e::limit_4_10V),
-      toString(AXP2101_CV_charger_voltage_e::limit_4_20V),
-      toString(AXP2101_CV_charger_voltage_e::limit_4_35V),
-      toString(AXP2101_CV_charger_voltage_e::limit_4_40V),
-    };
-    const int values[] = {
-      static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_00V),
-      static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_10V),
-      static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_20V),
-      static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_35V),
-      static_cast<int>(AXP2101_CV_charger_voltage_e::limit_4_40V),
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(values);
-    addFormSelector(F("CV Charger Voltage"), F("cv_volt"),
-                    valueCount,
-                    names, values,
-                    static_cast<int>(_settings.getCV_chargeVoltage()));
-    addUnit(F("V"));
+    AXP2101_CV_charger_voltage_FormSelector selector(_settings.getCV_chargeVoltage());
   }
   {
     // Reg 14: Minimum System Voltage Control
@@ -352,6 +281,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   }
 
   addFormCheckBox(F("Disable TS pin"), F("dis_TS"), _settings.getTS_disabled());
+  addFormNote(F("Make sure to disable TS pin when no NTC is used, or else the battery will not charge"));
 
   addFormCheckBox(F("Generate events"), F("events"), P139_GET_GENERATE_EVENTS);
 
