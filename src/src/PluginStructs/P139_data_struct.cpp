@@ -139,23 +139,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   const bool isPowerManagerTask = Settings.isPowerManagerTask(event->TaskIndex);
 
   {
-    const __FlashStringHelper *chargeledNames[] = {
-      toString(AXP2101_chargeled_d::Off),
-      toString(AXP2101_chargeled_d::Flash_1Hz),
-      toString(AXP2101_chargeled_d::Flash_4Hz),
-      toString(AXP2101_chargeled_d::Steady_On),
-    };
-    const int chargeledValues[] = {
-      static_cast<int>(AXP2101_chargeled_d::Off),
-      static_cast<int>(AXP2101_chargeled_d::Flash_1Hz),
-      static_cast<int>(AXP2101_chargeled_d::Flash_4Hz),
-      static_cast<int>(AXP2101_chargeled_d::Steady_On),
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(chargeledValues);
-    addFormSelector(F("Charge LED"), F("led"),
-                    valueCount,
-                    chargeledNames, chargeledValues,
-                    static_cast<int>(_settings.getChargeLed()));
+    AXP2101_ChargeLED_FormSelector selector(_settings.getChargeLed());
   }
   {
     // Reg 61: Iprechg Charger Settings
@@ -180,104 +164,17 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   }
   {
     // Reg 14: Minimum System Voltage Control
-    const __FlashStringHelper *names[] = {
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_1V),
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_2V),
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_3V),
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_4V),
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_5V),
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_6V),
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_7V),
-      toString(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_8V),
-    };
-    const int values[] = {
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_1V),
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_2V),
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_3V),
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_4V),
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_5V),
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_6V),
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_7V),
-      static_cast<int>(AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_8V),
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(values);
-    addFormSelector(F("Minimum System Voltage"), F("min_vsys"),
-                    valueCount,
-                    names, values,
-                    static_cast<int>(_settings.getLinear_Charger_Vsys_dpm()));
-    addUnit(F("V"));
+    AXP2101_Linear_Charger_Vsys_dpm_FormSelector selector(_settings.getLinear_Charger_Vsys_dpm());
   }
 
   {
     // Reg 15: Input Voltage Limit
-    const __FlashStringHelper *names[] = {
-      toString(AXP2101_VINDPM_e::Vin_3_88V),
-      toString(AXP2101_VINDPM_e::Vin_3_96V),
-      toString(AXP2101_VINDPM_e::Vin_4_04V),
-      toString(AXP2101_VINDPM_e::Vin_4_12V),
-      toString(AXP2101_VINDPM_e::Vin_4_20V),
-      toString(AXP2101_VINDPM_e::Vin_4_28V),
-      toString(AXP2101_VINDPM_e::Vin_4_36V),
-      toString(AXP2101_VINDPM_e::Vin_4_44V),
-      toString(AXP2101_VINDPM_e::Vin_4_52V),
-      toString(AXP2101_VINDPM_e::Vin_4_60V),
-      toString(AXP2101_VINDPM_e::Vin_4_68V),
-      toString(AXP2101_VINDPM_e::Vin_4_76V),
-      toString(AXP2101_VINDPM_e::Vin_4_84V),
-      toString(AXP2101_VINDPM_e::Vin_4_92V),
-      toString(AXP2101_VINDPM_e::Vin_5_00V),
-      toString(AXP2101_VINDPM_e::Vin_5_08V),
-    };
-    const int values[] = {
-      static_cast<int>(AXP2101_VINDPM_e::Vin_3_88V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_3_96V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_04V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_12V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_20V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_28V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_36V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_44V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_52V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_60V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_68V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_76V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_84V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_4_92V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_5_00V),
-      static_cast<int>(AXP2101_VINDPM_e::Vin_5_08V),
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(values);
-    addFormSelector(F("Min Vin DPM Voltage"), F("vin_dpm"),
-                    valueCount,
-                    names, values,
-                    static_cast<int>(_settings.getVin_DPM()));
-    addUnit(F("V"));
+    AXP2101_Vin_DPM_FormSelector selector(_settings.getVin_DPM());
   }
 
   {
     // Reg 16: Input Current Limit
-    const __FlashStringHelper *names[] = {
-      toString(AXP2101_InputCurrentLimit_e::limit_100mA),
-      toString(AXP2101_InputCurrentLimit_e::limit_500mA),
-      toString(AXP2101_InputCurrentLimit_e::limit_900mA),
-      toString(AXP2101_InputCurrentLimit_e::limit_1000mA),
-      toString(AXP2101_InputCurrentLimit_e::limit_1500mA),
-      toString(AXP2101_InputCurrentLimit_e::limit_2000mA),
-    };
-    const int values[] = {
-      static_cast<int>(AXP2101_InputCurrentLimit_e::limit_100mA),
-      static_cast<int>(AXP2101_InputCurrentLimit_e::limit_500mA),
-      static_cast<int>(AXP2101_InputCurrentLimit_e::limit_900mA),
-      static_cast<int>(AXP2101_InputCurrentLimit_e::limit_1000mA),
-      static_cast<int>(AXP2101_InputCurrentLimit_e::limit_1500mA),
-      static_cast<int>(AXP2101_InputCurrentLimit_e::limit_2000mA),
-    };
-    constexpr uint8_t valueCount = NR_ELEMENTS(values);
-    addFormSelector(F("Input Current Limit"), F("cur_lim_in"),
-                    valueCount,
-                    names, values,
-                    static_cast<int>(_settings.getInputCurrentLimit()));
-    addUnit(F("mA"));
+    AXP2101_InputCurrentLimit_FormSelector selector(_settings.getInputCurrentLimit());
   }
 
   addFormCheckBox(F("Disable TS pin"), F("dis_TS"), _settings.getTS_disabled());

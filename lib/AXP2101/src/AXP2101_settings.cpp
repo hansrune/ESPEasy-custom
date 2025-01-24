@@ -120,57 +120,6 @@ const __FlashStringHelper* toString(AXP2101_CV_charger_voltage_e voltage) {
   return F("");
 }
 
-const __FlashStringHelper* toString(AXP2101_Linear_Charger_Vsys_dpm_e vsys) {
-  switch (vsys) {
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_1V: return F("4.1");
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_2V: return F("4.2");
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_3V: return F("4.3");
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_4V: return F("4.4");
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_5V: return F("4.5");
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_6V: return F("4.6");
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_7V: return F("4.7");
-    case AXP2101_Linear_Charger_Vsys_dpm_e::vsys_4_8V: return F("4.8");
-  }
-  return F("");
-}
-
-
-const __FlashStringHelper* toString(AXP2101_VINDPM_e voltage) {
-  switch (voltage) {
-    case AXP2101_VINDPM_e::Vin_3_88V: return F("3.88");
-    case AXP2101_VINDPM_e::Vin_3_96V: return F("3.96");
-    case AXP2101_VINDPM_e::Vin_4_04V: return F("4.04");
-    case AXP2101_VINDPM_e::Vin_4_12V: return F("4.12");
-    case AXP2101_VINDPM_e::Vin_4_20V: return F("4.20");
-    case AXP2101_VINDPM_e::Vin_4_28V: return F("4.28");
-    case AXP2101_VINDPM_e::Vin_4_36V: return F("4.36");
-    case AXP2101_VINDPM_e::Vin_4_44V: return F("4.44");
-    case AXP2101_VINDPM_e::Vin_4_52V: return F("4.52");
-    case AXP2101_VINDPM_e::Vin_4_60V: return F("4.60");
-    case AXP2101_VINDPM_e::Vin_4_68V: return F("4.68");
-    case AXP2101_VINDPM_e::Vin_4_76V: return F("4.76");
-    case AXP2101_VINDPM_e::Vin_4_84V: return F("4.84");
-    case AXP2101_VINDPM_e::Vin_4_92V: return F("4.92");
-    case AXP2101_VINDPM_e::Vin_5_00V: return F("5.00");
-    case AXP2101_VINDPM_e::Vin_5_08V: return F("5.08");
-  }
-  return F("");
-}
-
-
-const __FlashStringHelper* toString(AXP2101_InputCurrentLimit_e current) {
-  switch (current) {
-    case AXP2101_InputCurrentLimit_e::limit_100mA:  return F("100");
-    case AXP2101_InputCurrentLimit_e::limit_500mA:  return F("500");
-    case AXP2101_InputCurrentLimit_e::limit_900mA:  return F("900");
-    case AXP2101_InputCurrentLimit_e::limit_1000mA: return F("1000");
-    case AXP2101_InputCurrentLimit_e::limit_1500mA: return F("1500");
-    case AXP2101_InputCurrentLimit_e::limit_2000mA: return F("2000");
-  }
-  return F("");
-}
-
-
 AXP2101_registers_e AXP2101_intToRegister(int reg) {
   switch (reg) {
     case 0: return AXP2101_registers_e::dcdc1;

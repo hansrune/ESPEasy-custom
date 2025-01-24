@@ -232,7 +232,8 @@ enum class AXP2101_CV_charger_voltage_e : uint8_t {
   limit_4_10V = 0b010,
   limit_4_20V = 0b011,  // default
   limit_4_35V = 0b100,
-  limit_4_40V = 0b101
+  limit_4_40V = 0b101,
+  MAX
 };
 
 enum class AXP2101_Linear_Charger_Vsys_dpm_e : uint8_t {
@@ -243,7 +244,8 @@ enum class AXP2101_Linear_Charger_Vsys_dpm_e : uint8_t {
   vsys_4_5V,
   vsys_4_6V,
   vsys_4_7V,
-  vsys_4_8V
+  vsys_4_8V,
+  MAX
 };
 
 enum class AXP2101_VINDPM_e : uint8_t {
@@ -262,7 +264,8 @@ enum class AXP2101_VINDPM_e : uint8_t {
   Vin_4_84V,
   Vin_4_92V,
   Vin_5_00V,
-  Vin_5_08V
+  Vin_5_08V,
+  MAX
 };
 
 enum class AXP2101_InputCurrentLimit_e : uint8_t {
@@ -271,7 +274,8 @@ enum class AXP2101_InputCurrentLimit_e : uint8_t {
   limit_900mA,
   limit_1000mA,
   limit_1500mA,
-  limit_2000mA
+  limit_2000mA,
+  MAX
 };
 
 
@@ -291,10 +295,6 @@ const __FlashStringHelper* toString(AXP2101_chargingState_e state);
 const __FlashStringHelper* toString(AXP2101_chipid_e chip);
 const __FlashStringHelper* toString(AXP2101_chargingDetail_e charge);
 const __FlashStringHelper* toString(AXP2101_CV_charger_voltage_e voltage);
-const __FlashStringHelper* toString(AXP2101_Linear_Charger_Vsys_dpm_e vsys);
-const __FlashStringHelper* toString(AXP2101_VINDPM_e voltage);
-const __FlashStringHelper* toString(AXP2101_InputCurrentLimit_e current);
-
 
 class AXP2101_settings { // Voltages in mV, range 0..3700, max. depending on the AXP2101 pin/port used.
 public:
