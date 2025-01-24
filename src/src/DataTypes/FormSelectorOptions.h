@@ -57,11 +57,11 @@ public:
 
 protected:
 
-  int _optionCount{};
+  const int _optionCount{};
   const __FlashStringHelper **_names_f{ nullptr };
-  String *_names_str{ nullptr };
-  int *_indices{ nullptr };
-  String *_attr_str{ nullptr };
+  const String *_names_str{ nullptr };
+  const int *_indices{ nullptr };
+  const String *_attr_str{ nullptr };
 };
 
 

@@ -356,34 +356,6 @@ void addFormSelector(const String& label,
                      #endif
                      );
 
-void addFormSelector_script(const __FlashStringHelper * label,
-                            const __FlashStringHelper * id,
-                            int           optionCount,
-                            const __FlashStringHelper * options[],
-                            const int     indices[],
-                            const String  attr[],
-                            int           selectedIndex,
-                            const __FlashStringHelper * onChangeCall
-                            #if FEATURE_TOOLTIPS
-                            ,
-                            const String& tooltip = EMPTY_STRING
-                            #endif
-                            );
-
-
-void addFormSelector_script(const __FlashStringHelper * label,
-                            const __FlashStringHelper * id,
-                            int           optionCount,
-                            const String  options[],
-                            const int     indices[],
-                            const String  attr[],
-                            int           selectedIndex,
-                            const __FlashStringHelper * onChangeCall
-                            #if FEATURE_TOOLTIPS
-                            ,
-                            const String& tooltip = EMPTY_STRING
-                            #endif
-                            );
 
 void addFormSelector_YesNo(const __FlashStringHelper * label,
                            const __FlashStringHelper * id,

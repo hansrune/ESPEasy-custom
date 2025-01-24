@@ -889,7 +889,8 @@ bool ESPEasy_TouchHandler::plugin_webform_load(struct EventStruct *event) {
       # endif // if TOUCH_FEATURE_EXTENDED_TOUCH
     };
     const int optionValues3[] = { 0, 1, 3, 4, 5, 7 }; // Already used as a bitmap!
-    addFormSelector(F("Events"), F("events"), NR_ELEMENTS(optionValues3), options3, optionValues3, choice3);
+    FormSelectorOptions selector(NR_ELEMENTS(optionValues3), options3, optionValues3);
+    selector.addFormSelector(F("Events"), F("events"),  choice3);
 
     addFormCheckBox(F("Draw buttons when started"), F("initobj"), bitRead(Touch_Settings.flags, TOUCH_FLAGS_INIT_OBJECTEVENT));
     # ifndef LIMIT_BUILD_SIZE
@@ -915,17 +916,10 @@ bool ESPEasy_TouchHandler::plugin_webform_load(struct EventStruct *event) {
 
   addFormSubHeader(F("Calibration"));
 
-  {
-    const __FlashStringHelper *noYesOptions[2] = { F("No"), F("Yes") };
-    const int noYesOptionValues[2]             = { 0, 1 };
-    addFormSelector(F("Calibrate to screen resolution"),
-                    F("usecalib"),
-                    2,
-                    noYesOptions,
-                    noYesOptionValues,
-                    Touch_Settings.calibrationEnabled ? 1 : 0,
-                    true);
-  }
+  addFormSelector_YesNo(F("Calibrate to screen resolution"),
+    F("usecalib"),
+    Touch_Settings.calibrationEnabled ? 1 : 0,
+    true); // reloadonchange
 
   if (Touch_Settings.calibrationEnabled) {
     addRowLabel(F("Calibration"));

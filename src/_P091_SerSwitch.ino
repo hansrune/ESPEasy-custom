@@ -155,15 +155,9 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
       if (PCONFIG(0) == SER_SWITCH_LCTECH)
       {
         {
-          const __FlashStringHelper *buttonOptions[] = {
-            F("1"),
-            F("2"),
-            F("3"),
-            F("4"),
-          };
           const int buttonoptionValues[] = { 1, 2, 3, 4 };
           constexpr size_t optionCount   = NR_ELEMENTS(buttonoptionValues);
-          addFormSelector(F("Number of relays"), F("button"), optionCount, buttonOptions, buttonoptionValues, PCONFIG(1));
+          addFormSelector(F("Number of relays"), F("button"), optionCount, buttonoptionValues, PCONFIG(1));
         }
 
         {

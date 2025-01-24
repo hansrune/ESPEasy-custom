@@ -621,48 +621,6 @@ void addFormSelector(const String  & label,
   selector.addFormSelector(label, id, selectedIndex);
 }
 
-void addFormSelector_script(const __FlashStringHelper * label,
-                            const __FlashStringHelper * id,
-                            int           optionCount,
-                            const __FlashStringHelper * options[],
-                            const int     indices[],
-                            const String  attr[],
-                            int           selectedIndex,
-                            const __FlashStringHelper * onChangeCall
-                            #if FEATURE_TOOLTIPS
-                            , const String& tooltip
-                            #endif // if FEATURE_TOOLTIPS
-                            )
-{
-  FormSelectorOptions selector(optionCount, options, indices, attr);
-#if FEATURE_TOOLTIPS
-  selector.tooltip = tooltip;
-#endif
-  selector.onChangeCall = onChangeCall;
-  selector.addFormSelector(label, id, selectedIndex);
-}
-
-void addFormSelector_script(const __FlashStringHelper * label,
-                            const __FlashStringHelper * id,
-                            int             optionCount,
-                            const String    options[],
-                            const int       indices[],
-                            const String    attr[],
-                            int             selectedIndex,
-                            const __FlashStringHelper * onChangeCall
-                            #if FEATURE_TOOLTIPS
-                            , const String& tooltip
-                            #endif // if FEATURE_TOOLTIPS
-                            )
-{
-  FormSelectorOptions selector(optionCount, options, indices, attr);
-#if FEATURE_TOOLTIPS
-  selector.tooltip = tooltip;
-#endif
-  selector.onChangeCall = onChangeCall;
-  selector.addFormSelector(label, id, selectedIndex);
-}
-
 void addFormSelector_YesNo(const __FlashStringHelper * label,
                            const __FlashStringHelper * id,
                            int           selectedIndex,
@@ -677,8 +635,10 @@ void addFormSelector_YesNo(const __FlashStringHelper * label,
                            bool       reloadonchange)
 {
   const __FlashStringHelper *optionsNoYes[] = { F("No"), F("Yes") };
-  int optionValuesNoYes[]                   = { 0, 1 };
-  addFormSelector(label, id, NR_ELEMENTS(optionValuesNoYes), optionsNoYes, optionValuesNoYes, selectedIndex, reloadonchange);
+  //int optionValuesNoYes[]                   = { 0, 1 };
+  FormSelectorOptions selector(NR_ELEMENTS(optionsNoYes), optionsNoYes);
+  selector.reloadonchange = reloadonchange;
+  selector.addFormSelector(label, id, selectedIndex);
 }
 
 
@@ -702,12 +662,6 @@ void addFormPinStateSelect(int gpio, int choice)
   bool input, output, warning;
 
   if (getGpioInfo(gpio, pinnr, input, output, warning)) {
-    const String id = String('p') + gpio;
-    addRowLabel_tr_id(
-      concat(
-        F("Pin mode "), 
-        createGPIO_label(gpio, pinnr, input, output, warning)), 
-      id);
     bool hasPullUp, hasPullDown;
     getGpioPullResistor(gpio, hasPullUp, hasPullDown);
     int nr_options = 0;
@@ -745,13 +699,17 @@ void addFormPinStateSelect(int gpio, int choice)
         ++nr_options;
       }
     }
-    addSelector(id, nr_options, options, option_val, nullptr, choice, false, enabled);
-    {
-      const String conflict = getConflictingUse(gpio);
-      if (!conflict.isEmpty()) {
-        addUnit(conflict);
-      }
-    }
+    FormSelectorOptions selector(nr_options, options, option_val);
+    selector.enabled = enabled;
+
+    const String id = String('p') + gpio;
+    selector.addFormSelector(
+      concat(
+        F("Pin mode "), 
+        createGPIO_label(gpio, pinnr, input, output, warning)), 
+      id,
+      choice);
+    addUnit(getConflictingUse(gpio));
   }
 }
 

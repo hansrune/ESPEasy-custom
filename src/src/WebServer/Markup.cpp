@@ -424,9 +424,8 @@ void addSelector_Foot()
 
 void addUnit(const __FlashStringHelper *unit)
 {
-  addHtml(F(" ["));
-  addHtml(unit);
-  addHtml(']');
+  // Needed so we can check whether it is empty
+  addUnit(String(unit));
 }
 
 void addUnit(const String& unit)

@@ -333,14 +333,16 @@ void handle_advanced() {
     F("Light"),
     F("Dark"),
   };
-  const int cssModeOptions[] = { 0, 1, 2};
-  constexpr int nrCssModeOptions = NR_ELEMENTS(cssModeOptions);
-    addFormSelector(getLabel(LabelType::ENABLE_AUTO_DARK_MODE),
-                    getInternalLabel(LabelType::ENABLE_AUTO_DARK_MODE),
-                    nrCssModeOptions,
-                    cssModeNames,
-                    cssModeOptions,
-                    Settings.getCssMode());
+  //const int cssModeOptions[] = { 0, 1, 2};
+  constexpr int nrCssModeOptions = NR_ELEMENTS(cssModeNames);
+  FormSelectorOptions selector(
+    nrCssModeOptions,
+    cssModeNames/*,
+    cssModeOptions*/);
+  selector.addFormSelector(
+    getLabel(LabelType::ENABLE_AUTO_DARK_MODE),
+    getInternalLabel(LabelType::ENABLE_AUTO_DARK_MODE),
+    Settings.getCssMode());
   #endif // FEATURE_AUTO_DARK_MODE
 
   #if FEATURE_RULES_EASY_COLOR_CODE

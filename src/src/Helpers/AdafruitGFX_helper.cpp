@@ -210,14 +210,17 @@ void AdaGFXFormTextPrintMode(const __FlashStringHelper *id,
     toString(AdaGFXTextPrintMode::ClearThenTruncate),
     toString(AdaGFXTextPrintMode::TruncateExceedingCentered),
   };
+  /*
   const int textModeOptions[] = {
     static_cast<int>(AdaGFXTextPrintMode::ContinueToNextLine),
     static_cast<int>(AdaGFXTextPrintMode::TruncateExceedingMessage),
     static_cast<int>(AdaGFXTextPrintMode::ClearThenTruncate),
     static_cast<int>(AdaGFXTextPrintMode::TruncateExceedingCentered),
   };
+  */
 
-  addFormSelector(F("Text print Mode"), id, sizeof(textModeOptions) / sizeof(int), textModes, textModeOptions, selectedIndex);
+  FormSelectorOptions selector(NR_ELEMENTS(textModes), textModes);
+  selector.addFormSelector(F("Text print Mode"), id, selectedIndex);
 }
 
 void AdaGFXFormColorDepth(const __FlashStringHelper *id,
@@ -275,9 +278,9 @@ void AdaGFXFormColorDepth(const __FlashStringHelper *id,
 void AdaGFXFormRotation(const __FlashStringHelper *id,
                         uint8_t                    selectedIndex) {
   const __FlashStringHelper *rotationOptions[] = { F("Normal"), F("+90&deg;"), F("+180&deg;"), F("+270&deg;") };
-  const int rotationOptionValues[]             = { 0, 1, 2, 3 };
-
-  addFormSelector(F("Rotation"), id, 4, rotationOptions, rotationOptionValues, selectedIndex);
+//  const int rotationOptionValues[]             = { 0, 1, 2, 3 };
+  FormSelectorOptions selector(NR_ELEMENTS(rotationOptions), rotationOptions);
+  selector.addFormSelector(F("Rotation"), id, selectedIndex);
 }
 
 /*****************************************************************************************
@@ -399,7 +402,7 @@ void AdaGFXFormFontScaling(const __FlashStringHelper *fontScalingId,
 void AdaGFXFormLineSpacing(const __FlashStringHelper *id,
                            uint8_t                    selectedIndex) {
   String lineSpacings[16];
-  int    lineSpacingOptions[16];
+//  int    lineSpacingOptions[16];
 
   for (uint8_t i = 0; i < 16; ++i) {
     if (15 == i) {
@@ -411,9 +414,10 @@ void AdaGFXFormLineSpacing(const __FlashStringHelper *id,
     } else {
       lineSpacings[i] = i;
     }
-    lineSpacingOptions[i] = i;
+//    lineSpacingOptions[i] = i;
   }
-  addFormSelector(F("Linespacing"), id, 16, lineSpacings, lineSpacingOptions, selectedIndex);
+  FormSelectorOptions selector(16, lineSpacings);
+  selector.addFormSelector(F("Linespacing"), id, selectedIndex);
   addUnit(F("px"));
 }
 

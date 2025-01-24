@@ -1,9 +1,10 @@
 #include "../DataTypes/FormSelectorOptions.h"
 
 #include "../WebServer/Markup.h"
+#include "../WebServer/Markup_Forms.h"
 
-FormSelectorOptions::FormSelectorOptions(int optionCount) 
-: _optionCount(optionCount) 
+FormSelectorOptions::FormSelectorOptions(int optionCount)
+  : _optionCount(optionCount)
 {
   classname = F("wide");
 }
@@ -11,94 +12,41 @@ FormSelectorOptions::FormSelectorOptions(int optionCount)
 FormSelectorOptions::FormSelectorOptions(
   int          optionCount,
   const int    indices[],
-  const String attr[]) : _optionCount(optionCount)
+  const String attr[]) :
+  _optionCount(optionCount),
+  _indices(indices),
+  _attr_str(attr)
 {
   classname = F("wide");
-  _indices = new int[optionCount];
-
-  if (attr != nullptr) {
-    _attr_str = new String[optionCount];
-  }
-
-  for (int i = 0; i < optionCount; ++i) {
-    _indices[i] = indices[i];
-
-    if (attr != nullptr) {
-      _attr_str[i] = attr[i];
-    }
-  }
 }
 
 FormSelectorOptions::FormSelectorOptions(
   int          optionCount,
   const String options[],
   const int    indices[],
-  const String attr[]) : _optionCount(optionCount)
+  const String attr[]) :
+  _optionCount(optionCount),
+  _names_str(options),
+  _indices(indices),
+  _attr_str(attr)
 {
   classname = F("wide");
-  _names_str = new String[optionCount];
-
-  if (indices != nullptr) {
-    _indices = new int[optionCount];
-  }
-
-  if (attr != nullptr) {
-    _attr_str = new String[optionCount];
-  }
-
-
-  for (int i = 0; i < optionCount; ++i) {
-    _names_str[i] = options[i];
-
-    if (indices != nullptr) {
-      _indices[i] = indices[i];
-    }
-
-    if (attr != nullptr) {
-      _attr_str[i] = attr[i];
-    }
-  }
 }
 
 FormSelectorOptions::FormSelectorOptions(
   int                        optionCount,
   const __FlashStringHelper *options[],
   const int                  indices[],
-  const String               attr[]) : _optionCount(optionCount)
+  const String               attr[]) :
+  _optionCount(optionCount),
+  _names_f(options),
+  _indices(indices),
+  _attr_str(attr)
 {
   classname = F("wide");
-  _names_f = new const __FlashStringHelper *[optionCount];
-
-  if (indices != nullptr) {
-    _indices = new int[optionCount];
-  }
-
-  if (attr != nullptr) {
-    _attr_str = new String[optionCount];
-  }
-
-  for (int i = 0; i < optionCount; ++i) {
-    _names_f[i] = options[i];
-
-    if (indices != nullptr) {
-      _indices[i] = indices[i];
-    }
-
-    if (attr != nullptr) {
-      _attr_str[i] = attr[i];
-    }
-  }
 }
 
-FormSelectorOptions::~FormSelectorOptions() {
-    #define DELETE_ARR(A) \
-            if (A != nullptr) { delete[] A; A = nullptr; }
-  DELETE_ARR(_names_f)
-  DELETE_ARR(_names_str)
-  DELETE_ARR(_indices)
-  DELETE_ARR(_attr_str)
-    #undef DELETE_ARR
-}
+FormSelectorOptions::~FormSelectorOptions() {}
 
 String FormSelectorOptions::getOptionString(int index) const
 {
@@ -192,4 +140,7 @@ void FormSelectorOptions::addFormSelector(
     if ((i & 0x07) == 0) { delay(0); }
   }
   addSelector_Foot();
+  if (reloadonchange) {
+    addFormNote(F("Page will reload when selection is changed."));
+  }
 }

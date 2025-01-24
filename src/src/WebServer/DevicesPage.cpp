@@ -1239,13 +1239,15 @@ void devicePage_show_I2C_config(taskIndex_t taskIndex, deviceIndex_t DeviceIndex
       } else {
         i2c_mux_channelCount++;
       }
-      addFormSelector(F("Multiplexer channels"),
-                      F("taskdeviceflags1"),
-                      i2c_mux_channelCount,
-                      i2c_mux_channels,
-                      i2c_mux_channelOptions,
-                      multipleMuxPorts ? 1 : 0,
-                      true);
+      FormSelectorOptions selector(
+        i2c_mux_channelCount,
+        i2c_mux_channels,
+        i2c_mux_channelOptions);
+      selector.reloadonchange = true;
+      selector.addFormSelector(
+        F("Multiplexer channels"),
+        F("taskdeviceflags1"),
+        multipleMuxPorts ? 1 : 0);
     }
 
     if (multipleMuxPorts) {
@@ -1279,12 +1281,14 @@ void devicePage_show_I2C_config(taskIndex_t taskIndex, deviceIndex_t DeviceIndex
       }
 
       if (taskDeviceI2CMuxPort >= static_cast<int>(mux_max)) { taskDeviceI2CMuxPort = -1; } // Reset if out of range
-      addFormSelector(F("Connected to"),
-                      F("taskdevicei2cmuxport"),
-                      mux_max + 1,
-                      i2c_mux_portoptions,
-                      i2c_mux_portchoices,
-                      taskDeviceI2CMuxPort);
+      FormSelectorOptions selector(        
+        mux_max + 1,
+        i2c_mux_portoptions,
+        i2c_mux_portchoices);
+      selector.addFormSelector(
+        F("Connected to"),
+        F("taskdevicei2cmuxport"),
+        taskDeviceI2CMuxPort);
     }
   }
   # endif // if FEATURE_I2CMULTIPLEXER

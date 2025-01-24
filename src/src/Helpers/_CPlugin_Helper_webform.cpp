@@ -169,11 +169,13 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
   switch (varType) {
     case ControllerSettingsStruct::CONTROLLER_USE_DNS:
     {
-      const __FlashStringHelper *options[2] = {
+      const __FlashStringHelper *options[] = {
         F("Use IP address"),
         F("Use Hostname")
       };
-      addFormSelector(displayName, internalName, 2, options, nullptr, nullptr, ControllerSettings.UseDNS, true);
+      FormSelectorOptions selector(NR_ELEMENTS(options), options);
+      selector.reloadonchange = true;
+      selector.addFormSelector(displayName, internalName, ControllerSettings.UseDNS);
       break;
     }
     case ControllerSettingsStruct::CONTROLLER_HOSTNAME:
@@ -220,7 +222,9 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
         static_cast<int>(TLS_types::TLS_insecure)
       };
       constexpr int nrOptions = NR_ELEMENTS(indices);
-      addFormSelector(displayName, internalName, nrOptions, options, indices, choice, true);
+      FormSelectorOptions selector(nrOptions, options, indices);
+      selector.reloadonchange = true;
+      selector.addFormSelector(displayName, internalName, choice);
       addCertificateFileNote(ControllerSettings,
                              F("Certificate or FingerPrint must be stored on the filesystem in"),
                              ControllerSettings.TLStype());
@@ -300,11 +304,12 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
     }
     case ControllerSettingsStruct::CONTROLLER_FULL_QUEUE_ACTION:
     {
-      const __FlashStringHelper *options[2] {
+      const __FlashStringHelper *options[] {
         F("Ignore New"),
         F("Delete Oldest")
       };
-      addFormSelector(displayName, internalName, 2, options, nullptr, nullptr, ControllerSettings.DeleteOldest, false);
+      FormSelectorOptions selector(NR_ELEMENTS(options), options);
+      selector.addFormSelector(displayName, internalName, ControllerSettings.DeleteOldest);
       break;
     }
     case ControllerSettingsStruct::CONTROLLER_ALLOW_EXPIRE:
@@ -318,11 +323,12 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
       break;
     case ControllerSettingsStruct::CONTROLLER_CHECK_REPLY:
     {
-      const __FlashStringHelper *options[2] = {
+      const __FlashStringHelper *options[] = {
         F("Ignore Acknowledgement"),
         F("Check Acknowledgement")
       };
-      addFormSelector(displayName, internalName, 2, options, nullptr, nullptr, ControllerSettings.MustCheckReply, false);
+      FormSelectorOptions selector(NR_ELEMENTS(options), options);
+      selector.addFormSelector(displayName, internalName, ControllerSettings.MustCheckReply);
       break;
     }
     case ControllerSettingsStruct::CONTROLLER_CLIENT_ID:

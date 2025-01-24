@@ -209,13 +209,14 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
       static_cast<int>(AXP2101_device_model_e::LilyGO_TPCie_v1_2),
       static_cast<int>(AXP2101_device_model_e::UserDefined) }; // keep last !!
     constexpr uint8_t valueCount = NR_ELEMENTS(predefinedValues);
-    addFormSelector(F("Predefined device configuration"), F("predef"),
-                    valueCount,
-                    predefinedNames, predefinedValues, 0, !isPowerManagerTask);
-
-    if (!isPowerManagerTask) {
-      addFormNote(F("Page will reload when selection is changed."));
-    }
+    FormSelectorOptions selector(
+      valueCount,
+      predefinedNames, predefinedValues);
+    selector.reloadonchange = !isPowerManagerTask;
+    selector.addFormSelector(
+      F("Predefined device configuration"), 
+      F("predef"),
+      0);
 
     const AXP2101_device_model_e device = static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED);
 
