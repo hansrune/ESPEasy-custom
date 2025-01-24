@@ -172,7 +172,7 @@ void FormSelectorOptions::addFormSelector(
                                     #endif // if FEATURE_TOOLTIPS
                                     );
   } else {
-    do_addSelector_Head(id, classname, EMPTY_STRING, !enabled
+    do_addSelector_Head(id, classname, onChangeCall, !enabled
                         #if FEATURE_TOOLTIPS
                         , tooltip
                         #endif // if FEATURE_TOOLTIPS

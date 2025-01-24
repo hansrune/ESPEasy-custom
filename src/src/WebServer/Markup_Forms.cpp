@@ -513,11 +513,9 @@ void addFormSelector(const __FlashStringHelper * label,
                      int selectedIndex, 
                      bool reloadonchange)
 {
-  String options[optionCount];
-  for (int i = 0; i < optionCount; ++i) {
-    options[i] = indices[i];
-  }
-  addFormSelector(label, id, optionCount, options, indices, selectedIndex, reloadonchange);
+  FormSelectorOptions selector(optionCount, indices);
+  selector.reloadonchange = reloadonchange;
+  selector.addFormSelector(label, id, selectedIndex);
 }
 
 void addFormSelector(const __FlashStringHelper * label, const __FlashStringHelper * id, int optionCount, const __FlashStringHelper * options[], const int indices[], int selectedIndex, bool reloadonchange)
@@ -578,8 +576,9 @@ void addFormSelector(const String& label,
                      int           selectedIndex,
                      bool          reloadonchange)
 {
-  addRowLabel_tr_id(label, id);
-  addSelector(id, optionCount, options, indices, attr, selectedIndex, reloadonchange, true);
+  FormSelectorOptions selector(optionCount, options, indices, attr);
+  selector.reloadonchange = reloadonchange;
+  selector.addFormSelector(label, id, selectedIndex);
 }
 
 void addFormSelector(const String& label,
@@ -614,12 +613,12 @@ void addFormSelector(const String  & label,
                      #endif // if FEATURE_TOOLTIPS
                      )
 {
-  addRowLabel_tr_id(label, id);
-  addSelector(id, optionCount, options, indices, attr, selectedIndex, reloadonchange, true, F("wide")
-              #if FEATURE_TOOLTIPS
-              , tooltip
-              #endif // if FEATURE_TOOLTIPS
-              );
+  FormSelectorOptions selector(optionCount, options, indices, attr);
+  selector.reloadonchange = reloadonchange;
+#if FEATURE_TOOLTIPS
+  selector.tooltip = tooltip;
+#endif
+  selector.addFormSelector(label, id, selectedIndex);
 }
 
 void addFormSelector_script(const __FlashStringHelper * label,
@@ -635,14 +634,12 @@ void addFormSelector_script(const __FlashStringHelper * label,
                             #endif // if FEATURE_TOOLTIPS
                             )
 {
-  addRowLabel_tr_id(label, id);
-  do_addSelector_Head(id, F("wide"), onChangeCall, false
-                      #if FEATURE_TOOLTIPS
-                      , tooltip
-                      #endif // if FEATURE_TOOLTIPS
-                      );
-  addSelector_options(optionCount, options, indices, attr, selectedIndex);
-  addSelector_Foot();
+  FormSelectorOptions selector(optionCount, options, indices, attr);
+#if FEATURE_TOOLTIPS
+  selector.tooltip = tooltip;
+#endif
+  selector.onChangeCall = onChangeCall;
+  selector.addFormSelector(label, id, selectedIndex);
 }
 
 void addFormSelector_script(const __FlashStringHelper * label,
@@ -658,14 +655,12 @@ void addFormSelector_script(const __FlashStringHelper * label,
                             #endif // if FEATURE_TOOLTIPS
                             )
 {
-  addRowLabel_tr_id(label, id);
-  do_addSelector_Head(id, F("wide"), onChangeCall, false
-                      #if FEATURE_TOOLTIPS
-                      , tooltip
-                      #endif // if FEATURE_TOOLTIPS
-                      );
-  addSelector_options(optionCount, options, indices, attr, selectedIndex);
-  addSelector_Foot();
+  FormSelectorOptions selector(optionCount, options, indices, attr);
+#if FEATURE_TOOLTIPS
+  selector.tooltip = tooltip;
+#endif
+  selector.onChangeCall = onChangeCall;
+  selector.addFormSelector(label, id, selectedIndex);
 }
 
 void addFormSelector_YesNo(const __FlashStringHelper * label,

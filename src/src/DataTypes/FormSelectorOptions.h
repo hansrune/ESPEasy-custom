@@ -53,6 +53,7 @@ public:
 #if FEATURE_TOOLTIPS
   String tooltip;
 #endif // if FEATURE_TOOLTIPS
+  String onChangeCall;
 
 protected:
 
