@@ -6,7 +6,7 @@
 class FormSelectorOptions {
 public:
 
-  FormSelectorOptions(int optionCount) : _optionCount(optionCount) {}
+  FormSelectorOptions(int optionCount);
 
   FormSelectorOptions(int          optionCount,
                       const int    indices[],
@@ -49,7 +49,7 @@ public:
 
   bool reloadonchange = false;
   bool enabled = true;
-  const __FlashStringHelper * classname = F("wide");
+  const __FlashStringHelper * classname;
 #if FEATURE_TOOLTIPS
   String tooltip;
 #endif // if FEATURE_TOOLTIPS

@@ -108,18 +108,6 @@ const __FlashStringHelper* toString(AXP2101_chargingDetail_e charge) {
   return F("");
 }
 
-const __FlashStringHelper* toString(AXP2101_CV_charger_voltage_e voltage) {
-  switch (voltage) {
-    case AXP2101_CV_charger_voltage_e::limit_4_00V: return F("4.0");
-    case AXP2101_CV_charger_voltage_e::limit_4_10V: return F("4.1");
-    case AXP2101_CV_charger_voltage_e::limit_4_20V: return F("4.2");
-    case AXP2101_CV_charger_voltage_e::limit_4_35V: return F("4.35");
-    case AXP2101_CV_charger_voltage_e::limit_4_40V: return F("4.4");
-    case AXP2101_CV_charger_voltage_e::reserved: break;
-  }
-  return F("");
-}
-
 AXP2101_registers_e AXP2101_intToRegister(int reg) {
   switch (reg) {
     case 0: return AXP2101_registers_e::dcdc1;

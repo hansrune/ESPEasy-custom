@@ -2,11 +2,18 @@
 
 #include "../WebServer/Markup.h"
 
+FormSelectorOptions::FormSelectorOptions(int optionCount) 
+: _optionCount(optionCount) 
+{
+  classname = F("wide");
+}
+
 FormSelectorOptions::FormSelectorOptions(
   int          optionCount,
   const int    indices[],
   const String attr[]) : _optionCount(optionCount)
 {
+  classname = F("wide");
   _indices = new int[optionCount];
 
   if (attr != nullptr) {
@@ -28,6 +35,7 @@ FormSelectorOptions::FormSelectorOptions(
   const int    indices[],
   const String attr[]) : _optionCount(optionCount)
 {
+  classname = F("wide");
   _names_str = new String[optionCount];
 
   if (indices != nullptr) {
@@ -58,6 +66,7 @@ FormSelectorOptions::FormSelectorOptions(
   const int                  indices[],
   const String               attr[]) : _optionCount(optionCount)
 {
+  classname = F("wide");
   _names_f = new const __FlashStringHelper *[optionCount];
 
   if (indices != nullptr) {

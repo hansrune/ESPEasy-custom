@@ -35,7 +35,6 @@
 #  define P139_CONST_MAX_LDO      3700 // Max. output voltage
 
 
-
 struct P139_data_struct : public PluginTaskData_base {
 public:
 

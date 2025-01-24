@@ -259,6 +259,7 @@ uint16_t AXP2101::registerToVoltage(uint8_t             data,
 }
 
 // Values in mVolt, raw ADC data is expressed in 0.5 mV
+// LUT is based on 10k NTC with 50 uA current
 constexpr uint16_t axp2101_TS_LUT[] {
   3150, // -20
   2508, // -15

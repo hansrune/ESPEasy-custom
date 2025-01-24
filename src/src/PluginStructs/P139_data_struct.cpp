@@ -4,7 +4,7 @@
 
 # ifdef ESP32
 
-#include "../PluginStructs/P139_data_struct_formselectors.h"
+#  include "../PluginStructs/P139_data_struct_formselectors.h"
 
 // **************************************************************************/
 // Constructors
@@ -47,8 +47,9 @@ String P139_data_struct::loadSettings(struct EventStruct *event) {
 // applySettings: Write the current settings to AXP2101
 // **************************************************************************/
 void P139_data_struct::applySettings(struct EventStruct *event) {
-  if (!isInitialized()) 
+  if (!isInitialized()) {
     return;
+  }
   uint8_t count = 0;
 
   for (int s = 0; s < AXP2101_settings_count; ++s) {
@@ -103,7 +104,7 @@ void P139_data_struct::applySettings(struct EventStruct *event) {
   axp2101->setTS_disabled(_settings.getTS_disabled());
 
 
-//  axp2101->set_IRQ_enable_0(0b11110000); // Disable temperature checks
+  //  axp2101->set_IRQ_enable_0(0b11110000); // Disable temperature checks
   axp2101->setConstChargeCurrentLimit(_settings.getConstChargeCurrentLimit());
 }
 
@@ -153,9 +154,9 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   {
     // Reg 63: Iterm Charger Settings and Control
     // 0 .. 200 mA in 25 mA steps  + enable checkbox
-    AXP2101_PreChargeCurrentLimit_FormSelector selector(_settings.getTerminationChargeCurrentLimit());
-
-    // TODO TD-er: Must add 'enabled' checkbox
+    AXP2101_TerminationChargeCurrentLimit_FormSelector selector(_settings.getTerminationChargeCurrentLimit());
+    addFormCheckBox(F("Enable CV Charging"), F("iterm_en"), _settings.getTerminationChargeCurrentLimitEnable());
+    addFormNote(F("When enabled, the last part of the charge cycle is done using constant voltage (CV)"));
   }
 
   {
@@ -178,7 +179,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   }
 
   addFormCheckBox(F("Disable TS pin"), F("dis_TS"), _settings.getTS_disabled());
-  addFormNote(F("Make sure to disable TS pin when no NTC is used, or else the battery will not charge"));
+  addFormNote(F("Make sure to disable TS pin when no battery temperature sensor is used, or else the battery will not charge"));
 
   addFormCheckBox(F("Generate events"), F("events"), P139_GET_GENERATE_EVENTS);
 
@@ -275,12 +276,41 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
                     static_cast<int>(pin));
       }
     }
+
     html_end_table();
 
     addFormNote(F("Check your device documentation for what is connected to each output."));
+
+    if (isInitialized()) {
+      addFormSubHeader(F("Current State"));
+
+      const AXP2101_registers_e registers[] = {
+        AXP2101_registers_e::vbat,
+        AXP2101_registers_e::vbus,
+        AXP2101_registers_e::vsys,
+        AXP2101_registers_e::battemp,
+        AXP2101_registers_e::chiptemp
+      };
+
+      for (size_t i = 0; i < NR_ELEMENTS(registers); ++i) {
+        addRowLabel(toString(registers[i], true));
+
+        if ((registers[i] == AXP2101_registers_e::battemp) ||
+            (registers[i] == AXP2101_registers_e::chiptemp))
+        {
+          addHtmlFloat(read_value(registers[i]));
+          addUnit(F("°C"));
+        } else {
+          addHtmlInt(static_cast<int>(read_value(registers[i])));
+          addUnit(F("mV"));
+        }
+      }
+
+      addRowLabel(F("Charging State"));
+      addHtml(toString(axp2101->getChargingDetail()));
+    }
   }
 }
-
 
 void P139_data_struct::webform_save(struct EventStruct *event) {
   for (uint8_t i = 0; i < P139_NR_OUTPUT_VALUES; ++i) {
@@ -300,36 +330,35 @@ void P139_data_struct::webform_save(struct EventStruct *event) {
     }
   }
 
-  _settings.setChargeLed(static_cast<AXP2101_chargeled_d>(getFormItemInt(F("led"))));
+  _settings.setChargeLed(AXP2101_ChargeLED_FormSelector::get());
 
   // Reg 61: Iprechg Charger Settings
-  _settings.setPreChargeCurrentLimit(getFormItemInt(F("iprechg")));
+  _settings.setPreChargeCurrentLimit(AXP2101_PreChargeCurrentLimit_FormSelector::get());
 
   // Reg 62: ICC Charger Settings
-  _settings.setConstChargeCurrentLimit(getFormItemInt(F("iccchg")));
+  _settings.setConstChargeCurrentLimit(AXP2101_ConstChargeCurrentLimit_FormSelector::get());
 
   // Reg 63: Iterm Charger Settings and Control
   _settings.setTerminationChargeCurrentLimit(
-    getFormItemInt(F("iterm")),
+    AXP2101_TerminationChargeCurrentLimit_FormSelector::get(),
     isFormItemChecked(F("iterm_en")));
 
   // Reg 64: CV Charger Voltage Settings
-  _settings.setCV_chargeVoltage(static_cast<AXP2101_CV_charger_voltage_e>(getFormItemInt(F("cv_volt"))));
+  _settings.setCV_chargeVoltage(AXP2101_CV_charger_voltage_FormSelector::get());
 
   // Reg 14: Minimum System Voltage Control
-  _settings.setLinear_Charger_Vsys_dpm(static_cast<AXP2101_Linear_Charger_Vsys_dpm_e>(getFormItemInt(F("min_vsys"))));
+  _settings.setLinear_Charger_Vsys_dpm(AXP2101_Linear_Charger_Vsys_dpm_FormSelector::get());
 
   // Reg 15: Input Voltage Limit
-  _settings.setVin_DPM(static_cast<AXP2101_VINDPM_e>(getFormItemInt(F("vin_dpm"))));
+  _settings.setVin_DPM(AXP2101_Vin_DPM_FormSelector::get());
 
   // Reg 16: Input Current Limit
-  _settings.setInputCurrentLimit(static_cast<AXP2101_InputCurrentLimit_e>(getFormItemInt(F("cur_lim_in"))));
+  _settings.setInputCurrentLimit(AXP2101_InputCurrentLimit_FormSelector::get());
 
   _settings.setTS_disabled(isFormItemChecked(F("dis_TS")));
 
   saveSettings(event);
 }
-
 
 // **************************************************************************/
 // plugin_read: Read the values and send to controller(s)
@@ -353,32 +382,32 @@ float P139_data_struct::read_value(AXP2101_registers_e value) {
   if (isInitialized()) {
     switch (value)
     {
-    case AXP2101_registers_e::chargeled:
-      return static_cast<float>(axp2101->getChargeLed());
-    case AXP2101_registers_e::batcharge:
-      return static_cast<float>(axp2101->getBatCharge());
-    case AXP2101_registers_e::charging:
-      return static_cast<float>(axp2101->getChargingState());
-    case AXP2101_registers_e::batpresent:
-      return static_cast<float>(axp2101->isBatteryDetected());
-    case AXP2101_registers_e::chipid:
-      return static_cast<float>(axp2101->getChipIDRaw());
-    case AXP2101_registers_e::chargedet:
-      return static_cast<float>(axp2101->getChargingDetail());
+      case AXP2101_registers_e::chargeled:
+        return static_cast<float>(axp2101->getChargeLed());
+      case AXP2101_registers_e::batcharge:
+        return static_cast<float>(axp2101->getBatCharge());
+      case AXP2101_registers_e::charging:
+        return static_cast<float>(axp2101->getChargingState());
+      case AXP2101_registers_e::batpresent:
+        return static_cast<float>(axp2101->isBatteryDetected());
+      case AXP2101_registers_e::chipid:
+        return static_cast<float>(axp2101->getChipIDRaw());
+      case AXP2101_registers_e::chargedet:
+        return static_cast<float>(axp2101->getChargingDetail());
 
-    case AXP2101_registers_e::vbat:
-    case AXP2101_registers_e::vbus:
-    case AXP2101_registers_e::vsys:
-      return static_cast<float>(axp2101->getADCVoltage(value));
+      case AXP2101_registers_e::vbat:
+      case AXP2101_registers_e::vbus:
+      case AXP2101_registers_e::vsys:
+        return static_cast<float>(axp2101->getADCVoltage(value));
 
-    case AXP2101_registers_e::battemp:
-      return axp2101->TS_registerToTemp(axp2101->getADCVoltage(value));
+      case AXP2101_registers_e::battemp:
+        return axp2101->TS_registerToTemp(axp2101->getADCVoltage(value));
 
-    case AXP2101_registers_e::chiptemp:
-      return (22.0f + (7274 - axp2101->getADCVoltage(value)) / 20.0f);
+      case AXP2101_registers_e::chiptemp:
+        return 22.0f + (7274 - axp2101->getADCVoltage(value)) / 20.0f;
 
-    default:
-      return static_cast<float>(axp2101->getPortVoltage(value));
+      default:
+        return static_cast<float>(axp2101->getPortVoltage(value));
     }
   }
   return 0.0f;
@@ -634,8 +663,8 @@ bool P139_data_struct::plugin_get_config_value(struct EventStruct *event,
     const AXP2101_registers_e reg = AXP2101_intToRegister(r);
 
     if (equals(command, toString(reg, false))) { // Voltage (mV) / numeric state
-      if (reg == AXP2101_registers_e::battemp ||
-          reg == AXP2101_registers_e::chiptemp) 
+      if ((reg == AXP2101_registers_e::battemp) ||
+          (reg == AXP2101_registers_e::chiptemp))
       {
         string = floatToString(read_value(reg), 2);
       } else {

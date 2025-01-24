@@ -294,7 +294,6 @@ const __FlashStringHelper* toString(AXP2101_chargeled_d led);
 const __FlashStringHelper* toString(AXP2101_chargingState_e state);
 const __FlashStringHelper* toString(AXP2101_chipid_e chip);
 const __FlashStringHelper* toString(AXP2101_chargingDetail_e charge);
-const __FlashStringHelper* toString(AXP2101_CV_charger_voltage_e voltage);
 
 class AXP2101_settings { // Voltages in mV, range 0..3700, max. depending on the AXP2101 pin/port used.
 public:
