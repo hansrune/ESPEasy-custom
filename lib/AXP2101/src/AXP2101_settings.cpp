@@ -53,7 +53,6 @@ const __FlashStringHelper* toString(AXP2101_registers_e reg,
     case AXP2101_registers_e::vbus: return displayString ? F("BusVoltage") : F("vbus");
     case AXP2101_registers_e::vsys: return displayString ? F("SysVoltage") : F("vsys");
     case AXP2101_registers_e::chiptemp: return displayString ? F("ChipTemp") : F("chiptemp");
-
   }
   return F("");
 }
@@ -233,15 +232,15 @@ AXP2101_settings::AXP2101_settings() {
   chargeStates.pre_chg_cur        = 0b0101;
   chargeStates.const_cur_lim      = 0b01001; // 300 mA, however can be set via EFUSE
   chargeStates.term_cur_lim_en    = 1;
-  chargeStates.term_cur_lim       = 0b0101; // 125 mA
-  chargeStates.chg_volt_lim       = 0b011; // 4.2V
-  chargeStates.thermal_thresh     = 0b10; // 100 deg
+  chargeStates.term_cur_lim       = 0b0101;  // 125 mA
+  chargeStates.chg_volt_lim       = 0b011;   // 4.2V
+  chargeStates.thermal_thresh     = 0b10;    // 100 deg
   chargeStates.chg_timeout_ctrl   = 0b11100110;
   chargeStates.bat_detection      = 1;
-  chargeStates.coincell_term_volt = 0b011;  // 2.9V
-  chargeStates.min_sys_voltage    = 0b110;  // 4.7V
-  chargeStates.inp_volt_limit     = 0b0110; // 4.36V
-  chargeStates.inp_cur_limit      = 0b100;  // 1500 mA
+  chargeStates.coincell_term_volt = 0b011;   // 2.9V
+  chargeStates.min_sys_voltage    = 0b110;   // 4.7V
+  chargeStates.inp_volt_limit     = 0b0110;  // 4.36V
+  chargeStates.inp_cur_limit      = 0b100;   // 1500 mA
 }
 
 // constructor
@@ -269,15 +268,15 @@ AXP2101_settings::AXP2101_settings(uint16_t _dcdc1, uint16_t _dcdc2, uint16_t _d
   chargeStates.pre_chg_cur        = 0b0101;
   chargeStates.const_cur_lim      = 0b01001; // 300 mA, however can be set via EFUSE
   chargeStates.term_cur_lim_en    = 1;
-  chargeStates.term_cur_lim       = 0b0101; // 125 mA
-  chargeStates.chg_volt_lim       = 0b011; // 4.2V
-  chargeStates.thermal_thresh     = 0b10; // 100 deg
+  chargeStates.term_cur_lim       = 0b0101;  // 125 mA
+  chargeStates.chg_volt_lim       = 0b011;   // 4.2V
+  chargeStates.thermal_thresh     = 0b10;    // 100 deg
   chargeStates.chg_timeout_ctrl   = 0b11100110;
   chargeStates.bat_detection      = 1;
-  chargeStates.coincell_term_volt = 0b011;  // 2.9V
-  chargeStates.min_sys_voltage    = 0b110;  // 4.7V
-  chargeStates.inp_volt_limit     = 0b0110; // 4.36V
-  chargeStates.inp_cur_limit      = 0b100;  // 1500 mA
+  chargeStates.coincell_term_volt = 0b011;   // 2.9V
+  chargeStates.min_sys_voltage    = 0b110;   // 4.7V
+  chargeStates.inp_volt_limit     = 0b0110;  // 4.36V
+  chargeStates.inp_cur_limit      = 0b100;   // 1500 mA
 }
 
 void AXP2101_settings::setVoltage(AXP2101_registers_e reg,
@@ -432,7 +431,6 @@ void AXP2101_settings::setTS_disabled(bool val) {
   pinStates.dis_TS_pin = val;
 }
 
-
 uint16_t AXP2101_settings::getPreChargeCurrentLimit() const {
   return chargeStates.pre_chg_cur * 25;
 }
@@ -455,6 +453,7 @@ void AXP2101_settings::setConstChargeCurrentLimit(uint16_t current_mA) {
   if (current_mA > 1000) {
     current_mA = 1000;
   }
+
   if (current_mA <= 200) {
     chargeStates.const_cur_lim = current_mA / 25;
   } else {
@@ -474,10 +473,9 @@ void AXP2101_settings::setTerminationChargeCurrentLimit(uint16_t current_mA, boo
   if (current_mA > 200) {
     current_mA = 200;
   }
-  chargeStates.term_cur_lim = current_mA / 25;
+  chargeStates.term_cur_lim    = current_mA / 25;
   chargeStates.term_cur_lim_en = enable;
 }
-
 
 AXP2101_CV_charger_voltage_e AXP2101_settings::getCV_chargeVoltage() const {
   return static_cast<AXP2101_CV_charger_voltage_e>(chargeStates.chg_volt_lim);
@@ -485,6 +483,7 @@ AXP2101_CV_charger_voltage_e AXP2101_settings::getCV_chargeVoltage() const {
 
 void AXP2101_settings::setCV_chargeVoltage(AXP2101_CV_charger_voltage_e voltage_mV) {
   chargeStates.chg_volt_lim = static_cast<uint8_t>(voltage_mV);
+
   if (chargeStates.chg_volt_lim > static_cast<uint8_t>(AXP2101_CV_charger_voltage_e::limit_4_40V)) {
     // Set to a default safe limit
     chargeStates.chg_volt_lim = static_cast<uint8_t>(AXP2101_CV_charger_voltage_e::limit_4_20V);
@@ -499,23 +498,21 @@ void AXP2101_settings::setLinear_Charger_Vsys_dpm(AXP2101_Linear_Charger_Vsys_dp
   chargeStates.min_sys_voltage = static_cast<uint8_t>(voltage);
 }
 
-
-AXP2101_VINDPM_e  AXP2101_settings::getVin_DPM() const {
+AXP2101_VINDPM_e AXP2101_settings::getVin_DPM() const {
   return static_cast<AXP2101_VINDPM_e>(chargeStates.inp_volt_limit);
 }
 
-void  AXP2101_settings::setVin_DPM(AXP2101_VINDPM_e voltage) {
+void AXP2101_settings::setVin_DPM(AXP2101_VINDPM_e voltage) {
   chargeStates.inp_volt_limit = static_cast<uint8_t>(voltage);
 }
 
-AXP2101_InputCurrentLimit_e  AXP2101_settings::getInputCurrentLimit() const {
+AXP2101_InputCurrentLimit_e AXP2101_settings::getInputCurrentLimit() const {
   return static_cast<AXP2101_InputCurrentLimit_e>(chargeStates.inp_cur_limit);
 }
 
-void  AXP2101_settings::setInputCurrentLimit(AXP2101_InputCurrentLimit_e current) {
+void AXP2101_settings::setInputCurrentLimit(AXP2101_InputCurrentLimit_e current) {
   chargeStates.inp_cur_limit = static_cast<uint8_t>(current);
 }
-
 
 /**
  * AXP2101 device class

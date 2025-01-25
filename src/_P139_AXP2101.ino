@@ -113,9 +113,10 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
         if (i < P139_NR_OUTPUT_VALUES) {
           const uint8_t choice = PCONFIG(P139_CONFIG_BASE + i);
           ExtraTaskSettings.setTaskDeviceValueName(i, toString(static_cast<AXP2101_registers_e>(choice), false));
-          if (choice != (static_cast<uint8_t>(AXP2101_registers_e::battemp)) &&
-              choice != (static_cast<uint8_t>(AXP2101_registers_e::chiptemp))) {
-            ExtraTaskSettings.TaskDeviceValueDecimals[i] = 0;            
+
+          if ((choice != (static_cast<uint8_t>(AXP2101_registers_e::battemp))) &&
+              (choice != (static_cast<uint8_t>(AXP2101_registers_e::chiptemp)))) {
+            ExtraTaskSettings.TaskDeviceValueDecimals[i] = 0;
           }
         } else {
           ExtraTaskSettings.clearTaskDeviceValueName(i);
@@ -180,8 +181,8 @@ boolean Plugin_139(uint8_t function, struct EventStruct *event, String& string)
 
     case PLUGIN_WEBFORM_LOAD:
     {
-      bool created_new              = false;
-      P139_data_struct *P139_data   = static_cast<P139_data_struct *>(getPluginTaskData(event->TaskIndex));
+      bool created_new            = false;
+      P139_data_struct *P139_data = static_cast<P139_data_struct *>(getPluginTaskData(event->TaskIndex));
 
       if (nullptr == P139_data) {
         P139_data = new (std::nothrow) P139_data_struct();

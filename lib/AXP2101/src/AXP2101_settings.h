@@ -69,6 +69,7 @@
 #define AXP2101_VBUS_CTRL_MASK          (1 << 2)
 #define AXP2101_VSYS_CTRL_MASK          (1 << 3)
 #define AXP2101_TDIE_CTRL_MASK          (1 << 4)
+
 // What to do with bit 5: "general purpose ADC channel enable"?
 
 
@@ -227,10 +228,10 @@ enum class AXP2101_chargingDetail_e : uint8_t {
 };
 
 enum class AXP2101_CV_charger_voltage_e : uint8_t {
-  reserved = 0,
+  reserved    = 0,
   limit_4_00V = 0b001,
   limit_4_10V = 0b010,
-  limit_4_20V = 0b011,  // default
+  limit_4_20V = 0b011, // default
   limit_4_35V = 0b100,
   limit_4_40V = 0b101,
   MAX
@@ -344,34 +345,34 @@ public:
 
   // Reg 61: Iprechg Charger Settings
   uint16_t getPreChargeCurrentLimit() const;
-  void setPreChargeCurrentLimit(uint16_t current_mA);
+  void     setPreChargeCurrentLimit(uint16_t current_mA);
 
   // Reg 62: ICC Charger Settings
   uint16_t getConstChargeCurrentLimit() const;
-  void setConstChargeCurrentLimit(uint16_t current_mA);
+  void     setConstChargeCurrentLimit(uint16_t current_mA);
 
   // Reg 63: Iterm Charger Settings and Control
   // Enable/Disable via chargeStates.term_cur_lim_en
   uint16_t getTerminationChargeCurrentLimit() const;
-  bool getTerminationChargeCurrentLimitEnable() const;
-  void setTerminationChargeCurrentLimit(uint16_t current_mA, bool enable);
+  bool     getTerminationChargeCurrentLimitEnable() const;
+  void     setTerminationChargeCurrentLimit(uint16_t current_mA,
+                                            bool     enable);
 
   // Reg 64: CV Charger Voltage Settings
-  AXP2101_CV_charger_voltage_e getCV_chargeVoltage() const;
-  void setCV_chargeVoltage(AXP2101_CV_charger_voltage_e voltage_mV);
+  AXP2101_CV_charger_voltage_e      getCV_chargeVoltage() const;
+  void                              setCV_chargeVoltage(AXP2101_CV_charger_voltage_e voltage_mV);
 
   // Reg 14: Minimum System Voltage Control
   AXP2101_Linear_Charger_Vsys_dpm_e getLinear_Charger_Vsys_dpm() const;
-  void setLinear_Charger_Vsys_dpm(AXP2101_Linear_Charger_Vsys_dpm_e voltage);
+  void                              setLinear_Charger_Vsys_dpm(AXP2101_Linear_Charger_Vsys_dpm_e voltage);
 
   // Reg 15: Input Voltage Limit
-  AXP2101_VINDPM_e getVin_DPM() const;
-  void setVin_DPM(AXP2101_VINDPM_e voltage);
+  AXP2101_VINDPM_e                  getVin_DPM() const;
+  void                              setVin_DPM(AXP2101_VINDPM_e voltage);
 
   // Reg 16: Input Current Limit
-  AXP2101_InputCurrentLimit_e getInputCurrentLimit() const;
-  void setInputCurrentLimit(AXP2101_InputCurrentLimit_e current);
-
+  AXP2101_InputCurrentLimit_e       getInputCurrentLimit() const;
+  void                              setInputCurrentLimit(AXP2101_InputCurrentLimit_e current);
 
 private:
 
@@ -395,53 +396,53 @@ private:
     uint16_t registers_[AXP2101_settings_count]{};
   };
   union {
-    struct {                    // AXP_pin_s: Off / On / default / disabled / unavailable? / unused? / Protected
-      uint64_t en_dcdc1   : 3;  // bit 0/1/2
-      uint64_t en_dcdc2   : 3;  // bit 3/4/5
-      uint64_t en_dcdc3   : 3;  // bit 6/7/8
-      uint64_t en_dcdc4   : 3;  // bit 9/10/11
-      uint64_t en_dcdc5   : 3;  // bit 12/13/14
-      uint64_t en_aldo1   : 3;  // bit 15/16/17
-      uint64_t en_aldo2   : 3;  // bit 18/19/20
-      uint64_t en_aldo3   : 3;  // bit 21/22/23
-      uint64_t en_aldo4   : 3;  // bit 24/25/26
-      uint64_t en_bldo1   : 3;  // bit 27/28/29
-      uint64_t en_bldo2   : 3;  // bit 30/31/32
-      uint64_t en_dldo1   : 3;  // bit 33/34/35
-      uint64_t en_dldo2   : 3;  // bit 36/37/38
-      uint64_t en_cpuldos : 3;  // bit 39/40/41
-      uint64_t chargeled  : 3;  // bit 42/43/44
+    struct {                   // AXP_pin_s: Off / On / default / disabled / unavailable? / unused? / Protected
+      uint64_t en_dcdc1   : 3; // bit 0/1/2
+      uint64_t en_dcdc2   : 3; // bit 3/4/5
+      uint64_t en_dcdc3   : 3; // bit 6/7/8
+      uint64_t en_dcdc4   : 3; // bit 9/10/11
+      uint64_t en_dcdc5   : 3; // bit 12/13/14
+      uint64_t en_aldo1   : 3; // bit 15/16/17
+      uint64_t en_aldo2   : 3; // bit 18/19/20
+      uint64_t en_aldo3   : 3; // bit 21/22/23
+      uint64_t en_aldo4   : 3; // bit 24/25/26
+      uint64_t en_bldo1   : 3; // bit 27/28/29
+      uint64_t en_bldo2   : 3; // bit 30/31/32
+      uint64_t en_dldo1   : 3; // bit 33/34/35
+      uint64_t en_dldo2   : 3; // bit 36/37/38
+      uint64_t en_cpuldos : 3; // bit 39/40/41
+      uint64_t chargeled  : 3; // bit 42/43/44
 
       // Settings for external temperature sensor (TS)
-      uint64_t dis_TS_pin : 1;  // bit 45, reg50 bit 4
-      uint64_t TS_cur_src : 2;  // bit 46/47, reg50 bit 3:2
-      uint64_t TS_current : 2;  // bit 48/49, reg50 bit 1:0
+      uint64_t dis_TS_pin : 1; // bit 45, reg50 bit 4
+      uint64_t TS_cur_src : 2; // bit 46/47, reg50 bit 3:2
+      uint64_t TS_current : 2; // bit 48/49, reg50 bit 1:0
 
-      uint64_t en_unused  : 13; // bit 50..63 // All bits defined
+      uint64_t en_unused : 13; // bit 50..63 // All bits defined
     }        pinStates;
-    uint64_t pinStates_{};      // 8 bytes
+    uint64_t pinStates_{};     // 8 bytes
   };
 
-    union {
-    struct {              
-      uint64_t pre_chg_cur     : 4; // reg 0x61: 25* N mA
-      uint64_t const_cur_lim   : 5; // reg 0x62: 25* N mA if N <= 8, 200+100*(N-8) mA if N > 8
-      uint64_t term_cur_lim_en : 1; // reg 0x63: Charging termination of current enable
-      uint64_t term_cur_lim    : 4; // reg 0x63: 25* N mA
-      uint64_t chg_volt_lim    : 3; // reg 0x64:
-      uint64_t thermal_thresh  : 2; // reg 0x65: 00: 60deg, 01: 80deg, 10: 100deg, 11:120deg
-      uint64_t chg_timeout_ctrl: 8; // reg 0x67:
-      uint64_t bat_detection   : 1; // reg 0x68:
+  union {
+    struct {
+      uint64_t pre_chg_cur        : 4; // reg 0x61: 25* N mA
+      uint64_t const_cur_lim      : 5; // reg 0x62: 25* N mA if N <= 8, 200+100*(N-8) mA if N > 8
+      uint64_t term_cur_lim_en    : 1; // reg 0x63: Charging termination of current enable
+      uint64_t term_cur_lim       : 4; // reg 0x63: 25* N mA
+      uint64_t chg_volt_lim       : 3; // reg 0x64:
+      uint64_t thermal_thresh     : 2; // reg 0x65: 00: 60deg, 01: 80deg, 10: 100deg, 11:120deg
+      uint64_t chg_timeout_ctrl   : 8; // reg 0x67:
+      uint64_t bat_detection      : 1; // reg 0x68:
       uint64_t coincell_term_volt : 3; // reg 0x6A: 2.6~3.3V, 100mV/step, 8 steps
 
-      uint64_t min_sys_voltage : 3; // reg 0x14: 4.1 + N*0.1V  Linear Charger Vsys Voltage dpm
-      uint64_t inp_volt_limit  : 4; // reg 0x15: Vindpm 3.88+N*0.08V
-      uint64_t inp_cur_limit   : 3; // reg 0x16:
+      uint64_t min_sys_voltage : 3;    // reg 0x14: 4.1 + N*0.1V  Linear Charger Vsys Voltage dpm
+      uint64_t inp_volt_limit  : 4;    // reg 0x15: Vindpm 3.88+N*0.08V
+      uint64_t inp_cur_limit   : 3;    // reg 0x16:
 
 
-      uint64_t en_unused  : 23; 
+      uint64_t en_unused : 23;
     }        chargeStates;
-    uint64_t chargeStates_{};      // 8 bytes
+    uint64_t chargeStates_{}; // 8 bytes
   };
 };
 
