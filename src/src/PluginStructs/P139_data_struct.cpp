@@ -186,11 +186,6 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
   addFormSubHeader(F("Hardware outputs AXP2101"));
 
   {
-    if (P139_CONFIG_PREDEFINED > 0) {
-      P139_CURRENT_PREDEFINED = P139_CONFIG_PREDEFINED;
-      P139_CONFIG_PREDEFINED  = 0;
-      applyDeviceModelTemplate(static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED));
-    }
     const __FlashStringHelper *predefinedNames[] = {
       toString(AXP2101_device_model_e::Unselected),
       toString(AXP2101_device_model_e::M5Stack_Core2_v1_1),
@@ -208,13 +203,13 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
       static_cast<int>(AXP2101_device_model_e::LilyGO_TBeamS3_v3),
       static_cast<int>(AXP2101_device_model_e::LilyGO_TPCie_v1_2),
       static_cast<int>(AXP2101_device_model_e::UserDefined) }; // keep last !!
-    constexpr uint8_t valueCount = NR_ELEMENTS(predefinedValues);
+    constexpr uint8_t   valueCount = NR_ELEMENTS(predefinedValues);
     FormSelectorOptions selector(
       valueCount,
       predefinedNames, predefinedValues);
     selector.reloadonchange = !isPowerManagerTask;
     selector.addFormSelector(
-      F("Predefined device configuration"), 
+      F("Predefined device configuration"),
       F("predef"),
       0);
 
@@ -329,15 +324,20 @@ void P139_data_struct::webform_save(struct EventStruct *event) {
                                         toString(static_cast<AXP2101_registers_e>(PCONFIG(P139_CONFIG_BASE + i)), false));
   }
 
-  P139_CONFIG_PREDEFINED = getFormItemInt(F("predef"));
+  const int predefined = getFormItemInt(F("predef"));
   P139_SET_GENERATE_EVENTS(isFormItemChecked(F("events")));
 
-  for (int s = 0; s < AXP2101_settings_count; ++s) {
-    const AXP2101_registers_e reg = AXP2101_intToRegister(s);
+  if (predefined > 0) { // Apply new template to save it, even when task is disabled
+    P139_CURRENT_PREDEFINED = predefined;
+    applyDeviceModelTemplate(static_cast<AXP2101_device_model_e>(P139_CURRENT_PREDEFINED));
+  } else {
+    for (int s = 0; s < AXP2101_settings_count; ++s) {
+      const AXP2101_registers_e reg = AXP2101_intToRegister(s);
 
-    if (!AXP2101_isPinProtected(_settings.getState(reg))) {
-      _settings.setVoltage(reg, getFormItemInt(toString(reg, false)));
-      _settings.setState(reg, static_cast<AXP_pin_s>(getFormItemInt(concat(F("ps"), toString(reg, false)))));
+      if (!AXP2101_isPinProtected(_settings.getState(reg))) {
+        _settings.setVoltage(reg, getFormItemInt(toString(reg, false)));
+        _settings.setState(reg, static_cast<AXP_pin_s>(getFormItemInt(concat(F("ps"), toString(reg, false)))));
+      }
     }
   }
 
