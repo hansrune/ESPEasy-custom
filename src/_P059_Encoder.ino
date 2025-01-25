@@ -79,7 +79,8 @@ boolean Plugin_059(uint8_t function, struct EventStruct *event, String& string)
       {
         const int optionValues[]             = { 1, 2, 4 };
         constexpr size_t optionCount         = NR_ELEMENTS(optionValues);
-        addFormSelector(F("Mode"), F("mode"), optionCount, optionValues, PCONFIG(0));
+        FormSelectorOptions selector(optionCount, optionValues);
+        selector.addFormSelector(F("Mode"), F("mode"), PCONFIG(0));
         addUnit(F("pulses per cycle"));
       }
 

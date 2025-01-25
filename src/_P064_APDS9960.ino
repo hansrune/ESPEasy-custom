@@ -129,7 +129,9 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
           F("R/G/B Colors") };
         const int optionsPluginModeValues[] = { PLUGIN_MODE_GPL_064, PLUGIN_MODE_RGB_064 };
         constexpr size_t optionCount        = NR_ELEMENTS(optionsPluginModeValues);
-        addFormSelector(F("Plugin Mode"), F("mode"), optionCount, optionsPluginMode, optionsPluginModeValues, P064_MODE, true);
+        FormSelectorOptions selector(optionCount, optionsPluginMode, optionsPluginModeValues);
+        selector.reloadonchange = true;
+        selector.addFormSelector(F("Plugin Mode"), F("mode"), P064_MODE);
         # ifndef BUILD_NO_DEBUG
         addFormNote(F("After changing Plugin Mode you may want to change the Values names, below."));
         # endif // ifndef BUILD_NO_DEBUG
@@ -175,10 +177,10 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
 
         // Led_Drive options, all Led_Drive optionsets in SparkFun_APDS9960.h have the same valueset, so only defined once here
         const __FlashStringHelper *optionsLedDrive[] = {
-          F("100 mA (default)"),
-          F("50 mA"),
-          F("25 mA"),
-          F("12.5 mA") };
+          F("100 (default)"),
+          F("50"),
+          F("25"),
+          F("12.5") };
         const int optionsLedDriveValues[]     = { LED_DRIVE_100MA, LED_DRIVE_50MA, LED_DRIVE_25MA, LED_DRIVE_12_5MA };
         constexpr size_t optionsLedDriveCount = NR_ELEMENTS(optionsLedDriveValues);
 
@@ -188,20 +190,27 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
 
         if (P064_IS_GPL_SENSOR) { // Gesture/Proximity/ALS mode
           addFormSubHeader(F("Gesture parameters"));
-
-          addFormSelector(F("Gesture Gain"),
-                          F("ggain"),
-                          optionsGainCount,
-                          optionsGain,
-                          optionsGainValues,
-                          P064_GGAIN);
-
-          addFormSelector(F("Gesture LED Drive"),
-                          F("gldrive"),
-                          optionsLedDriveCount,
-                          optionsLedDrive,
-                          optionsLedDriveValues,
-                          P064_GLDRIVE);
+          {
+            FormSelectorOptions selector(
+              optionsGainCount,
+              optionsGain,
+              optionsGainValues);
+            selector.addFormSelector(
+              F("Gesture Gain"),
+              F("ggain"),
+              P064_GGAIN);
+          }
+          {
+            FormSelectorOptions selector(
+              optionsLedDriveCount,
+              optionsLedDrive,
+              optionsLedDriveValues);
+            selector.addFormSelector(
+              F("Gesture LED Drive"),
+              F("gldrive"),
+              P064_GLDRIVE);
+            addUnit(F("mA"));
+          }
           {
             // Gesture Led-boost values
             const __FlashStringHelper *optionsLedBoost[] = {
@@ -211,17 +220,21 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
               F("300 % (default)") };
             const int optionsLedBoostValues[]     = { LED_BOOST_100, LED_BOOST_150, LED_BOOST_200, LED_BOOST_300 };
             constexpr size_t optionsLedBoostCount = NR_ELEMENTS(optionsLedBoostValues);
-            addFormSelector(F("Gesture LED Boost"),
-                            F("lboost"),
-                            optionsLedBoostCount,
-                            optionsLedBoost,
-                            optionsLedBoostValues,
-                            P064_LED_BOOST);
+            FormSelectorOptions selector(
+              optionsLedBoostCount,
+              optionsLedBoost,
+              optionsLedBoostValues);
+            selector.addFormSelector(
+              F("Gesture LED Boost"),
+              F("lboost"),
+              P064_LED_BOOST);
           }
 
           addFormSubHeader(F("Proximity & Ambient Light Sensor parameters"));
-
-          addFormSelector(F("Proximity Gain"), F("pgain"), optionsGainCount, optionsGain, optionsGainValues, P064_PGAIN);
+          {
+            FormSelectorOptions selector(optionsGainCount, optionsGain, optionsGainValues);
+            selector.addFormSelector(F("Proximity Gain"), F("pgain"),  P064_PGAIN);
+          }
 
           lightSensorGainLabel  = F("Ambient Light Sensor Gain");
           lightSensorDriveLabel = F("Proximity & ALS LED Drive");
@@ -238,14 +251,20 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
             F("4x (default)"),
             F("16x"),
             F("64x") };
-          addFormSelector(lightSensorGainLabel, F("again"), optionsGainCount, optionsALSGain, optionsGainValues, P064_AGAIN);
+          FormSelectorOptions selector(optionsGainCount, optionsALSGain, optionsGainValues);
+          selector.addFormSelector(lightSensorGainLabel, F("again"), P064_AGAIN);
         }
-        addFormSelector(lightSensorDriveLabel,
-                        F("ldrive"),
-                        optionsLedDriveCount,
-                        optionsLedDrive,
-                        optionsLedDriveValues,
-                        P064_LDRIVE);
+        {
+          FormSelectorOptions selector(
+            optionsLedDriveCount,
+            optionsLedDrive,
+            optionsLedDriveValues);
+          selector.addFormSelector(
+            lightSensorDriveLabel,
+            F("ldrive"),
+            P064_LDRIVE);
+          addUnit(F("mA"));
+        }
       }
 
       addFormSubHeader(F("Event generation"));

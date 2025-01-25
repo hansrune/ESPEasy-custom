@@ -224,14 +224,16 @@ boolean Plugin_053(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(PMSx003_output_selection::PM2_5_TempHum_Formaldehyde),
           static_cast<int>(PMSx003_output_selection::ParticlesCount_100ml_cnt0_3__cnt_2_5),
           static_cast<int>(PMSx003_output_selection::ParticlesCount_100ml_cnt1_0_cnt2_5_cnt10) };
-        addFormSelector(F("Output values"),
-                        F("output"),
-                        NR_ELEMENTS(outputOptionValues),
-                        outputOptions,
-                        outputOptionValues,
-                        PLUGIN_053_OUTPUT_SELECTOR,
-                        true);
-        addFormNote(F("Changing this reloads the page and updates task value names + nr decimals."));
+
+        FormSelectorOptions selector(
+          NR_ELEMENTS(outputOptionValues),
+          outputOptions,
+          outputOptionValues);
+        selector.reloadonchange = true;
+        selector.addFormSelector(
+          F("Output values"),
+          F("output"),
+          PLUGIN_053_OUTPUT_SELECTOR);
       }
       {
         const __FlashStringHelper *eventOptions[] = {
@@ -244,12 +246,14 @@ boolean Plugin_053(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(PMSx003_event_datatype::Event_PMxx_TempHum_Formaldehyde),
           static_cast<int>(PMSx003_event_datatype::Event_All_count_bins),
           static_cast<int>(PMSx003_event_datatype::Event_All) };
-        addFormSelector(F("Events for non-output values"),
-                        F("events"),
-                        NR_ELEMENTS(eventOptionValues),
-                        eventOptions,
-                        eventOptionValues,
-                        PLUGIN_053_EVENT_OUT_SELECTOR);
+        FormSelectorOptions selector(
+          NR_ELEMENTS(eventOptionValues),
+          eventOptions,
+          eventOptionValues);
+        selector.addFormSelector(
+          F("Events for non-output values"),
+          F("events"),
+          PLUGIN_053_EVENT_OUT_SELECTOR);
         addFormNote(F("Only generates the 'missing' events, "
                       "(taskname#temp/humi/hcho, "
                       "taskname#pm1.0/pm2.5/pm10, "

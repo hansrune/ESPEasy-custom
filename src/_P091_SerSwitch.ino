@@ -125,7 +125,8 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
         };
         const int optionValues[]     = { SER_SWITCH_YEWE, SER_SWITCH_SONOFFDUAL, SER_SWITCH_LCTECH, SER_SWITCH_WIFIDIMMER };
         constexpr size_t optionCount = NR_ELEMENTS(optionValues);
-        addFormSelector(F("Switch Type"), F("type"), optionCount, options, optionValues, PCONFIG(0));
+        FormSelectorOptions selector(optionCount, options, optionValues);
+        selector.addFormSelector(F("Switch Type"), F("type"), PCONFIG(0));
       }
 
       if (PCONFIG(0) == SER_SWITCH_YEWE)
@@ -138,7 +139,8 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
         };
         const int buttonoptionValues[] = { 1, 2, 3, 4 };
         constexpr size_t optionCount   = NR_ELEMENTS(buttonoptionValues);
-        addFormSelector(F("Number of relays"), F("button"), optionCount, buttonOptions, buttonoptionValues, PCONFIG(1));
+        FormSelectorOptions selector(optionCount, buttonOptions, buttonoptionValues);
+        selector.addFormSelector(F("Number of relays"), F("button"), PCONFIG(1));
       }
 
       if (PCONFIG(0) == SER_SWITCH_SONOFFDUAL)
@@ -149,7 +151,8 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
           F("Simultaneous mode"),
         };
         constexpr size_t optionCount = NR_ELEMENTS(modeoptions);
-        addFormSelector(F("Relay working mode"), F("mode"), optionCount, modeoptions, nullptr, PCONFIG(1));
+        FormSelectorOptions selector(optionCount, modeoptions);
+        selector.addFormSelector(F("Relay working mode"), F("mode"), PCONFIG(1));
       }
 
       if (PCONFIG(0) == SER_SWITCH_LCTECH)
@@ -157,7 +160,8 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
         {
           const int buttonoptionValues[] = { 1, 2, 3, 4 };
           constexpr size_t optionCount   = NR_ELEMENTS(buttonoptionValues);
-          addFormSelector(F("Number of relays"), F("button"), optionCount, buttonoptionValues, PCONFIG(1));
+          FormSelectorOptions selector(optionCount, buttonoptionValues);
+          selector.addFormSelector(F("Number of relays"), F("button"), PCONFIG(1));
         }
 
         {
@@ -172,7 +176,9 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
             F("57600"),
           };
           constexpr size_t optionCount = NR_ELEMENTS(speedOptions);
-          addFormSelector(F("Serial speed"), F("speed"), optionCount, speedOptions, nullptr, PCONFIG(2));
+          FormSelectorOptions selector(optionCount, speedOptions);
+          selector.addFormSelector(F("Serial speed"), F("speed"), PCONFIG(2));
+          addUnit(F("baud"));
         }
 
         addFormCheckBox(F("Use command doubling"), F("dbl"), PCONFIG(3));
