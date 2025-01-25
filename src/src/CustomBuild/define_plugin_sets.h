@@ -1535,15 +1535,20 @@ To create/register a plugin, you have to :
     #if !defined(USES_P095) && defined(ESP32) && !defined(PLUGIN_BUILD_IR_EXTENDED)
       #define USES_P095   // TFT ILI9xxx
     #endif
-    #if !defined(USES_P137) && defined(ESP32)
-      #define USES_P137   // AXP192
+    #if !defined(PLUGIN_BUILD_NORMAL_IRext)
+      // IRext builds do need quite a lot of build space
+      // Also it is quite unlikely those are running from a battery powered unit
+      // which are the boards that need these power management ICs ("PMIC")
+      #if !defined(USES_P137) && defined(ESP32)
+        #define USES_P137   // AXP192
+      #endif
+      #if !defined(USES_P138) && defined(ESP32)
+        #define USES_P138   // IP5306
+      #endif
+      #if !defined(USES_P139) && defined(ESP32)
+        #define USES_P139   // AXP2101
+      #endif
     #endif
-  #if !defined(USES_P138) && defined(ESP32)
-    #define USES_P138   // IP5306
-  #endif
-  #if !defined(USES_P139) && defined(ESP32)
-    #define USES_P139   // AXP2101
-  #endif
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_A

@@ -141,8 +141,10 @@ void FormSelectorOptions::addFormSelector(
     if ((i & 0x07) == 0) { delay(0); }
   }
   addSelector_Foot();
+
   if (reloadonchange) {
     addHtml(F("&#128260;"));
-//    addFormNote(F("Page will reload when selection is changed."));
+
+    //    addFormNote(F("Page will reload when selection is changed."));
   }
 }
