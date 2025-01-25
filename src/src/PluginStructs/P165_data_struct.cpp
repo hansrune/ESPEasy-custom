@@ -236,7 +236,7 @@ bool P165_data_struct::plugin_webform_load(struct EventStruct *event) {
       P165_DISP_DATE,
     };
     FormSelectorOptions selector(NR_ELEMENTS(disploutOptions), displout, disploutOptions);
-    addFormSelector(F("Display Output"), F("dspout"), P165_CONFIG_OUTPUTTYPE);
+    selector.addFormSelector(F("Display Output"), F("dspout"), P165_CONFIG_OUTPUTTYPE);
     # endif // if P165_FEATURE_P073
 
     int dgtCount = 0;
