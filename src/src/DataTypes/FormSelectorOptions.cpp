@@ -2,6 +2,7 @@
 
 #include "../WebServer/Markup.h"
 #include "../WebServer/Markup_Forms.h"
+#include "../WebServer/HTML_wrappers.h"
 
 FormSelectorOptions::FormSelectorOptions(int optionCount)
   : _optionCount(optionCount)
@@ -141,6 +142,7 @@ void FormSelectorOptions::addFormSelector(
   }
   addSelector_Foot();
   if (reloadonchange) {
-    addFormNote(F("Page will reload when selection is changed."));
+    addHtml(F("&#128260;"));
+//    addFormNote(F("Page will reload when selection is changed."));
   }
 }
