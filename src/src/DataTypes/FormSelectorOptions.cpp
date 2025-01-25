@@ -84,7 +84,7 @@ int FormSelectorOptions::getIndexValue(int index) const
 void FormSelectorOptions::addFormSelector(
   const __FlashStringHelper *label,
   const __FlashStringHelper *id,
-  int                        selectedIndex)
+  int                        selectedIndex) const
 {
   addFormSelector(String(label), String(id), selectedIndex);
 }
@@ -92,7 +92,7 @@ void FormSelectorOptions::addFormSelector(
 void FormSelectorOptions::addFormSelector(
   const String             & label,
   const __FlashStringHelper *id,
-  int                        selectedIndex)
+  int                        selectedIndex) const
 {
   addFormSelector(label, String(id), selectedIndex);
 }
@@ -100,7 +100,7 @@ void FormSelectorOptions::addFormSelector(
 void FormSelectorOptions::addFormSelector(
   const __FlashStringHelper *label,
   const String             & id,
-  int                        selectedIndex)
+  int                        selectedIndex) const
 {
   addFormSelector(String(label), id, selectedIndex);
 }
@@ -108,7 +108,7 @@ void FormSelectorOptions::addFormSelector(
 void FormSelectorOptions::addFormSelector(
   const String& label,
   const String& id,
-  int           selectedIndex)
+  int           selectedIndex) const
 {
   addRowLabel_tr_id(label, id);
 

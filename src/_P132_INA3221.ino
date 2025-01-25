@@ -111,9 +111,13 @@ boolean Plugin_132(uint8_t function, struct EventStruct *event, String& string)
         };
         constexpr size_t optionCount = NR_ELEMENTS(varOptions);
 
+        FormSelectorOptions selector(optionCount, varOptions);
+
         for (uint8_t r = 0; r < VARS_PER_TASK; ++r) {
-          addFormSelector(concat(F("Power value "), r + 1),
-                          getPluginCustomArgName(r), optionCount, varOptions, NULL, PCONFIG(P132_CONFIG_BASE + r));
+          selector.addFormSelector(
+            concat(F("Power value "), r + 1),
+            getPluginCustomArgName(r), 
+            PCONFIG(P132_CONFIG_BASE + r));
         }
       }
 
@@ -128,7 +132,8 @@ boolean Plugin_132(uint8_t function, struct EventStruct *event, String& string)
         };
         const int shuntvalue[]       = { 1, 10, 20 };
         constexpr size_t optionCount = NR_ELEMENTS(shuntvalue);
-        addFormSelector(F("Shunt resistor"), F("shunt"), optionCount, varshuntptions, shuntvalue, P132_SHUNT);
+        FormSelectorOptions selector(optionCount, varshuntptions, shuntvalue);
+        selector.addFormSelector(F("Shunt resistor"), F("shunt"), P132_SHUNT);
         addFormNote(F("Select as is installed on the board."));
       }
 
@@ -147,12 +152,8 @@ boolean Plugin_132(uint8_t function, struct EventStruct *event, String& string)
         };
         const int averageValue[]     = { 0b000, 0b001, 0b010, 0b011, 0b100, 0b101, 0b110, 0b111 };
         constexpr size_t optionCount = NR_ELEMENTS(averageValue);
-        addFormSelector(F("Averaging samples"),
-                        F("average"),
-                        optionCount,
-                        averagingSamples,
-                        averageValue,
-                        P132_GET_AVERAGE);
+        FormSelectorOptions selector(optionCount, averagingSamples, averageValue);
+        selector.addFormSelector(F("Averaging samples"),F("average"),P132_GET_AVERAGE);
         addFormNote(F("Samples &gt; 16 then min. Interval: 64= 4, 128= 7, 256= 14, 512= 26, 1024= 52 seconds!"));
       }
 
@@ -171,19 +172,9 @@ boolean Plugin_132(uint8_t function, struct EventStruct *event, String& string)
         //                               140us  204us  332us  588us  1.1ms  2.1ms  4.1ms  8.2ms
         const int conversionValues[] = { 0b000, 0b001, 0b010, 0b011, 0b100, 0b101, 0b110, 0b111 };
         constexpr size_t optionCount = NR_ELEMENTS(conversionValues);
-        addFormSelector(F("Conversion rate Voltage"),
-                        F("conv_v"),
-                        optionCount,
-                        conversionRates,
-                        conversionValues,
-                        P132_GET_CONVERSION_B);
-
-        addFormSelector(F("Conversion rate Current"),
-                        F("conv_c"),
-                        optionCount,
-                        conversionRates,
-                        conversionValues,
-                        P132_GET_CONVERSION_S);
+        FormSelectorOptions selector(optionCount, conversionRates, conversionValues);
+        selector.addFormSelector(F("Conversion rate Voltage"), F("conv_v"), P132_GET_CONVERSION_B);
+        selector.addFormSelector(F("Conversion rate Current"), F("conv_c"), P132_GET_CONVERSION_S);
       }
 
       success = true;

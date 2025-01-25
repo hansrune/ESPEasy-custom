@@ -30,21 +30,21 @@ public:
 
   virtual int    getIndexValue(int index) const;
 
-  void           addFormSelector(const __FlashStringHelper *label,
-                                 const __FlashStringHelper *id,
-                                 int                        selectedIndex);
+  void addFormSelector(const __FlashStringHelper *label,
+                       const __FlashStringHelper *id,
+                       int                        selectedIndex) const;
 
-  void           addFormSelector(const String&label,
-                                 const __FlashStringHelper *id,
-                                 int                        selectedIndex);
+  void addFormSelector(const String&label,
+                       const __FlashStringHelper *id,
+                       int                        selectedIndex) const;
 
-  void           addFormSelector(const __FlashStringHelper *label,
-                                 const String& id,
-                                 int                        selectedIndex);
+  void addFormSelector(const __FlashStringHelper *label,
+                       const String& id,
+                       int                        selectedIndex) const;
 
   void addFormSelector(const String& label,
                        const String& id,
-                       int           selectedIndex);
+                       int           selectedIndex) const;
 
 
   bool reloadonchange = false;
