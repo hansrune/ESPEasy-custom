@@ -427,7 +427,8 @@ void addFormSeparatorCharInput(const __FlashStringHelper *rowLabel,
     charList[i + 1] = charset[i];
     charOpts[i + 1] = static_cast<int>(charset[i]);
   }
-  addFormSelector(rowLabel, id, len, charList, charOpts, value);
+  FormSelectorOptions selector(len, charList, charOpts);
+  selector.addFormSelector(rowLabel, id, value);
 
   if (!String(additionalText).isEmpty()) {
     addUnit(additionalText);
@@ -506,6 +507,7 @@ void addFormSelectorI2C(const String& id,
   addSelector_Foot();
 }
 
+/*
 void addFormSelector(const __FlashStringHelper * label, 
                      const __FlashStringHelper * id, 
                      int optionCount, 
@@ -620,6 +622,7 @@ void addFormSelector(const String  & label,
 #endif
   selector.addFormSelector(label, id, selectedIndex);
 }
+*/
 
 void addFormSelector_YesNo(const __FlashStringHelper * label,
                            const __FlashStringHelper * id,

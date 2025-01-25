@@ -1890,12 +1890,11 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       static_cast<int>(MD_MAX72XX::moduleType_t::DR0CR1RR1_HW),
       static_cast<int>(MD_MAX72XX::moduleType_t::DR1CR0RR1_HW)
     };
-    addFormSelector(F("Hardware type"),
-                    F("hardware"),
-                    P104_hardwareTypeCount,
-                    hardwareTypes,
-                    hardwareOptions,
-                    P104_CONFIG_HARDWARETYPE);
+    FormSelectorOptions selector(
+      P104_hardwareTypeCount,
+      hardwareTypes,
+      hardwareOptions);
+    selector.addFormSelector(F("Hardware type"), F("hardware"), P104_CONFIG_HARDWARETYPE);
     # ifdef P104_ADD_SETTINGS_NOTES
     addFormNote(F("DR = Digits as Rows, CR = Column Reversed, RR = Row Reversed; 0 = no, 1 = yes."));
     # endif // ifdef P104_ADD_SETTINGS_NOTES
@@ -1929,10 +1928,9 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       P104_DATE_FORMAT_US,
       P104_DATE_FORMAT_JP
     };
-    addFormSelector(F("Date format"), F("datefmt"),
-                    3,
-                    dateFormats, dateFormatOptions,
-                    get4BitFromUL(P104_CONFIG_DATETIME, P104_CONFIG_DATETIME_FORMAT));
+    FormSelectorOptions selector(3, dateFormats, dateFormatOptions);
+    selector.addFormSelector(F("Date format"), F("datefmt"),
+      get4BitFromUL(P104_CONFIG_DATETIME, P104_CONFIG_DATETIME_FORMAT));
   }
   { // Date separator
     const __FlashStringHelper *dateSeparators[] = {
@@ -1947,10 +1945,9 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       P104_DATE_SEPARATOR_DASH,
       P104_DATE_SEPARATOR_DOT
     };
-    addFormSelector(F("Date separator"), F("datesep"),
-                    4,
-                    dateSeparators, dateSeparatorOptions,
-                    get4BitFromUL(P104_CONFIG_DATETIME, P104_CONFIG_DATETIME_SEP_CHAR));
+    FormSelectorOptions selector(4, dateSeparators, dateSeparatorOptions);
+    selector.addFormSelector(F("Date separator"), F("datesep"),
+        get4BitFromUL(P104_CONFIG_DATETIME, P104_CONFIG_DATETIME_SEP_CHAR));
 
     addFormCheckBox(F("Year uses 4 digits"), F("year4dgt"), bitRead(P104_CONFIG_DATETIME, P104_CONFIG_DATETIME_YEAR4DGT));
   }
@@ -1974,11 +1971,13 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       #  endif // ifdef P104_USE_ZONE_ORDERING
                              " will save and reload the page.");
     # endif    // if defined(P104_USE_TOOLTIPS) || defined(P104_ADD_SETTINGS_NOTES)
-    addFormSelector(F("Zones"), F("zonecnt"), P104_MAX_ZONES, zonesList, zonesOptions, nullptr, P104_CONFIG_ZONE_COUNT, true
-                    # ifdef P104_USE_TOOLTIPS
-                    , zonetip
-                    # endif // ifdef P104_USE_TOOLTIPS
-                    );
+
+    FormSelectorOptions selector(P104_MAX_ZONES, zonesList, zonesOptions);
+    selector.reloadonchange = true;
+    # ifdef P104_USE_TOOLTIPS
+    selector.tooltip = zonetip;
+    #endif
+    selector.addFormSelector(F("Zones"), F("zonecnt"),  P104_CONFIG_ZONE_COUNT);
 
     # ifdef P104_USE_ZONE_ORDERING
     const String orderTypes[] = {
@@ -1986,12 +1985,13 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       F("Display order (n..1)")
     };
     const int    orderOptions[] = { 0, 1 };
-    addFormSelector(F("Zone order"), F("zoneorder"), 2, orderTypes, orderOptions, nullptr,
-                    bitRead(P104_CONFIG_FLAGS, P104_CONFIG_FLAG_ZONE_ORDER) ? 1 : 0, true
-                    #  ifdef P104_USE_TOOLTIPS
-                    , zonetip
-                    #  endif // ifdef P104_USE_TOOLTIPS
-                    );
+    FormSelectorOptions selector_zoneordering(2, orderTypes, orderOptions);
+    selector.reloadonchange = true;
+    # ifdef P104_USE_TOOLTIPS
+    selector.tooltip = zonetip;
+    #endif
+    selector_zoneordering.addFormSelector(F("Zone order"), F("zoneorder"), 
+        bitRead(P104_CONFIG_FLAGS, P104_CONFIG_FLAG_ZONE_ORDER) ? 1 : 0);
     # endif                  // ifdef P104_USE_ZONE_ORDERING
     # ifdef P104_ADD_SETTINGS_NOTES
     addFormNote(zonetip);

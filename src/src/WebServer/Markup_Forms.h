@@ -292,6 +292,8 @@ void addFormSelectorI2C(const String& id,
                         #endif
                         );
 
+/*
+
 void addFormSelector(const String& label,
                      const String& id,
                      int           optionCount,
@@ -355,7 +357,7 @@ void addFormSelector(const String& label,
                      const String& tooltip = EMPTY_STRING
                      #endif
                      );
-
+*/
 
 void addFormSelector_YesNo(const __FlashStringHelper * label,
                            const __FlashStringHelper * id,

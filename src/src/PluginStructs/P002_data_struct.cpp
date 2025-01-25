@@ -154,7 +154,8 @@ void P002_data_struct::webformLoad(struct EventStruct *event)
       P002_ADC_0db
     };
     constexpr int nrOptions = NR_ELEMENTS(outputOptionValues);
-    addFormSelector(F("Attenuation"), F("attn"), nrOptions, outputOptions, outputOptionValues, P002_ATTENUATION);
+    FormSelectorOptions selector(nrOptions, outputOptions, outputOptionValues);
+    selector.addFormSelector(F("Attenuation"), F("attn"), P002_ATTENUATION);
   }
 
 # endif // ifdef ESP32
@@ -175,7 +176,8 @@ void P002_data_struct::webformLoad(struct EventStruct *event)
 # endif // ifndef LIMIT_BUILD_SIZE
     };
     constexpr int nrOptions = NR_ELEMENTS(outputOptionValues);
-    addFormSelector(F("Oversampling"), F("oversampling"), nrOptions, outputOptions, outputOptionValues, P002_OVERSAMPLING);
+    FormSelectorOptions selector(nrOptions, outputOptions, outputOptionValues);
+    selector.addFormSelector(F("Oversampling"), F("oversampling"), P002_OVERSAMPLING);
   }
 
 # ifdef ESP32
