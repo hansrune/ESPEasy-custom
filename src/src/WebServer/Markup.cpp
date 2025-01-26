@@ -27,11 +27,7 @@ void addTooltip(const String& tooltip)
 
 
 void addSelector_Head(const String& id) {
-  do_addSelector_Head(id, F("wide"), EMPTY_STRING, false
-                      #if FEATURE_TOOLTIPS
-                      , F("")
-                      #endif // if FEATURE_TOOLTIPS
-                      );
+  do_addSelector_Head(id, F("wide"), EMPTY_STRING, false);
 }
 
 void addSelector_Head_reloadOnChange(const __FlashStringHelper * id) {
@@ -51,14 +47,21 @@ void addSelector_Head_reloadOnChange(const String& id,
                                      , const String& tooltip
                                      #endif // if FEATURE_TOOLTIPS
                                      ) {
-  do_addSelector_Head(id, classname, F("return dept_onchange(frmselect)"), disabled
-                      #if FEATURE_TOOLTIPS
-                      , tooltip
-                      #endif // if FEATURE_TOOLTIPS
-                      );
+  addSelector_Head_reloadOnChange(
+    id, 
+    classname, 
+    F("return dept_onchange(frmselect)"), 
+    disabled
+#if FEATURE_TOOLTIPS
+    , tooltip
+#endif // if FEATURE_TOOLTIPS
+  );
 }
 
-void addSelector_Head_reloadOnChange(const String& id, const __FlashStringHelper * classname, const String& onChangeCall, bool disabled
+void addSelector_Head_reloadOnChange(const String& id,
+                                     const __FlashStringHelper * classname, 
+                                     const String& onChangeCall, 
+                                     bool disabled
                                      #if FEATURE_TOOLTIPS
                                      , const String& tooltip
                                      #endif // if FEATURE_TOOLTIPS
@@ -267,7 +270,13 @@ void addSelector_Foot(bool reloadonchange)
 {
   addHtml(F("</select>"));
   if (reloadonchange) {
+#if FEATURE_TOOLTIPS
+    addHtml(F("<tt"));
+    addTooltip(F("Change will submit and reload page"));
+    addHtml(F(">&#128260;</tt>"));
+#else
     addHtml(F("&#128260;"));
+#endif
   }
 }
 
@@ -287,6 +296,7 @@ void addUnit(const String& unit)
 
 void addUnit(char unit)
 {
+  if (unit == '\0') return;
   addHtml(F(" ["));
   addHtml(unit);
   addHtml(']');

@@ -159,9 +159,9 @@ void addFormNumericBox(const String& label, const String& id, int value, int min
                        )
 {
   addRowLabel_tr_id(label, id);
-  addNumericBox(id, value, min, max
+  addNumericBox(id, value, min, max, F("widenumber")
                 #if FEATURE_TOOLTIPS
-                , F("widenumber"), tooltip
+                , tooltip
                 #endif // if FEATURE_TOOLTIPS
                 , disabled
                 );
