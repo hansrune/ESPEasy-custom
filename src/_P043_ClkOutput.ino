@@ -159,7 +159,11 @@ boolean Plugin_043(uint8_t function, struct EventStruct *event, String& string)
         int thisDay = weekDays.indexOf(timeStr.substring(0, 3));
 
         if (thisDay > 0) { thisDay /= 3; }
-        addSelector(concat(F("day"), x), daysCount, days, nullptr, nullptr, thisDay, false, true, F(""));
+        FormSelectorOptions selector(daysCount, days);
+        selector.classname = F("");
+        selector.addSelector(
+          concat(F("day"), x),  
+          thisDay);
         addHtml(',');
         addTextBox(concat(F("clock"), x),
                    parseString(timeStr, 2), 32
@@ -177,7 +181,10 @@ boolean Plugin_043(uint8_t function, struct EventStruct *event, String& string)
         if (validGpio(CONFIG_PIN1) || (P043_SIMPLE_VALUE == 1)) {
           addHtml(' ');
           const uint8_t choice = Cache.getTaskDevicePluginConfig(event->TaskIndex, x);
-          addSelector(concat(F("state"), x), optionsCount, options, nullptr, nullptr, choice);
+          FormSelectorOptions selector(optionsCount, options);
+          selector.addSelector(
+            concat(F("state"), x), 
+            choice);
         }
         else {
           addHtml(strformat(F("Value %d:"), x + 1));

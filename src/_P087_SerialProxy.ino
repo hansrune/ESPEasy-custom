@@ -387,7 +387,9 @@ void P087_html_show_matchForms(struct EventStruct *event) {
           options[P087_Filter_Comp::Equal]    = F("==");
           options[P087_Filter_Comp::NotEqual] = F("!=");
           const int optionValues[] = { P087_Filter_Comp::Equal, P087_Filter_Comp::NotEqual };
-          addSelector(id, 2, options, optionValues, nullptr, static_cast<int>(comparator), false, true, F(""));
+          FormSelectorOptions selector(2, options, optionValues);
+          selector.classname = F("");
+          selector.addSelector(id, static_cast<int>(comparator));
           break;
         }
         case 2:

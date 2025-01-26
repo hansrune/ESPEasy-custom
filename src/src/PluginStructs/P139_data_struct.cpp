@@ -240,6 +240,12 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
     // Don't include Disabled or Protected here, not user-selectable
     constexpr int bootStatesCount = NR_ELEMENTS(bootStateValues);
 
+    FormSelectorOptions selector(
+          bootStatesCount,
+          bootStates,
+          bootStateValues);
+
+
     addRowLabel(F("Output ports"));
 
     html_table(EMPTY_STRING);
@@ -264,12 +270,9 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
       if (AXP2101_isPinProtected(pin)) {
         addUnit(toString(pin));
       } else {
-        addSelector(concat(F("ps"), toString(reg, false)),
-                    bootStatesCount,
-                    bootStates,
-                    bootStateValues,
-                    nullptr,
-                    static_cast<int>(pin));
+        selector.addSelector(
+          concat(F("ps"), toString(reg, false)),
+          static_cast<int>(pin));
       }
     }
 

@@ -557,31 +557,34 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
                        EMPTY_STRING, // pattern,
                        F("xwide")    // class name
                        );
-            html_TD();               // font
-            const uint8_t FontChoice = get3BitFromUL(P036_lines.DisplayLinesV1[varNr].ModifyLayout, P036_FLAG_ModifyLayout_Font);
-            addSelector(getPluginCustomArgName(varNr + 100),
-                        5,
-                        optionsFont,
-                        optionValuesFont,
-                        nullptr,    // attr[],
-                        FontChoice, // selectedIndex,
-                        false,      // reloadonchange,
-                        true,       // enabled,
-                        F("")       // class name
-                        );
-            html_TD();              // alignment
-            const uint8_t AlignmentChoice = get3BitFromUL(P036_lines.DisplayLinesV1[varNr].ModifyLayout,
-                                                          P036_FLAG_ModifyLayout_Alignment);
-            addSelector(getPluginCustomArgName(varNr + 200),
-                        4,
-                        optionsAlignment,
-                        optionValuesAlignment,
-                        nullptr,         // attr[],
-                        AlignmentChoice, // selectedIndex,
-                        false,           // reloadonchange,
-                        true,            // enabled,
-                        F("")            // class name
-                        );
+            {
+              html_TD();               // font
+
+              FormSelectorOptions selector(
+                5,
+                optionsFont,
+                optionValuesFont);
+              selector.classname = F("");
+    
+              const uint8_t FontChoice = get3BitFromUL(P036_lines.DisplayLinesV1[varNr].ModifyLayout, P036_FLAG_ModifyLayout_Font);
+              selector.addSelector(
+                getPluginCustomArgName(varNr + 100),
+                FontChoice); // selectedIndex,
+            }
+            {
+              html_TD();              // alignment
+              FormSelectorOptions selector(
+                4,
+                optionsAlignment,
+                optionValuesAlignment);
+              selector.classname = F("");
+
+              const uint8_t AlignmentChoice = get3BitFromUL(P036_lines.DisplayLinesV1[varNr].ModifyLayout,
+                                                            P036_FLAG_ModifyLayout_Alignment);
+              selector.addSelector(
+                getPluginCustomArgName(varNr + 200),
+                AlignmentChoice); // selectedIndex,
+            }
           }
           html_end_table();
         }

@@ -290,7 +290,9 @@ bool P037_data_struct::webform_load(
       {
         html_TD();
         filterIndex = filters.indexOf(parseString(valueArray[filterOffset], 2, P037_VALUE_SEPARATOR));
-        addSelector(getPluginCustomArgName(idx + 100 + 1), P037_FILTER_COUNT, filterOptions, filterIndices, NULL, filterIndex);
+
+        FormSelectorOptions selector(P037_FILTER_COUNT, filterOptions, filterIndices);
+        selector.addSelector(getPluginCustomArgName(idx + 100 + 1), filterIndex);
         html_TD();
 
         addTextBox(getPluginCustomArgName(idx + 100 + 2), parseStringKeepCase(valueArray[filterOffset], 3, P037_VALUE_SEPARATOR),
@@ -327,7 +329,8 @@ bool P037_data_struct::webform_load(
       }
       {
         html_TD();
-        addSelector(getPluginCustomArgName(idx + 100 + 1), P037_FILTER_COUNT, filterOptions, filterIndices, NULL, filterIndex);
+        FormSelectorOptions selector(P037_FILTER_COUNT, filterOptions, filterIndices);
+        selector.addSelector(getPluginCustomArgName(idx + 100 + 1), filterIndex);
         html_TD();
         addTextBox(getPluginCustomArgName(idx + 100 + 2), EMPTY_STRING,
                    32, false, false, EMPTY_STRING, EMPTY_STRING);
@@ -400,7 +403,9 @@ bool P037_data_struct::webform_load(
       {
         html_TD();
         operandIndex = operands.indexOf(parseString(valueArray[mappingOffset], 2, P037_VALUE_SEPARATOR));
-        addSelector(getPluginCustomArgName(idx + 1), P037_OPERAND_COUNT, operandOptions, operandIndices, NULL, operandIndex);
+
+        FormSelectorOptions selector(P037_OPERAND_COUNT, operandOptions, operandIndices);
+        selector.addSelector(getPluginCustomArgName(idx + 1), operandIndex);
         html_TD();
         addTextBox(getPluginCustomArgName(idx + 2),
                    parseStringKeepCase(valueArray[mappingOffset], 3, P037_VALUE_SEPARATOR),
@@ -434,7 +439,8 @@ bool P037_data_struct::webform_load(
       }
       {
         html_TD();
-        addSelector(getPluginCustomArgName(idx + 1), P037_OPERAND_COUNT, operandOptions, operandIndices, NULL, operandIndex);
+        FormSelectorOptions selector(P037_OPERAND_COUNT, operandOptions, operandIndices);
+        selector.addSelector(getPluginCustomArgName(idx + 1), operandIndex);
         html_TD();
         addTextBox(getPluginCustomArgName(idx + 2), EMPTY_STRING,
                    32, false, false, EMPTY_STRING, F(""));

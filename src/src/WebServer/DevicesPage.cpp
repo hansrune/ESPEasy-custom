@@ -1554,12 +1554,9 @@ void devicePage_show_task_values(taskIndex_t taskIndex, deviceIndex_t DeviceInde
           selected += 4;
         }
 
-        addSelector(
+        FormSelectorOptions selector(NR_ELEMENTS(chartAxis), chartAxis);
+        selector.addSelector(
           getPluginCustomArgName(F("TDSA"), varNr),
-          NR_ELEMENTS(chartAxis),
-          chartAxis,
-          nullptr,
-          nullptr,
           selected);
       }
 # endif // if FEATURE_PLUGIN_STATS

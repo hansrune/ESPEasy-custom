@@ -269,7 +269,9 @@ void AdaGFXFormColorDepth(const __FlashStringHelper *id,
   };
 
   addRowLabel_tr_id(F("Display Color-depth"), id);
-  addSelector(id, colorDepthCount, colorDepths, colorDepthOptions, NULL, selectedIndex, false, enabled);
+  FormSelectorOptions selector(colorDepthCount, colorDepths, colorDepthOptions);
+  selector.enabled = enabled;
+  selector.addSelector(id, selectedIndex);
 }
 
 /*****************************************************************************************

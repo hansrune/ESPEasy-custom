@@ -47,6 +47,13 @@ public:
                        int           selectedIndex) const;
 
 
+  void addSelector(const __FlashStringHelper *id,
+                   int                        selectedIndex) const;
+
+  void addSelector(const String& id,
+                   int                        selectedIndex) const;
+
+
   bool reloadonchange = false;
   bool enabled = true;
   const __FlashStringHelper * classname;

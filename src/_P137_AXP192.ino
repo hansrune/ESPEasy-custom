@@ -271,14 +271,11 @@ boolean Plugin_137(uint8_t function, struct EventStruct *event, String& string)
         for (int i = 0; i < 5; ++i) { // GPIO0..4
           const String id = concat(F("pgpio"), i);
           addRowLabel(concat(F("Initial state GPIO"), i));
-          addSelector(id, optionCount,
-                      bootStates, bootStateValues, bootStateAttributes,
-                      get3BitFromUL(P137_CONFIG_FLAGS, i * 3),
-                      false, !bitRead(P137_CONFIG_DISABLEBITS, i + 3), F("")
-                      #  if FEATURE_TOOLTIPS
-                      , EMPTY_STRING
-                      #  endif // if FEATURE_TOOLTIPS
-                      );
+          FormSelectorOptions selector(
+            optionCount, bootStates, bootStateValues, bootStateAttributes);
+          selector.enabled = !bitRead(P137_CONFIG_DISABLEBITS, i + 3);
+          selector.classname = F("");
+          selector.addSelector(id, get3BitFromUL(P137_CONFIG_FLAGS, i * 3));
 
           if (bitRead(P137_CONFIG_DISABLEBITS, i + 3)) {
             addUnit(notConnected);

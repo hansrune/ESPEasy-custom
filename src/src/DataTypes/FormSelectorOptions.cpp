@@ -111,7 +111,19 @@ void FormSelectorOptions::addFormSelector(
   int           selectedIndex) const
 {
   addRowLabel_tr_id(label, id);
+  addSelector(id, selectedIndex);
+}
 
+
+void FormSelectorOptions::addSelector(const __FlashStringHelper *id,
+                   int                        selectedIndex) const
+{
+  addSelector(String(id), selectedIndex);
+}
+
+void FormSelectorOptions::addSelector(const String& id,
+                   int                        selectedIndex) const
+{
   // FIXME TD-er Change bool 'enabled' to disabled
   if (reloadonchange)
   {

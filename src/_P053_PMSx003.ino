@@ -197,19 +197,16 @@ boolean Plugin_053(uint8_t function, struct EventStruct *event, String& string)
           #  endif // ifdef USES_P175
         };
         addRowLabel(F("Sensor model"));
-        addSelector(F("model"),
-                    NR_ELEMENTS(unitModelOptions),
-                    unitModels,
-                    unitModelOptions,
-                    nullptr,
-                    PLUGIN_053_SENSOR_MODEL_SELECTOR,
-                    false,
-                    #  ifdef USES_P175
-                    !P053_for_P175
-                    #  else // ifdef USES_P175
-                    true
-                    #  endif // ifdef USES_P175
-                    );
+
+        FormSelectorOptions selector(
+          NR_ELEMENTS(unitModelOptions),
+          unitModels,
+          unitModelOptions);
+#  ifdef USES_P175
+        selector.enabled = !P053_for_P175;
+#  endif // ifdef USES_P175
+
+        selector.addSelector(F("model"), PLUGIN_053_SENSOR_MODEL_SELECTOR);
       }
 
       addFormSubHeader(F("Output"));

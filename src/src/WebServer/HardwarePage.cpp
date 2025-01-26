@@ -244,7 +244,8 @@ void handle_hardware() {
       toString(NetworkMedium_t::WIFI), 
       toString(NetworkMedium_t::Ethernet) 
       };
-    addSelector(F("ethwifi"), 2, ethWifiOptions, nullptr, nullptr, static_cast<int>(Settings.NetworkMedium), false, true);
+    FormSelectorOptions selector(2, ethWifiOptions);
+    selector.addSelector(F("ethwifi"), static_cast<int>(Settings.NetworkMedium));
   }
   addFormNote(F("Change Switch between WiFi and Ethernet requires reboot to activate"));
   {
@@ -356,13 +357,14 @@ void handle_hardware() {
 #if CONFIG_ETH_USE_ESP32_EMAC
   addRowLabel_tr_id(F("Ethernet Clock"), F("ethclock"));
   {
-    const __FlashStringHelper * ethClockOptions[4] = { 
+    const __FlashStringHelper * ethClockOptions[] = { 
       toString(EthClockMode_t::Ext_crystal_osc),
       toString(EthClockMode_t::Int_50MHz_GPIO_0),
       toString(EthClockMode_t::Int_50MHz_GPIO_16),
       toString(EthClockMode_t::Int_50MHz_GPIO_17_inv)
       };
-    addSelector(F("ethclock"), 4, ethClockOptions, nullptr, nullptr, static_cast<int>(Settings.ETH_Clock_Mode), false, true);
+    FormSelectorOptions selector(NR_ELEMENTS(ethClockOptions), ethClockOptions);
+    selector.addSelector(F("ethclock"), static_cast<int>(Settings.ETH_Clock_Mode));
   }
 #endif
 #endif // if FEATURE_ETHERNET

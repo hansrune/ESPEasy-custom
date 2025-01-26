@@ -355,12 +355,15 @@ bool P165_data_struct::plugin_webform_load(struct EventStruct *event) {
       html_table(F(""));
 
       addRowLabel(F("Number of Digits *"));
-      addSelector(concat(F("dgts"), grp10),
-                  NR_ELEMENTS(digitOptionValues),
-                  digitOptions,
-                  digitOptionValues, nullptr,
-                  grpDgts,
-                  true, !numberPlan); // 1st and 2nd column
+      FormSelectorOptions selector(
+        NR_ELEMENTS(digitOptionValues),
+        digitOptions,
+        digitOptionValues);
+      selector.reloadonchange = true;
+      selector.enabled = !numberPlan;  // 1st and 2nd column
+      selector.addSelector(
+        concat(F("dgts"), grp10),
+        grpDgts);
       {
         // 3rd column = "Digit <nr>" / "(Extra)"
         for (uint8_t dgt = 0; dgt < grpDgts; ++dgt) {
@@ -477,12 +480,13 @@ bool P165_data_struct::plugin_webform_load(struct EventStruct *event) {
 
       const uint8_t strt = grpStart + grpGstrt << 1;
       addRowLabel(F("Starting segment"));
-      addSelector(concat(F("strt"), grp10),
-                  NR_ELEMENTS(startPixelOptions),
-                  startPixelOptions,
-                  nullptr, nullptr,
-                  strt, false,
-                  !numberPlan);
+      FormSelectorOptions selector(
+        NR_ELEMENTS(startPixelOptions),
+        startPixelOptions);
+      selector.enabled = !numberPlan;
+      selector.addSelector(
+        concat(F("strt"), grp10),
+        strt);
 
       addFormCheckBox(F("Split g-segment pixels"), concat(F("spltg"), grp10),
                       P165_GET_CONFIG_SPLTG(grp), numberPlan || grpGstrt);
