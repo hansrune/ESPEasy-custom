@@ -274,7 +274,7 @@ boolean Plugin_137(uint8_t function, struct EventStruct *event, String& string)
           FormSelectorOptions selector(
             optionCount, bootStates, bootStateValues, bootStateAttributes);
           selector.enabled = !bitRead(P137_CONFIG_DISABLEBITS, i + 3);
-          selector.classname = F("");
+          selector.clearClassName();
           selector.addSelector(id, get3BitFromUL(P137_CONFIG_FLAGS, i * 3));
 
           if (bitRead(P137_CONFIG_DISABLEBITS, i + 3)) {

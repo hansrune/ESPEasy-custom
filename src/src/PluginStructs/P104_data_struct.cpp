@@ -2327,7 +2327,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
           html_TD(); // Content
           FormSelectorOptions selector(
             P104_CONTENT_count, contentTypes, contentOptions);
-          selector.classname = F("");
+          selector.clearClassName();
           selector.addSelector(
             getPluginCustomArgName(index + P104_OFFSET_CONTENT),
             zones[zone].content);
@@ -2335,7 +2335,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
         {
           html_TD(); // Alignment
           FormSelectorOptions selector(3, alignmentTypes, alignmentOptions);
-          selector.classname = F("");
+          selector.clearClassName();
           selector.addSelector(
             getPluginCustomArgName(index + P104_OFFSET_ALIGNMENT),
             zones[zone].alignment);
@@ -2346,7 +2346,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
             animationCount - 1,
             &animationTypes[1],
             &animationOptions[1]);
-          selector.classname = F("");
+          selector.clearClassName();
           # ifdef P104_USE_TOOLTIPS
           selector.tooltip = F("Animation In");
           # endif // ifdef P104_USE_TOOLTIPS
@@ -2368,7 +2368,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
             fontCount,
             fontTypes,
             fontOptions);
-          selector.classname = F("");
+          selector.clearClassName();
           # ifdef P104_USE_TOOLTIPS
           selector.tooltip = F("Font");
           # endif // ifdef P104_USE_TOOLTIPS
@@ -2383,7 +2383,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
             invertedCount,
             invertedTypes,
             invertedOptions);
-          selector.classname = F("");
+          selector.clearClassName();
           # ifdef P104_USE_TOOLTIPS
           selector.tooltip = F("Inverted");
           # endif // ifdef P104_USE_TOOLTIPS
@@ -2422,7 +2422,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
             animationCount,
             animationTypes,
             animationOptions);
-          selector.classname = F("");
+          selector.clearClassName();
           # ifdef P104_USE_TOOLTIPS
           selector.tooltip = F("Animation Out");
           # endif // ifdef P104_USE_TOOLTIPS
@@ -2445,7 +2445,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
             layoutCount,
             layoutTypes,
             layoutOptions);
-          selector.classname = F("");
+          selector.clearClassName();
           # ifdef P104_USE_TOOLTIPS
           selector.tooltip = F("Layout");
           # endif // ifdef P104_USE_TOOLTIPS
@@ -2460,7 +2460,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
             specialEffectCount,
             specialEffectTypes,
             specialEffectOptions);
-          selector.classname = F("");
+          selector.clearClassName();
           # ifdef P104_USE_TOOLTIPS
           selector.tooltip = F("Special Effects");
           # endif // ifdef P104_USE_TOOLTIPS

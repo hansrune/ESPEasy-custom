@@ -564,7 +564,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
                 5,
                 optionsFont,
                 optionValuesFont);
-              selector.classname = F("");
+              selector.clearClassName();
     
               const uint8_t FontChoice = get3BitFromUL(P036_lines.DisplayLinesV1[varNr].ModifyLayout, P036_FLAG_ModifyLayout_Font);
               selector.addSelector(
@@ -577,7 +577,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
                 4,
                 optionsAlignment,
                 optionValuesAlignment);
-              selector.classname = F("");
+              selector.clearClassName();
 
               const uint8_t AlignmentChoice = get3BitFromUL(P036_lines.DisplayLinesV1[varNr].ModifyLayout,
                                                             P036_FLAG_ModifyLayout_Alignment);

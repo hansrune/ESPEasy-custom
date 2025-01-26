@@ -81,6 +81,11 @@ int FormSelectorOptions::getIndexValue(int index) const
   return index;
 }
 
+void FormSelectorOptions::clearClassName()
+{
+  classname = F("");
+}
+
 void FormSelectorOptions::addFormSelector(
   const __FlashStringHelper *label,
   const __FlashStringHelper *id,

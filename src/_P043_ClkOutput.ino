@@ -160,7 +160,7 @@ boolean Plugin_043(uint8_t function, struct EventStruct *event, String& string)
 
         if (thisDay > 0) { thisDay /= 3; }
         FormSelectorOptions selector(daysCount, days);
-        selector.classname = F("");
+        selector.clearClassName();
         selector.addSelector(
           concat(F("day"), x),  
           thisDay);

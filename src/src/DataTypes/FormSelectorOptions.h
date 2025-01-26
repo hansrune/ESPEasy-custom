@@ -30,6 +30,8 @@ public:
 
   virtual int    getIndexValue(int index) const;
 
+  void clearClassName();
+
   void addFormSelector(const __FlashStringHelper *label,
                        const __FlashStringHelper *id,
                        int                        selectedIndex) const;

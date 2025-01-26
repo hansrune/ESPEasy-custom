@@ -428,7 +428,7 @@ boolean Plugin_016(uint8_t function, struct EventStruct *event, String& string)
             html_TD();
             {                      // Decode type
               FormSelectorOptions selector(protocolCount, &decodeTypes[0], &decodeTypeOptions[0]);
-              selector.classname = F("");
+              selector.clearClassName();
               selector.addSelector(
                 getPluginCustomArgName(rowCnt + 0), 
                 static_cast<int>(line.CodeDecodeType));
@@ -446,7 +446,7 @@ boolean Plugin_016(uint8_t function, struct EventStruct *event, String& string)
             html_TD();
             {
               FormSelectorOptions selector(protocolCount, &decodeTypes[0], &decodeTypeOptions[0]);
-              selector.classname = F("");
+              selector.clearClassName();
 
               selector.addSelector(
                 getPluginCustomArgName(rowCnt + 3), 
