@@ -339,10 +339,7 @@ void addFormPasswordBox(const String& label, const String& id, const String& pas
   addHtmlAttribute(F("maxlength"), maxlength);
 
   #if FEATURE_TOOLTIPS
-
-  if (tooltip.length() > 0) {
-    addHtmlAttribute(F("title"), tooltip);
-  }
+  addTooltip(tooltip);
   #endif // if FEATURE_TOOLTIPS
   addHtmlAttribute(F("value"), (password.length() == 0) ? F("") : F("*****"));
   addHtml('>');

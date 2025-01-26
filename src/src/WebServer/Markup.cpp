@@ -15,6 +15,17 @@
 
 #include "../../ESPEasy_common.h"
 
+
+#if FEATURE_TOOLTIPS
+void addTooltip(const String& tooltip)
+{
+  if (tooltip.length() > 0) {
+    addHtmlAttribute(F("title"), tooltip);
+  }
+}
+#endif
+
+
 void addSelector_Head(const String& id) {
   do_addSelector_Head(id, F("wide"), EMPTY_STRING, false
                       #if FEATURE_TOOLTIPS
@@ -72,10 +83,7 @@ void do_addSelector_Head(const String& id, const __FlashStringHelper * classname
   addHtmlAttribute(F("id"),    id);
 
   #if FEATURE_TOOLTIPS
-
-  if (tooltip.length() > 0) {
-    addHtmlAttribute(F("title"), tooltip);
-  }
+  addTooltip(tooltip);
   #endif // if FEATURE_TOOLTIPS
 
   if (disabled) {
@@ -491,10 +499,7 @@ void addCheckBox(const String& id, bool    checked, bool disabled
   if (disabled) { addDisabled(); }
   addHtml('\'');
   #if FEATURE_TOOLTIPS
-
-  if (tooltip.length() > 0) {
-    addHtmlAttribute(F("title"), tooltip);
-  }
+  addTooltip(tooltip);
   #endif // if FEATURE_TOOLTIPS
   addHtml(F("></span></label>"));
 }
@@ -525,10 +530,7 @@ void addNumericBox(const String& id, int value, int min, int max
   addHtmlAttribute(F("id"),    id);
 
   #if FEATURE_TOOLTIPS
-
-  if (tooltip.length() > 0) {
-    addHtmlAttribute(F("title"), tooltip);
-  }
+  addTooltip(tooltip);
   #endif // if FEATURE_TOOLTIPS
 
   if (disabled) {
@@ -593,11 +595,7 @@ void addFloatNumberBox(const String& id, float value, float min, float max, unsi
   addHtmlFloat(value, nrDecimals);
 
   #if FEATURE_TOOLTIPS
-
-  if (!tooltip.isEmpty()) {
-    addHtml(strformat(
-      F("title='%s' "), tooltip.c_str()));
-  }
+  addTooltip(tooltip);
   #endif // if FEATURE_TOOLTIPS
   addHtml('>');
 }
@@ -653,10 +651,7 @@ void addTextBox(const String  & id,
   }
 
   #if FEATURE_TOOLTIPS
-
-  if (tooltip.length() > 0) {
-    addHtmlAttribute(F("title"), tooltip);
-  }
+  addTooltip(tooltip);
   #endif // if FEATURE_TOOLTIPS
   addHtml('>');
 }
@@ -705,10 +700,7 @@ void addTextArea(const String  & id,
   }
 
   #if FEATURE_TOOLTIPS
-
-  if (tooltip.length() > 0) {
-    addHtmlAttribute(F("title"), tooltip);
-  }
+  addTooltip(tooltip);
   #endif // if FEATURE_TOOLTIPS
   addHtml('>');
   addHtml(value);

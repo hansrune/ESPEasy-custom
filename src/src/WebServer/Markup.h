@@ -8,6 +8,10 @@
 #include "../Globals/Plugins.h"
 #include "../Helpers/StringGenerator_GPIO.h"
 
+#if FEATURE_TOOLTIPS
+void addTooltip(const String& tooltip);
+#endif
+
 // ********************************************************************************
 // Add Selector
 // ********************************************************************************
