@@ -152,11 +152,5 @@ void FormSelectorOptions::addSelector(const String& id,
 
     if ((i & 0x07) == 0) { delay(0); }
   }
-  addSelector_Foot();
-
-  if (reloadonchange) {
-    addHtml(F("&#128260;"));
-
-    //    addFormNote(F("Page will reload when selection is changed."));
-  }
+  addSelector_Foot(reloadonchange);
 }

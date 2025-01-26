@@ -252,7 +252,7 @@ void addDeviceSelect(const __FlashStringHelper *name,  pluginID_t choice)
     ++x;
   }
 
-  addSelector_Foot();
+  addSelector_Foot(true);
 }
 
 // ********************************************************************************

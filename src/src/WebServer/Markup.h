@@ -65,7 +65,7 @@ void addSelector_Item(const String& option,
                       bool       disabled = false,
                       const String& attr     = EMPTY_STRING);
 
-void addSelector_Foot();
+void addSelector_Foot(bool reloadonchange = false);
 
 void addUnit(const __FlashStringHelper *unit);
 void addUnit(const String& unit);

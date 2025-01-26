@@ -255,9 +255,12 @@ void addSelector_Item(const String& option, int index, bool    selected, bool   
   addHtml(F("</option>"));
 }
 
-void addSelector_Foot()
+void addSelector_Foot(bool reloadonchange)
 {
   addHtml(F("</select>"));
+  if (reloadonchange) {
+    addHtml(F("&#128260;"));
+  }
 }
 
 void addUnit(const __FlashStringHelper *unit)
