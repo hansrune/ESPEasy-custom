@@ -167,6 +167,7 @@ boolean Plugin_043(uint8_t function, struct EventStruct *event, String& string)
         addHtml(',');
         addTextBox(concat(F("clock"), x),
                    parseString(timeStr, 2), 32,
+                   false, false, EMPTY_STRING,
                    F(""),
                    #  if FEATURE_TOOLTIPS
                    EMPTY_STRING,

@@ -9,15 +9,8 @@
 # define P025_CONFIG_REGISTER      0x01
 
 
-P025_VARIOUS_BITS_t::P025_VARIOUS_BITS_t(int16_t value) {
-  memcpy(this, &value, sizeof(int16_t));
-}
+P025_VARIOUS_BITS_t::P025_VARIOUS_BITS_t(int16_t value) : _regValue(value) {}
 
-int16_t P025_VARIOUS_BITS_t::pconfigvalue() const {
-  int16_t value{};
-  memcpy(&value, this, sizeof(int16_t));
-  return value;
-}
 
 const __FlashStringHelper* Plugin_025_valuename(uint8_t value_nr, bool displayString) {
   const __FlashStringHelper *strings[] {
@@ -47,30 +40,29 @@ const __FlashStringHelper* toString(P025_sensorType sensorType)
 }
 
 struct P025_config_register {
-  struct {
-    uint16_t comp_que        : 2;
-    uint16_t comp_lat        : 1;
-    uint16_t comp_pol        : 1;
-    uint16_t compMode        : 1;
-    uint16_t datarate        : 3;
-    uint16_t mode            : 1;
-    uint16_t PGA             : 3;
-    uint16_t MUX             : 3;
-    uint16_t operatingStatus : 1;
+  union {
+    struct {
+      uint16_t comp_que        : 2;
+      uint16_t comp_lat        : 1;
+      uint16_t comp_pol        : 1;
+      uint16_t compMode        : 1;
+      uint16_t datarate        : 3;
+      uint16_t mode            : 1;
+      uint16_t PGA             : 3;
+      uint16_t MUX             : 3;
+      uint16_t operatingStatus : 1;
+    };
+    uint16_t _regValue{};
   };
 
-  P025_config_register(uint16_t regval) {
-    memcpy(this, &regval, sizeof(uint16_t));
-  }
+  P025_config_register(uint16_t regval) : _regValue(regval) {}
 
   void setRegval(uint16_t regval) {
-    memcpy(this, &regval, sizeof(uint16_t));
+    _regValue = regval;
   }
 
   uint16_t getRegval() const {
-    uint16_t regval{};
-    memcpy(&regval, this, sizeof(uint16_t));
-    return regval;
+    return _regValue;
   }
 
   String toString() const {
