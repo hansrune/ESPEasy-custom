@@ -129,7 +129,7 @@ boolean Plugin_050(uint8_t function, struct EventStruct *event, String& string)
           TCS34725_INTEGRATIONTIME_154MS,
           TCS34725_INTEGRATIONTIME_700MS,
         };
-        FormSelectorOptions selector(NR_ELEMENTS(optionsMode), optionsMode, optionValuesMode);
+        const FormSelectorOptions selector(NR_ELEMENTS(optionsMode), optionsMode, optionValuesMode);
         selector.addFormSelector(F("Integration Time"), F("inttime"),  PCONFIG(0));
         addUnit(F("ms"));
       }
@@ -147,7 +147,7 @@ boolean Plugin_050(uint8_t function, struct EventStruct *event, String& string)
           TCS34725_GAIN_16X,
           TCS34725_GAIN_60X,
         };
-        FormSelectorOptions selector(NR_ELEMENTS(optionsMode2), optionsMode2, optionValuesMode2);
+        const FormSelectorOptions selector(NR_ELEMENTS(optionsMode2), optionsMode2, optionValuesMode2);
         selector.addFormSelector(F("Gain"), F("gain"), PCONFIG(1));
       }
 
@@ -166,7 +166,7 @@ boolean Plugin_050(uint8_t function, struct EventStruct *event, String& string)
 
         // const int optionValuesRGB[P050_RGB_OPTIONS] = { 0, 1, 2, 3, 4, 5 };
         constexpr size_t valueCount = NR_ELEMENTS(optionsRGB);
-        FormSelectorOptions selector(valueCount, optionsRGB);
+        const FormSelectorOptions selector(valueCount, optionsRGB);
         selector.addFormSelector(F("Output RGB Values"), F("outputrgb"), PCONFIG(2));
         # ifndef LIMIT_BUILD_SIZE
         addFormNote(F("For 'normalized' or 'transformed' options, the Red/Green/Blue Decimals should best be increased."));
@@ -194,7 +194,7 @@ boolean Plugin_050(uint8_t function, struct EventStruct *event, String& string)
 
         // const int optionValuesOutput[P050_VALUE4_OPTIONS] = { 0, 1, 2, 3 };
         constexpr size_t valueCount = NR_ELEMENTS(optionsOutput);
-        FormSelectorOptions selector(valueCount, optionsOutput);
+        const FormSelectorOptions selector(valueCount, optionsOutput);
         selector.addFormSelector(F("Output at Values #4"), F("output4"), PCONFIG(3));
         # ifndef LIMIT_BUILD_SIZE
         addFormNote(F("Optionally adjust Values #4 name accordingly."));

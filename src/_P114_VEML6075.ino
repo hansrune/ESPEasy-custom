@@ -94,7 +94,7 @@ boolean Plugin_114(uint8_t function, struct EventStruct *event, String& string)
           P114_IT_800,
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValuesMode2);
-        FormSelectorOptions selector(optionCount, optionsMode2, optionValuesMode2);
+        const FormSelectorOptions selector(optionCount, optionsMode2, optionValuesMode2);
         selector.addFormSelector(F("Integration Time"), F("it"), PCONFIG(1));
         addUnit(F("ms"));
       }
@@ -105,7 +105,7 @@ boolean Plugin_114(uint8_t function, struct EventStruct *event, String& string)
           F("High Dynamic") }
         ;
         constexpr size_t optionCount = NR_ELEMENTS(optionsMode3);
-        FormSelectorOptions selector(optionCount, optionsMode3);
+        const FormSelectorOptions selector(optionCount, optionsMode3);
         selector.addFormSelector(F("Dynamic Setting"), F("hd"), PCONFIG(2));
       }
 

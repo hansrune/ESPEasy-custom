@@ -348,7 +348,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
 # endif // if P036_ENABLE_TICKER
         };
         constexpr int optionCnt = NR_ELEMENTS(optionValues);
-        FormSelectorOptions selector(optionCnt, options, optionValues);
+        const FormSelectorOptions selector(optionCnt, options, optionValues);
         selector.addFormSelector(F("Scroll"), F("scroll"),  P036_SCROLL);
       }
 
@@ -360,7 +360,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
         const int optionValues[]             =
         { static_cast<int>(eP036pinmode::ePPM_Input),
           static_cast<int>(eP036pinmode::ePPM_InputPullUp) };
-        FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
         selector.addFormSelector(F("Pin mode"), F("pinmode"), 
                         bitRead(P036_FLAGS_0, P036_FLAG_INPUT_PULLUP)); // Bit 26 Input PullUp
       }
@@ -390,7 +390,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
           F("Display, Contrast, Frame, Line &amp; Linecount")
         };
         const int optionValues[] = { 0, 1, 3 }; // Bitmap
-        FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
         selector.addFormSelector(F("Generate events"), F("generateEvents"), choice);
 
 #  ifndef P036_LIMIT_BUILD_SIZE
@@ -445,7 +445,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
           # endif // if P036_USERDEF_HEADERS
         };
         constexpr int nrOptions9 = NR_ELEMENTS(options9);
-        FormSelectorOptions selector(nrOptions9, options9, optionValues9);
+        const FormSelectorOptions selector(nrOptions9, options9, optionValues9);
         // HeaderContent
         selector.addFormSelector(
           F("Header"), F("header"), 
@@ -468,7 +468,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
           F("HH:MM:SS (am/pm)"),
           F("HH:MM (am/pm)"),
         };
-        FormSelectorOptions selector(NR_ELEMENTS(options), options);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options);
         selector.addFormSelector(F("Header Time format"), F("timeFmt"),
                         get4BitFromUL(P036_FLAGS_1, P036_FLAG_TIME_FORMAT));
       }
@@ -492,7 +492,7 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(eAlignment::eCenter),
           static_cast<int>(eAlignment::eRight)
         };
-        FormSelectorOptions selector( NR_ELEMENTS(optionValuesAlignment), optionsAlignment, optionValuesAlignment);
+        const FormSelectorOptions selector( NR_ELEMENTS(optionValuesAlignment), optionsAlignment, optionValuesAlignment);
         selector.addFormSelector(F("Align content (global)"), F("LeftAlign"),
                         get2BitFromUL(P036_FLAGS_1, P036_FLAG_LEFT_ALIGNED));
       }

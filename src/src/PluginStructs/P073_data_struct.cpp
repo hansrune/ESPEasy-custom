@@ -115,7 +115,7 @@ void P073_display_output_selector(const __FlashStringHelper *id, int16_t value) 
     P073_DISP_CLOCK12,
     P073_DISP_DATE,
   };
-  FormSelectorOptions selector(NR_ELEMENTS(disploutOptions), displout, disploutOptions);
+  const FormSelectorOptions selector(NR_ELEMENTS(disploutOptions), displout, disploutOptions);
   selector.addFormSelector(F("Display Output"), id, value);
 }
 
@@ -127,7 +127,7 @@ void P073_font_selector(const __FlashStringHelper *id, int16_t value) {
     F("Siekoo with uppercase 'CHNORUX'"),
     F("dSEG7"),
   };
-  FormSelectorOptions selector(NR_ELEMENTS(fontset), fontset);
+  const FormSelectorOptions selector(NR_ELEMENTS(fontset), fontset);
   selector.addFormSelector(F("Font set"), id, value);
   addFormNote(F("Check documentation for examples of the font sets."));
 }

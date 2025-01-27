@@ -148,7 +148,7 @@ boolean Plugin_141(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(P141_CommandTrigger::lcd),
         };
         constexpr size_t optionCount = NR_ELEMENTS(commandTriggerOptions);
-        FormSelectorOptions selector(optionCount, commandTriggers, commandTriggerOptions);
+        const FormSelectorOptions selector(optionCount, commandTriggers, commandTriggerOptions);
         selector.addFormSelector(
           F("Write Command trigger"), F("pcmdtrigger"), P141_CONFIG_FLAG_GET_CMD_TRIGGER);
         # ifndef LIMIT_BUILD_SIZE

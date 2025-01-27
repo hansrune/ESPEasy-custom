@@ -140,7 +140,7 @@ boolean Plugin_004(uint8_t function, struct EventStruct *event, String& string)
           if ((resolutionChoice < 9) || (resolutionChoice > 12)) { resolutionChoice = activeRes; }
           constexpr int resultsOptionValues[] { 9, 10, 11, 12 };
 
-          FormSelectorOptions selector(
+          const FormSelectorOptions selector(
             NR_ELEMENTS(resultsOptionValues),
             resultsOptionValues);
           selector.addFormSelector(F("Device Resolution"), F("res"), resolutionChoice);
@@ -152,7 +152,7 @@ boolean Plugin_004(uint8_t function, struct EventStruct *event, String& string)
           const __FlashStringHelper *resultsOptions[] = { F("NaN"), F("-127"), F("0"), F("125"), F("Ignore") };
           constexpr int resultsOptionValues[] { P004_ERROR_NAN, P004_ERROR_MIN_RANGE, P004_ERROR_ZERO, P004_ERROR_MAX_RANGE, P004_ERROR_IGNORE };
 
-          FormSelectorOptions selector(
+          const FormSelectorOptions selector(
             NR_ELEMENTS(resultsOptionValues),
             resultsOptions, resultsOptionValues);
           selector.addFormSelector(F("Error State Value"), F("err"), P004_ERROR_STATE_OUTPUT);

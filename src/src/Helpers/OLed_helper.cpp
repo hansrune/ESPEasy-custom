@@ -11,7 +11,7 @@ void OLedFormController(const __FlashStringHelper *id,
     F("SH1106 (132x64 dot controller)")
   };
   const int controllerValues[] = { 1, 2 };
-  FormSelectorOptions selector(
+  const FormSelectorOptions selector(
     NR_ELEMENTS(controllerOptions),
     controllerOptions, 
     values == nullptr ? controllerValues : values);
@@ -29,7 +29,7 @@ void OLedFormRotation(const __FlashStringHelper *id,
   const int rotationValues[] = {
     1,
     2 };
-  FormSelectorOptions selector(
+  const FormSelectorOptions selector(
     NR_ELEMENTS(rotationOptions),
     rotationOptions, rotationValues);
   selector.addFormSelector(F("Rotation"), id, selectedIndex);
@@ -48,7 +48,7 @@ void OLedFormContrast(const __FlashStringHelper *id,
     OLED_CONTRAST_LOW,
     OLED_CONTRAST_MED,
     OLED_CONTRAST_HIGH };
-  FormSelectorOptions selector(
+  const FormSelectorOptions selector(
     NR_ELEMENTS(contrastOptions),
     contrastOptions, contrastValues);
 

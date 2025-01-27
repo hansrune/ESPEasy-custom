@@ -159,8 +159,9 @@ void addFormNumericBox(const String& label, const String& id, int value, int min
                        )
 {
   addRowLabel_tr_id(label, id);
-  addNumericBox(id, value, min, max, F("widenumber")
+  addNumericBox(id, value, min, max
                 #if FEATURE_TOOLTIPS
+                , F("widenumber")
                 , tooltip
                 #endif // if FEATURE_TOOLTIPS
                 , disabled
@@ -424,7 +425,7 @@ void addFormSeparatorCharInput(const __FlashStringHelper *rowLabel,
     charList[i + 1] = charset[i];
     charOpts[i + 1] = static_cast<int>(charset[i]);
   }
-  FormSelectorOptions selector(len, charList, charOpts);
+  const FormSelectorOptions selector(len, charList, charOpts);
   selector.addFormSelector(rowLabel, id, value);
 
   if (!String(additionalText).isEmpty()) {
@@ -497,7 +498,7 @@ void addFormSelectorI2C(const String& id,
     String option = formatToHex_decimal(addresses[x]);
 
     if (((x == 0) && (defaultAddress == 0)) || (defaultAddress == addresses[x])) {
-      option += F(" - (default)");
+      option += F(" (default)");
     }
     addSelector_Item(option, addresses[x], addresses[x] == selectedIndex);
   }

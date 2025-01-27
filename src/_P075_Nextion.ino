@@ -97,7 +97,7 @@ boolean Plugin_075(uint8_t function, struct EventStruct *event, String& string)
       };
 
       constexpr size_t optionCount = NR_ELEMENTS(options);
-      FormSelectorOptions selector(optionCount, options);
+      const FormSelectorOptions selector(optionCount, options);
       selector.addFormSelector(F("Baud Rate"), F("baud"), P075_BaudRate);
       addUnit(F("baud"));
       break;

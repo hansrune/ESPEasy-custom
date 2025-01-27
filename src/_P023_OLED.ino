@@ -106,7 +106,7 @@ boolean Plugin_023(uint8_t function, struct EventStruct *event, String& string)
         const __FlashStringHelper *options4[] = { F("Normal"), F("Optimized") };
         const int optionValues4[]             = { 1, 2 };
         constexpr size_t optionCount = NR_ELEMENTS(optionValues4);
-        FormSelectorOptions selector(optionCount, options4, optionValues4);
+        const FormSelectorOptions selector(optionCount, options4, optionValues4);
         selector.addFormSelector(F("Font Width"), F("font_spacing"),  PCONFIG(4));
       }
       {

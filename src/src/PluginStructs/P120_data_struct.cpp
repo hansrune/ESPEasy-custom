@@ -519,7 +519,7 @@ bool P120_data_struct::plugin_webform_loadOutputSelector(struct EventStruct *eve
     const int values[] = { 0,
                            1 };
     const int choice = bitRead(P120_CONFIG_FLAGS1, P120_FLAGS1_ANGLE_IN_RAD);
-    FormSelectorOptions selector(2, options, values);
+    const FormSelectorOptions selector(2, options, values);
     selector.addFormSelector(F("Angle Units"), F("angle_rad"), choice);
   }
   return true;
@@ -529,14 +529,16 @@ bool P120_data_struct::plugin_webform_load(struct EventStruct *event) {
   // Range
   {
     const __FlashStringHelper *rangeOptions[] = {
-      F("2g"),
-      F("4g"),
-      F("8g"),
-      F("16g (default)") };
+      F("2"),
+      F("4"),
+      F("8"),
+      F("16") };
     int rangeValues[] = { P120_RANGE_2G, P120_RANGE_4G, P120_RANGE_8G, P120_RANGE_16G };
     FormSelectorOptions selector(4, rangeOptions, rangeValues);
+    selector.default_index = P120_RANGE_16G;
     selector.addFormSelector(F("Range"), F("range"),
       get2BitFromUL(P120_CONFIG_FLAGS1, P120_FLAGS1_RANGE));
+    addUnit('g');
   }
 
   // Axis selection
@@ -629,7 +631,7 @@ bool P120_data_struct::plugin_webform_load(struct EventStruct *event) {
       F("10"),
       F("50") };
     int frequencyValues[] = { P120_FREQUENCY_10, P120_FREQUENCY_50 };
-    FormSelectorOptions selector( 2, frequencyOptions, frequencyValues);
+    const FormSelectorOptions selector( 2, frequencyOptions, frequencyValues);
     selector.addFormSelector(F("Measuring frequency"), F("frequency"), P120_FREQUENCY);
     addUnit(F("Hz"));
     addFormNote(F("Values X/Y/Z are updated 1x per second, Controller updates &amp; Value-events are based on 'Interval' setting."));

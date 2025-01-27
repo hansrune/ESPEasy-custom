@@ -97,7 +97,7 @@ boolean Plugin_074(uint8_t function, struct EventStruct *event, String& string) 
         const __FlashStringHelper *optionsMode[] = { F("100"), F("200"), F("300"),
                                                       F("400"), F("500"), F("600") };
         constexpr size_t optionCount = NR_ELEMENTS(optionsMode);
-        FormSelectorOptions selector( optionCount, optionsMode);
+        const FormSelectorOptions selector( optionCount, optionsMode);
         selector.addFormSelector(F("Integration Time"), F("itime"), PCONFIG(1));
         addUnit(F("ms"));
       }
@@ -110,7 +110,7 @@ boolean Plugin_074(uint8_t function, struct EventStruct *event, String& string) 
         const __FlashStringHelper *optionsGain[] = { F("low gain (1x)"),      F("medium gain (25x)"),
                                                       F("medium gain (428x)"), F("max gain (9876x)") };
         constexpr size_t optionCount = NR_ELEMENTS(optionsGain);
-        FormSelectorOptions selector( optionCount, optionsGain);
+        const FormSelectorOptions selector( optionCount, optionsGain);
         selector.addFormSelector(F("Value Mapping"), F("gain"), PCONFIG(2));
       }
 

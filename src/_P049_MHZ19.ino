@@ -94,7 +94,7 @@ boolean Plugin_049(uint8_t function, struct EventStruct *event, String& string)
       {
         const __FlashStringHelper *options[] = { F("Normal"), F("ABC disabled") };
         const int optionValues[]             = { P049_ABC_enabled, P049_ABC_disabled };
-        FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
         selector.addFormSelector(F("Auto Base Calibration"), F("abcdisable"), PCONFIG(0));
       }
       {
@@ -106,7 +106,7 @@ boolean Plugin_049(uint8_t function, struct EventStruct *event, String& string)
           PLUGIN_049_FILTER_FAST,
           PLUGIN_049_FILTER_MEDIUM,
           PLUGIN_049_FILTER_SLOW };
-        FormSelectorOptions selector(NR_ELEMENTS(filteroptions), filteroptions, filteroptionValues);
+        const FormSelectorOptions selector(NR_ELEMENTS(filteroptions), filteroptions, filteroptionValues);
         selector.addFormSelector(F("Filter"), F("filter"), PCONFIG(1));
       }
       P049_html_show_stats(event);

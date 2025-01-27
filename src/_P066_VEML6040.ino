@@ -93,7 +93,7 @@ boolean Plugin_066(uint8_t function, struct EventStruct *event, String& string)
           F("1280ms (515)"),
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionsMode);
-        FormSelectorOptions selector(optionCount, optionsMode);
+        const FormSelectorOptions selector(optionCount, optionsMode);
         selector.addFormSelector(F("Integration Time (Max Lux)"), F("itime"), PCONFIG(1));
       }
 
@@ -107,7 +107,7 @@ boolean Plugin_066(uint8_t function, struct EventStruct *event, String& string)
           F("Color Temperature [K], Ambient Light [Lux], Y, W"),
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionsVarMap);
-        FormSelectorOptions selector(optionCount, optionsVarMap);
+        const FormSelectorOptions selector(optionCount, optionsVarMap);
         selector.addFormSelector(F("Value Mapping"), F("map"), PCONFIG(2));
       }
 

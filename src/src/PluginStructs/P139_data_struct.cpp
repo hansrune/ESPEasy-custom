@@ -240,7 +240,7 @@ void P139_data_struct::webform_load(struct EventStruct *event) {
     // Don't include Disabled or Protected here, not user-selectable
     constexpr int bootStatesCount = NR_ELEMENTS(bootStateValues);
 
-    FormSelectorOptions selector(
+    const FormSelectorOptions selector(
           bootStatesCount,
           bootStates,
           bootStateValues);

@@ -181,7 +181,7 @@ boolean Plugin_098(uint8_t function, struct EventStruct *event, String& string)
           options[i]      = P098_config_struct::toString(static_cast<P098_config_struct::PWM_mode_type>(i));
           optionValues[i] = i;
         }
-        FormSelectorOptions selector(P098_PWM_MODE_TYPES, options, optionValues);
+        const FormSelectorOptions selector(P098_PWM_MODE_TYPES, options, optionValues);
         selector.addFormSelector(F("Motor Control"), F("motor_contr"), P098_MOTOR_CONTROL);
       }
       addFormNumericBox(F("PWM Frequency"), F("pwm_freq"), P098_PWM_FREQ, 50, 100000);

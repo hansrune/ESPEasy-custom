@@ -201,7 +201,7 @@ bool P165_data_struct::plugin_webform_load(struct EventStruct *event) {
   {
     const __FlashStringHelper *stripOptions[] = { F("GRB"), F("GRBW") };
     const int stripOptionValues[]             = { P165_STRIP_TYPE_RGB, P165_STRIP_TYPE_RGBW };
-    FormSelectorOptions selector(NR_ELEMENTS(stripOptionValues), stripOptions, stripOptionValues);
+    const FormSelectorOptions selector(NR_ELEMENTS(stripOptionValues), stripOptions, stripOptionValues);
     selector.addFormSelector(F("Strip Type"), F("stripe"),  P165_CONFIG_STRIP_TYPE);
   }
 
@@ -235,7 +235,7 @@ bool P165_data_struct::plugin_webform_load(struct EventStruct *event) {
       P165_DISP_CLOCK12,
       P165_DISP_DATE,
     };
-    FormSelectorOptions selector(NR_ELEMENTS(disploutOptions), displout, disploutOptions);
+    const FormSelectorOptions selector(NR_ELEMENTS(disploutOptions), displout, disploutOptions);
     selector.addFormSelector(F("Display Output"), F("dspout"), P165_CONFIG_OUTPUTTYPE);
     # endif // if P165_FEATURE_P073
 

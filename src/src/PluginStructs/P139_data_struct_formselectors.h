@@ -13,7 +13,6 @@ class AXP2101_ChargeLED_FormSelector : public FormSelectorOptions {
 public:
 
   AXP2101_ChargeLED_FormSelector(AXP2101_chargeled_d selected);
-  virtual ~AXP2101_ChargeLED_FormSelector() {}
 
   static AXP2101_chargeled_d get();
 
@@ -30,7 +29,6 @@ class AXP2101_PreChargeCurrentLimit_FormSelector : public FormSelectorOptions {
 public:
 
   AXP2101_PreChargeCurrentLimit_FormSelector(int selected);
-  virtual ~AXP2101_PreChargeCurrentLimit_FormSelector() {}
 
   static int     get();
 
@@ -48,7 +46,6 @@ class AXP2101_ConstChargeCurrentLimit_FormSelector : public FormSelectorOptions 
 public:
 
   AXP2101_ConstChargeCurrentLimit_FormSelector(int selected);
-  virtual ~AXP2101_ConstChargeCurrentLimit_FormSelector() {}
 
   static int     get();
 
@@ -65,7 +62,6 @@ class AXP2101_TerminationChargeCurrentLimit_FormSelector : public FormSelectorOp
 public:
 
   AXP2101_TerminationChargeCurrentLimit_FormSelector(int selected);
-  virtual ~AXP2101_TerminationChargeCurrentLimit_FormSelector() {}
 
   static int     get();
 
@@ -81,7 +77,6 @@ class AXP2101_CV_charger_voltage_FormSelector : public FormSelectorOptions {
 public:
 
   AXP2101_CV_charger_voltage_FormSelector(AXP2101_CV_charger_voltage_e selected);
-  virtual ~AXP2101_CV_charger_voltage_FormSelector() {}
 
   static AXP2101_CV_charger_voltage_e get();
 
@@ -97,7 +92,6 @@ class AXP2101_Linear_Charger_Vsys_dpm_FormSelector : public FormSelectorOptions 
 public:
 
   AXP2101_Linear_Charger_Vsys_dpm_FormSelector(AXP2101_Linear_Charger_Vsys_dpm_e selected);
-  virtual ~AXP2101_Linear_Charger_Vsys_dpm_FormSelector() {}
 
   static AXP2101_Linear_Charger_Vsys_dpm_e get();
 
@@ -112,7 +106,6 @@ class AXP2101_Vin_DPM_FormSelector : public FormSelectorOptions {
 public:
 
   AXP2101_Vin_DPM_FormSelector(AXP2101_VINDPM_e selected);
-  virtual ~AXP2101_Vin_DPM_FormSelector() {}
 
   static AXP2101_VINDPM_e get();
 
@@ -127,7 +120,6 @@ class AXP2101_InputCurrentLimit_FormSelector : public FormSelectorOptions {
 public:
 
   AXP2101_InputCurrentLimit_FormSelector(AXP2101_InputCurrentLimit_e selected);
-  virtual ~AXP2101_InputCurrentLimit_FormSelector() {}
 
   static AXP2101_InputCurrentLimit_e get();
 

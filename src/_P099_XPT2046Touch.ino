@@ -128,7 +128,7 @@ boolean Plugin_099(uint8_t function, struct EventStruct *event, String& string)
         const int optionValues2[]             = { 0, 1, 2, 3 };                                                 // Rotation similar to the
                                                                                                                 // TFT ILI9341 rotation
         constexpr size_t optionCount = NR_ELEMENTS(optionValues2);
-        FormSelectorOptions selector(optionCount, options2, optionValues2);
+        const FormSelectorOptions selector(optionCount, options2, optionValues2);
         selector.addFormSelector(F("Rotation"), F("protate"), choice2);
       }
 
@@ -154,7 +154,7 @@ boolean Plugin_099(uint8_t function, struct EventStruct *event, String& string)
           F("Objectnames, X, Y and Z") };
         const int optionValues3[]    = { 0, 1, 3, 4, 5, 7 }; // Already used as a bitmap!
         constexpr size_t optionCount = NR_ELEMENTS(optionValues3);
-        FormSelectorOptions selector(optionCount, options3, optionValues3);
+        const FormSelectorOptions selector(optionCount, options3, optionValues3);
         selector.addFormSelector(F("Events"), F("pevents"), choice3);
       }
 

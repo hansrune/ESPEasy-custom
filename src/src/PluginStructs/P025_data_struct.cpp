@@ -326,7 +326,7 @@ bool P025_data_struct::webformLoad(struct EventStruct *event)
     };
 
     constexpr size_t ADS1115_PGA_OPTIONS = NR_ELEMENTS(pgaOptions);
-    FormSelectorOptions selector(ADS1115_PGA_OPTIONS, pgaOptions);
+    const FormSelectorOptions selector(ADS1115_PGA_OPTIONS, pgaOptions);
     selector.addFormSelector(F("Gain"), F("gain"), P025_GAIN);
     addFormNote(F("Do not apply more than VDD + 0.3 V to the analog inputs of the device."));
   }
@@ -342,7 +342,7 @@ bool P025_data_struct::webformLoad(struct EventStruct *event)
       F("860 / 3300"),
     };
     constexpr size_t NR_OPTIONS = NR_ELEMENTS(P025_SPSOptions);
-    FormSelectorOptions selector(NR_OPTIONS, P025_SPSOptions);
+    const FormSelectorOptions selector(NR_OPTIONS, P025_SPSOptions);
     selector.addFormSelector(F("Sample Rate"), F("sps"), p025_variousBits.getSampleRate());
     addUnit(F("SPS"));
     addFormNote(F("Lower values for ADS1115, higher values for ADS1015"));

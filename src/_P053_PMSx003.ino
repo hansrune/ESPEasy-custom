@@ -243,7 +243,7 @@ boolean Plugin_053(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(PMSx003_event_datatype::Event_PMxx_TempHum_Formaldehyde),
           static_cast<int>(PMSx003_event_datatype::Event_All_count_bins),
           static_cast<int>(PMSx003_event_datatype::Event_All) };
-        FormSelectorOptions selector(
+        const FormSelectorOptions selector(
           NR_ELEMENTS(eventOptionValues),
           eventOptions,
           eventOptionValues);

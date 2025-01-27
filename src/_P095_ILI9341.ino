@@ -261,7 +261,7 @@ boolean Plugin_095(uint8_t function, struct EventStruct *event, String& string)
           # endif // if P095_ENABLE_ILI948X
         };
         constexpr size_t optionCount = NR_ELEMENTS(hardwareOptions);
-        FormSelectorOptions selector(optionCount,
+        const FormSelectorOptions selector(optionCount,
                         hardwareTypes,
                         hardwareOptions);
         selector.addFormSelector(
@@ -312,7 +312,7 @@ boolean Plugin_095(uint8_t function, struct EventStruct *event, String& string)
           # endif // if P095_ENABLE_ILI948X
         };
         constexpr size_t optionCount = NR_ELEMENTS(commandTriggerOptions);
-        FormSelectorOptions selector(optionCount, commandTriggers, commandTriggerOptions);
+        const FormSelectorOptions selector(optionCount, commandTriggers, commandTriggerOptions);
         selector.addFormSelector(
           F("Write Command trigger"),
           F("commandtrigger"), P095_CONFIG_FLAG_GET_CMD_TRIGGER);

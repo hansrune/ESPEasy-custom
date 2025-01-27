@@ -1890,7 +1890,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       static_cast<int>(MD_MAX72XX::moduleType_t::DR0CR1RR1_HW),
       static_cast<int>(MD_MAX72XX::moduleType_t::DR1CR0RR1_HW)
     };
-    FormSelectorOptions selector(
+    const FormSelectorOptions selector(
       P104_hardwareTypeCount,
       hardwareTypes,
       hardwareOptions);
@@ -1928,7 +1928,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       P104_DATE_FORMAT_US,
       P104_DATE_FORMAT_JP
     };
-    FormSelectorOptions selector(3, dateFormats, dateFormatOptions);
+    const FormSelectorOptions selector(3, dateFormats, dateFormatOptions);
     selector.addFormSelector(F("Date format"), F("datefmt"),
                              get4BitFromUL(P104_CONFIG_DATETIME, P104_CONFIG_DATETIME_FORMAT));
   }
@@ -1945,7 +1945,7 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
       P104_DATE_SEPARATOR_DASH,
       P104_DATE_SEPARATOR_DOT
     };
-    FormSelectorOptions selector(4, dateSeparators, dateSeparatorOptions);
+    const FormSelectorOptions selector(4, dateSeparators, dateSeparatorOptions);
     selector.addFormSelector(F("Date separator"), F("datesep"),
                              get4BitFromUL(P104_CONFIG_DATETIME, P104_CONFIG_DATETIME_SEP_CHAR));
 

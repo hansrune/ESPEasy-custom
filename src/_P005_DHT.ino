@@ -65,7 +65,7 @@ boolean Plugin_005(uint8_t function, struct EventStruct *event, String& string)
       constexpr int indices[]{ P005_DHT11, P005_DHT22, P005_DHT12, P005_AM2301, P005_SI7021, P005_MS01 };
       constexpr size_t nrElements = NR_ELEMENTS(indices);
 
-      FormSelectorOptions selector(nrElements, options, indices);
+      const FormSelectorOptions selector(nrElements, options, indices);
       selector.addFormSelector(F("Sensor model"), F("dhttype"), PCONFIG(0));
 
       success = true;

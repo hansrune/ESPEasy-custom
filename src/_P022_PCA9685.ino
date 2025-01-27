@@ -115,12 +115,9 @@ boolean Plugin_022(uint8_t function, struct EventStruct *event, String& string)
         {
           //m2Values[i]  = i;
           m2Options[i] = formatToHex_decimal(i);
-
-          if (i == 0x10) {
-            m2Options[i] += F(" - (default)");
-          }
         }
         FormSelectorOptions selector(PCA9685_MODE2_VALUES, m2Options/*, m2Values*/);
+        selector.default_index = 0x10;
         selector.addFormSelector(F("MODE2"), F("pmode2"), mode2);
       }
       addFormNumericBox(

@@ -237,7 +237,7 @@ boolean Plugin_143(uint8_t function, struct EventStruct *event, String& string)
               static_cast<int>(P143_M5StackLed_e::Led2Only),
             };
             constexpr size_t optionCount = NR_ELEMENTS(selectLedModeValues);
-            FormSelectorOptions selector(optionCount, selectLedModeOptions, selectLedModeValues);
+            const FormSelectorOptions selector(optionCount, selectLedModeOptions, selectLedModeValues);
             selector.addFormSelector(F("Color map Leds"), F("pledsel"), P143_M5STACK_SELECTION);
           }
           # endif // if P143_FEATURE_INCLUDE_M5STACK
@@ -279,7 +279,7 @@ boolean Plugin_143(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(P143_ButtonAction_e::ToggleSwitch),
         };
         constexpr size_t optionCount = NR_ELEMENTS(selectButtonValues);
-        FormSelectorOptions selector(optionCount, selectButtonOptions, selectButtonValues);
+        const FormSelectorOptions selector(optionCount, selectButtonOptions, selectButtonValues);
         selector.addFormSelector(F("Button action"), F("pbutton"), P143_PLUGIN_BUTTON_ACTION);
 
         # if P143_FEATURE_INCLUDE_DFROBOT
@@ -318,7 +318,7 @@ boolean Plugin_143(uint8_t function, struct EventStruct *event, String& string)
             static_cast<int>(P143_CounterMapping_e::ColorGradient),
           };
           constexpr size_t optionCount = NR_ELEMENTS(selectCounterValues);
-          FormSelectorOptions selector(optionCount, selectCounterOptions, selectCounterValues);
+          const FormSelectorOptions selector(optionCount, selectCounterOptions, selectCounterValues);
           selector.addFormSelector(F("Counter color mapping"), F("pmap"), P143_PLUGIN_COUNTER_MAPPING);
         }
         {

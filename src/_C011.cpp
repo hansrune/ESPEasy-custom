@@ -111,7 +111,7 @@ bool CPlugin_011(CPlugin::Function function, struct EventStruct *event, String& 
             }
           }
 
-          FormSelectorOptions selector(nrOptions, methods);
+          const FormSelectorOptions selector(nrOptions, methods);
           selector.addFormSelector(F("Method"), F("P011httpmethod"), choice);
         }
 

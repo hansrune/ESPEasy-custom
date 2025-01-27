@@ -86,7 +86,7 @@ boolean Plugin_067(uint8_t function, struct EventStruct *event, String& string)
 
       {
         const __FlashStringHelper *optionsModeChanA[] = { F("Off"), F("Gain 64"), F("Gain 128") };
-        FormSelectorOptions selector(NR_ELEMENTS(optionsModeChanA), optionsModeChanA);
+        const FormSelectorOptions selector(NR_ELEMENTS(optionsModeChanA), optionsModeChanA);
         selector.addFormSelector(F("Mode"), F("modeChA"), P067_GET_CHANNEL_A_MODE);
       }
 
@@ -102,7 +102,7 @@ boolean Plugin_067(uint8_t function, struct EventStruct *event, String& string)
 
       {
         const __FlashStringHelper *optionsModeChanB[] = { F("Off"), F("Gain 32") };
-        FormSelectorOptions selector(NR_ELEMENTS(optionsModeChanB), optionsModeChanB);
+        const FormSelectorOptions selector(NR_ELEMENTS(optionsModeChanB), optionsModeChanB);
         selector.addFormSelector(F("Mode"), F("modeChB"), P067_GET_CHANNEL_B_MODE);
       }
 

@@ -126,7 +126,7 @@ boolean Plugin_057(uint8_t function, struct EventStruct *event, String& string)
 
       {
         const __FlashStringHelper *options[] = { F("none"), F("7-Seg. HH:MM (24 hour)"), F("7-Seg. HH:MM (12 hour)") };
-        FormSelectorOptions selector(NR_ELEMENTS(options), options);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options);
         selector.addFormSelector(F("Clock Type"), F("clocktype"), PCONFIG(1));
       }
 

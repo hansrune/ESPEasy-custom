@@ -127,7 +127,7 @@ boolean Plugin_169(uint8_t function, struct EventStruct *event, String& string)
           AS3935MI::AS3935_MNL_9,
           AS3935MI::AS3935_MNL_16 };
         constexpr size_t optionCount = NR_ELEMENTS(optionValues);
-        FormSelectorOptions selector(optionCount, options, optionValues);
+        const FormSelectorOptions selector(optionCount, options, optionValues);
         selector.addFormSelector(
           F("Lightning Threshold"),
           P169_LIGHTNING_THRESHOLD_LABEL,
@@ -158,7 +158,7 @@ boolean Plugin_169(uint8_t function, struct EventStruct *event, String& string)
           18
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValues);
-        FormSelectorOptions selector(optionCount, options, optionValues);
+        const FormSelectorOptions selector(optionCount, options, optionValues);
         selector.addFormSelector(F("AFE Gain Min"), P169_AFE_GAIN_LOW_LABEL,  P169_AFE_GAIN_LOW);
         selector.addFormSelector(F("AFE Gain Max"), P169_AFE_GAIN_HIGH_LABEL, P169_AFE_GAIN_HIGH);
         addFormNote(F("Lower and upper limit for the Analog Frond-End auto gain to use."));

@@ -348,7 +348,7 @@ void P087_html_show_matchForms(struct EventStruct *event) {
         optionValues[i] = matchType;
       }
       P087_Match_Type choice = P087_data->getMatchType();
-      FormSelectorOptions selector(
+      const FormSelectorOptions selector(
         P087_Match_Type_NR_ELEMENTS,
         options,
         optionValues);

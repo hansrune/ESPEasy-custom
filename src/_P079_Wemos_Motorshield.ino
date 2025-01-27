@@ -125,7 +125,7 @@ boolean Plugin_079(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(P079_BoardType::LolinMotorshield)
         };
         constexpr size_t optionCount = NR_ELEMENTS(indices);
-        FormSelectorOptions selector(optionCount, options, indices);
+        const FormSelectorOptions selector(optionCount, options, indices);
         selector.addFormSelector(F("Motor Shield Type"), F("shield_type"), SHIELD_VER_PCFG_P079);
       }
 

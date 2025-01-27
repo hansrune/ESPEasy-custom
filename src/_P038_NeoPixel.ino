@@ -96,7 +96,7 @@ boolean Plugin_038(uint8_t function, struct EventStruct *event, String& string)
       {
         const __FlashStringHelper *options[] = { F("GRB"), F("GRBW") };
         int indices[]                        = { P038_STRIP_TYPE_RGB, P038_STRIP_TYPE_RGBW };
-        FormSelectorOptions selector(NR_ELEMENTS(options), options, indices);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options, indices);
         selector.addFormSelector(F("Strip Type"), F("pstrip"), P038_CONFIG_STRIPTYPE);
       }
 

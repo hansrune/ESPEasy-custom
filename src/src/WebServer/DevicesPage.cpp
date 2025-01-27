@@ -1281,7 +1281,7 @@ void devicePage_show_I2C_config(taskIndex_t taskIndex, deviceIndex_t DeviceIndex
       }
 
       if (taskDeviceI2CMuxPort >= static_cast<int>(mux_max)) { taskDeviceI2CMuxPort = -1; } // Reset if out of range
-      FormSelectorOptions selector(        
+      const FormSelectorOptions selector(        
         mux_max + 1,
         i2c_mux_portoptions,
         i2c_mux_portchoices);
@@ -1554,7 +1554,7 @@ void devicePage_show_task_values(taskIndex_t taskIndex, deviceIndex_t DeviceInde
           selected += 4;
         }
 
-        FormSelectorOptions selector(NR_ELEMENTS(chartAxis), chartAxis);
+        const FormSelectorOptions selector(NR_ELEMENTS(chartAxis), chartAxis);
         selector.addSelector(
           getPluginCustomArgName(F("TDSA"), varNr),
           selected);

@@ -85,7 +85,7 @@ boolean Plugin_010(uint8_t function, struct EventStruct *event, String& string)
         RESOLUTION_AUTO_HIGH,
       };
       constexpr size_t optionCount = NR_ELEMENTS(optionValuesMode);
-      FormSelectorOptions selector(optionCount, optionsMode, optionValuesMode);
+      const FormSelectorOptions selector(optionCount, optionsMode, optionValuesMode);
       selector.addFormSelector(F("Measurement mode"), F("pmode"), PCONFIG(1));
 
       addFormCheckBox(F("Send sensor to sleep"), F("psleep"), PCONFIG(2));

@@ -100,7 +100,7 @@ boolean Plugin_110(uint8_t function, struct EventStruct *event, String& string)
           F("Accurate") };
         const int optionValuesMode2[] = { 80, 20, 320 };
         constexpr size_t optionCount  = NR_ELEMENTS(optionValuesMode2);
-        FormSelectorOptions selector(optionCount, optionsMode2, optionValuesMode2);
+        const FormSelectorOptions selector(optionCount, optionsMode2, optionValuesMode2);
         selector.addFormSelector(F("Timing"), F("ptiming"), P110_TIMING);
       }
 
@@ -109,7 +109,7 @@ boolean Plugin_110(uint8_t function, struct EventStruct *event, String& string)
           F("Normal"),
           F("Long") };
         constexpr size_t optionCount = NR_ELEMENTS(optionsMode3);
-        FormSelectorOptions selector(optionCount, optionsMode3);
+        const FormSelectorOptions selector(optionCount, optionsMode3);
         selector.addFormSelector(F("Range"), F("prange"), P110_RANGE);
       }
       addFormCheckBox(F("Send event when value unchanged"), F("notchanged"), P110_SEND_ALWAYS == 1);

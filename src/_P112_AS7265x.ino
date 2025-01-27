@@ -106,7 +106,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         // sensor.setGain(AS7265X_GAIN_64X);
         const __FlashStringHelper *optionsMode[] = {
           F("1x"),
-          F("3.7x (default)"),
+          F("3.7x"),
           F("16x"),
           F("64x"),
         };
@@ -118,6 +118,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValuesMode);
         FormSelectorOptions selector(optionCount, optionsMode, optionValuesMode);
+        selector.default_index = AS7265X_GAIN_37X;
         selector.addFormSelector(F("Gain"), F("Gain"), PCONFIG_LONG(0));
       }
       {
@@ -130,7 +131,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
           F("56"),
           F("140"),
           F("280"),
-          F("711 (default)"),
+          F("711"),
         };
         const int optionValuesMode2[] = {
           0,
@@ -142,6 +143,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValuesMode2);
         FormSelectorOptions selector(optionCount, optionsMode2, optionValuesMode2);
+        selector.default_index = 254; // "711"
         selector.addFormSelector(F("Integration Time"), F("IntegrationTime"), PCONFIG_LONG(1));
         addUnit(F("ms"));
       }
@@ -161,7 +163,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
           F("1"),
           F("2"),
           F("4"),
-          F("8 (default)"),
+          F("8"),
         };
         const int optionValuesMode3[] = {
           AS7265X_INDICATOR_CURRENT_LIMIT_1MA,
@@ -171,6 +173,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValuesMode3);
         FormSelectorOptions selector(optionCount, optionsMode3, optionValuesMode3);
+        selector.default_index = AS7265X_INDICATOR_CURRENT_LIMIT_8MA;
         selector.addFormSelector(EMPTY_STRING, PCONFIG_LABEL(1), PCONFIG(1));
         addUnit(F("mA"));
       }
@@ -186,7 +189,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         // sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_50MA, AS7265x_LED_WHITE);   //Allowed
         // sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_100MA, AS7265x_LED_WHITE);  //Allowed
         const __FlashStringHelper *optionsMode4[] = {
-          F("12.5 (default)"),
+          F("12.5"),
           F("25"),
           F("50"),
           F("100"),
@@ -199,6 +202,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValuesMode4);
         FormSelectorOptions selector(optionCount, optionsMode4, optionValuesMode4);
+        selector.default_index = AS7265X_LED_CURRENT_LIMIT_12_5MA;
         selector.addFormSelector(F("White"), PCONFIG_LABEL(2), PCONFIG(2));
         addUnit(F("mA"));
       }
@@ -211,7 +215,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         // sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_50MA, AS7265x_LED_IR);      //Allowed
         // sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_100MA, AS7265x_LED_IR-bad); //Not allowed
         const __FlashStringHelper *optionsMode5[] = {
-          F("12.5 (default)"),
+          F("12.5"),
           F("25"),
           F("50"),
         };
@@ -222,6 +226,7 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValuesMode5);
         FormSelectorOptions selector(optionCount, optionsMode5, optionValuesMode5);
+        selector.default_index = AS7265X_LED_CURRENT_LIMIT_12_5MA;
         selector.addFormSelector(F("IR"), PCONFIG_LABEL(3), PCONFIG(3));
         addUnit(F("mA"));
       }
@@ -232,10 +237,11 @@ boolean Plugin_112(uint8_t function, struct EventStruct *event, String& string)
         // sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_25MA, AS7265x_LED_UV-bad);  //Not allowed
         // sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_50MA, AS7265x_LED_UV-bad);  //Not allowed
         // sensor.setBulbCurrent(AS7265X_LED_CURRENT_LIMIT_100MA, AS7265x_LED_UV-bad); //Not allowed
-        const __FlashStringHelper *optionsMode6[] = { F("12.5 (default)") };
+        const __FlashStringHelper *optionsMode6[] = { F("12.5") };
         const int optionValuesMode6[]             = { AS7265X_LED_CURRENT_LIMIT_12_5MA };
         constexpr size_t optionCount              = NR_ELEMENTS(optionValuesMode6);
         FormSelectorOptions selector(optionCount, optionsMode6, optionValuesMode6);
+        selector.default_index = AS7265X_LED_CURRENT_LIMIT_12_5MA;
         selector.addFormSelector(F("UV"), PCONFIG_LABEL(4), PCONFIG(4));
         addUnit(F("mA"));
       }

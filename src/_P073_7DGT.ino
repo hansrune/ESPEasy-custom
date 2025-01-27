@@ -119,7 +119,7 @@ boolean Plugin_073(uint8_t function, struct EventStruct *event, String& string) 
                                                    F("TM1637 - 6 digit"),
                                                    F("MAX7219 - 8 digit") };
         constexpr size_t optionCount = NR_ELEMENTS(displtype);
-        FormSelectorOptions selector(optionCount, displtype);
+        const FormSelectorOptions selector(optionCount, displtype);
         selector.addFormSelector(F("Display Type"), F("displtype"), PCONFIG(0));
       }
       {
@@ -130,7 +130,7 @@ boolean Plugin_073(uint8_t function, struct EventStruct *event, String& string) 
                                                   F("Clock 12h - No Blink"),
                                                   F("Date") };
         constexpr size_t optionCount = NR_ELEMENTS(displout);
-        FormSelectorOptions selector(optionCount, displout);
+        const FormSelectorOptions selector(optionCount, displout);
         selector.addFormSelector(F("Display Output"), F("displout"), PCONFIG(1));
       }
 
@@ -144,7 +144,7 @@ boolean Plugin_073(uint8_t function, struct EventStruct *event, String& string) 
                                                  F("Siekoo with uppercase 'CHNORUX'"),
                                                  F("dSEG7") };
         constexpr size_t optionCount = NR_ELEMENTS(fontset);
-        FormSelectorOptions selector(optionCount, fontset);
+        const FormSelectorOptions selector(optionCount, fontset);
         selector.addFormSelector(F("Font set"), F("fontset"), PCONFIG(4));
         addFormNote(F("Check documentation for examples of the font sets."));
       }

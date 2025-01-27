@@ -221,7 +221,7 @@ boolean Plugin_146(uint8_t function, struct EventStruct *event, String& string)
           ';'
         };
         constexpr size_t optionCount = NR_ELEMENTS(separatorOptions);
-        FormSelectorOptions selector(optionCount, separatorLabels, separatorOptions);
+        const FormSelectorOptions selector(optionCount, separatorLabels, separatorOptions);
         selector.addFormSelector(F("Separator"), F("separator"), P146_SEPARATOR_CHARACTER);
       }
       addFormCheckBox(F("Join Samples with same Timestamp"), F("jointimestamp"), P146_GET_JOIN_TIMESTAMP);

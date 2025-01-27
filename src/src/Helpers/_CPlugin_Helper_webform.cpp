@@ -197,7 +197,7 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
     case ControllerSettingsStruct::CONTROLLER_MQTT_TLS_TYPE:
     {
       const int choice                     = static_cast<int>(ControllerSettings.TLStype());
-      const __FlashStringHelper *options[] = {
+      const __FlashStringHelper *options[]{
         toString(TLS_types::NoTLS),
 
         //       toString(TLS_types::TLS_PSK),
@@ -209,7 +209,7 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
 */
         toString(TLS_types::TLS_insecure)
       };
-      const int indices[] = {
+      constexpr int indices[] = {
         static_cast<int>(TLS_types::NoTLS),
 
         //        static_cast<int>(TLS_types::TLS_PSK),
@@ -308,7 +308,7 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
         F("Ignore New"),
         F("Delete Oldest")
       };
-      FormSelectorOptions selector(NR_ELEMENTS(options), options);
+      const FormSelectorOptions selector(NR_ELEMENTS(options), options);
       selector.addFormSelector(displayName, internalName, ControllerSettings.DeleteOldest);
       break;
     }
@@ -327,7 +327,7 @@ void addControllerParameterForm(const ControllerSettingsStruct  & ControllerSett
         F("Ignore Acknowledgement"),
         F("Check Acknowledgement")
       };
-      FormSelectorOptions selector(NR_ELEMENTS(options), options);
+      const FormSelectorOptions selector(NR_ELEMENTS(options), options);
       selector.addFormSelector(displayName, internalName, ControllerSettings.MustCheckReply);
       break;
     }

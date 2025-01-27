@@ -170,20 +170,21 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
         const __FlashStringHelper *optionsGain[] = {
           F("1x"),
           F("2x"),
-          F("4x (default)"),
+          F("4x"),
           F("8x") };
         const int optionsGainValues[]     = { PGAIN_1X, PGAIN_2X, PGAIN_4X, PGAIN_8X }; // Also used for optionsALSGain
         constexpr size_t optionsGainCount = NR_ELEMENTS(optionsGainValues);
+        constexpr int optionsGain_default_index = PGAIN_4X;
 
         // Led_Drive options, all Led_Drive optionsets in SparkFun_APDS9960.h have the same valueset, so only defined once here
         const __FlashStringHelper *optionsLedDrive[] = {
-          F("100 (default)"),
+          F("100"),
           F("50"),
           F("25"),
           F("12.5") };
         const int optionsLedDriveValues[]     = { LED_DRIVE_100MA, LED_DRIVE_50MA, LED_DRIVE_25MA, LED_DRIVE_12_5MA };
         constexpr size_t optionsLedDriveCount = NR_ELEMENTS(optionsLedDriveValues);
-
+        constexpr int optionsLedDrive_default_index = LED_DRIVE_100MA;
 
         String lightSensorGainLabel;
         String lightSensorDriveLabel;
@@ -195,6 +196,7 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
               optionsGainCount,
               optionsGain,
               optionsGainValues);
+            selector.default_index = optionsGain_default_index;
             selector.addFormSelector(
               F("Gesture Gain"),
               F("ggain"),
@@ -205,6 +207,7 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
               optionsLedDriveCount,
               optionsLedDrive,
               optionsLedDriveValues);
+            selector.default_index = optionsLedDrive_default_index;
             selector.addFormSelector(
               F("Gesture LED Drive"),
               F("gldrive"),
@@ -214,25 +217,27 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
           {
             // Gesture Led-boost values
             const __FlashStringHelper *optionsLedBoost[] = {
-              F("100 %"),
-              F("150 %"),
-              F("200 %"),
-              F("300 % (default)") };
+              F("100"),
+              F("150"),
+              F("200"),
+              F("300") };
             const int optionsLedBoostValues[]     = { LED_BOOST_100, LED_BOOST_150, LED_BOOST_200, LED_BOOST_300 };
             constexpr size_t optionsLedBoostCount = NR_ELEMENTS(optionsLedBoostValues);
             FormSelectorOptions selector(
               optionsLedBoostCount,
               optionsLedBoost,
               optionsLedBoostValues);
+            selector.default_index = LED_BOOST_300;
             selector.addFormSelector(
               F("Gesture LED Boost"),
               F("lboost"),
               P064_LED_BOOST);
+            addUnit('%');
           }
 
           addFormSubHeader(F("Proximity & Ambient Light Sensor parameters"));
           {
-            FormSelectorOptions selector(optionsGainCount, optionsGain, optionsGainValues);
+            const FormSelectorOptions selector(optionsGainCount, optionsGain, optionsGainValues);
             selector.addFormSelector(F("Proximity Gain"), F("pgain"),  P064_PGAIN);
           }
 
@@ -248,14 +253,15 @@ boolean Plugin_064(uint8_t function, struct EventStruct *event, String& string)
           // Ambient Light Sensor Gain options, values are equal to PGAIN values, so again avoid duplication
           const __FlashStringHelper *optionsALSGain[] = {
             F("1x"),
-            F("4x (default)"),
+            F("4x"),
             F("16x"),
             F("64x") };
           FormSelectorOptions selector(optionsGainCount, optionsALSGain, optionsGainValues);
+          selector.default_index = 1; // 4x
           selector.addFormSelector(lightSensorGainLabel, F("again"), P064_AGAIN);
         }
         {
-          FormSelectorOptions selector(
+          const FormSelectorOptions selector(
             optionsLedDriveCount,
             optionsLedDrive,
             optionsLedDriveValues);

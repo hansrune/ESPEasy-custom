@@ -52,7 +52,7 @@ void SwitchWebformLoad(
       SWITCH_DC_HIGH,
       SWITCH_DC_BOTH };
 
-    FormSelectorOptions selector(NR_ELEMENTS(buttonDCValues),
+    const FormSelectorOptions selector(NR_ELEMENTS(buttonDCValues),
       buttonDC,
       buttonDCValues);
     selector.addFormSelector(
@@ -85,7 +85,7 @@ void SwitchWebformLoad(
       SWITCH_LONGPRESS_HIGH,
       SWITCH_LONGPRESS_BOTH };
 
-    FormSelectorOptions selector(
+    const FormSelectorOptions selector(
       NR_ELEMENTS(buttonLPValues),
       buttonLP,
       buttonLPValues);

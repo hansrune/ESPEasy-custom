@@ -129,8 +129,8 @@ boolean Plugin_133(uint8_t function, struct EventStruct *event, String& string)
         LTR390_RESOLUTION_13BIT,
       };
       constexpr size_t resolutionCount = NR_ELEMENTS(resolutionValues);
-      FormSelectorOptions selGain(gainCount, gainOptions, gainValues);
-      FormSelectorOptions selRes(resolutionCount, resolutionOptions, resolutionValues);
+      const FormSelectorOptions selGain(gainCount, gainOptions, gainValues);
+      const FormSelectorOptions selRes(resolutionCount, resolutionOptions, resolutionValues);
 
       if (static_cast<P133_selectMode_e>(P133_SELECT_MODE) != P133_selectMode_e::ALSMode) {
         selGain.addFormSelector(F("UV Gain"),      F("uvgain"), P133_UVGAIN);

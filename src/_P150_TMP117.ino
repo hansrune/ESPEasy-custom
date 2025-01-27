@@ -135,7 +135,7 @@ boolean Plugin_150(uint8_t function, struct EventStruct *event, String& string)
           P150_AVERAGING_64_SAMPLES,
         };
         constexpr size_t optionCount = NR_ELEMENTS(averagingOptions);
-        FormSelectorOptions selector(optionCount, averagingCaptions, averagingOptions);
+        const FormSelectorOptions selector(optionCount, averagingCaptions, averagingOptions);
         selector.addFormSelector(F("Averaging"), F("avg"), P150_GET_CONF_AVERAGING);
       }
 
@@ -179,7 +179,7 @@ boolean Plugin_150(uint8_t function, struct EventStruct *event, String& string)
           P150_CYCLE_16_SEC,
         };
         constexpr size_t optionCount = NR_ELEMENTS(cycleOptions);
-        FormSelectorOptions selector(optionCount, cycleCaptions, cycleOptions);
+        const FormSelectorOptions selector(optionCount, cycleCaptions, cycleOptions);
         selector.addFormSelector(F("Continuous conversion cycle time"), F("cycle"), P150_GET_CONF_CYCLE_BITS);
       }
 

@@ -124,7 +124,7 @@ boolean Plugin_119(uint8_t function, struct EventStruct *event, String& string)
         F("50") };
       const int frequencyValues[]  = { P119_FREQUENCY_10, P119_FREQUENCY_50 };
       constexpr size_t optionCount = NR_ELEMENTS(frequencyValues);
-      FormSelectorOptions selector(optionCount, frequencyOptions, frequencyValues);
+      const FormSelectorOptions selector(optionCount, frequencyOptions, frequencyValues);
       selector.addFormSelector(F("Measuring frequency"), F("frequency"),  P119_FREQUENCY);
       addUnit(F("Hz"));
 

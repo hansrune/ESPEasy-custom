@@ -154,7 +154,7 @@ boolean Plugin_061(uint8_t function, struct EventStruct *event, String& string)
         # endif // ifdef P061_ENABLE_PCF8575
       };
       constexpr int optionsCount = NR_ELEMENTS(options);
-      FormSelectorOptions selector(optionsCount, options);
+      const FormSelectorOptions selector(optionsCount, options);
       selector.addFormSelector(F("Chip (Mode)"), F("chip"), P061_CONFIG_KEYPAD_TYPE);
 
       success = true;

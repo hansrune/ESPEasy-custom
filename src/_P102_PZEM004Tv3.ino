@@ -150,7 +150,7 @@ boolean                    Plugin_102(uint8_t function, struct EventStruct *even
         {
           const __FlashStringHelper *options_model[] = { F("Read_value"), F("Reset_Energy"), F("Program_adress") };
           constexpr size_t optionCount               = NR_ELEMENTS(options_model);
-          FormSelectorOptions selector(optionCount, options_model);
+          const FormSelectorOptions selector(optionCount, options_model);
           selector.addFormSelector(F("PZEM Mode"), F("PZEM_mode"), P102_PZEM_mode);
         }
 
@@ -161,7 +161,7 @@ boolean                    Plugin_102(uint8_t function, struct EventStruct *even
           {
             const __FlashStringHelper *options_confirm[] = { F("NO"), F("YES") };
             constexpr size_t optionCount                 = NR_ELEMENTS(options_confirm);
-            FormSelectorOptions selector(optionCount, options_confirm);
+            const FormSelectorOptions selector(optionCount, options_confirm);
             selector.addFormSelector(F("Confirm address programming ?"), F("PZEM_addr_set"), P102_PZEM_ADDR_SET);
           }
           addFormNumericBox(F("Address of PZEM"), F("PZEM_addr"), (P102_PZEM_ADDR < 1) ? 1 : P102_PZEM_ADDR, 1, 247);
@@ -185,7 +185,7 @@ boolean                    Plugin_102(uint8_t function, struct EventStruct *even
         {
           const __FlashStringHelper *options_model[] = { F("Read_value"), F("Reset_Energy") };
           constexpr size_t optionCount               = NR_ELEMENTS(options_model);
-          FormSelectorOptions selector(optionCount, options_model);
+          const FormSelectorOptions selector(optionCount, options_model);
           selector.addFormSelector(F("PZEM Mode"), F("PZEM_mode"), P102_PZEM_mode);
         }
         addHtml(F(" Tx/Rx Pins config disabled: Configuration is available in the first PZEM plugin.<br>"));

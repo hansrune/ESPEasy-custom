@@ -273,7 +273,7 @@ boolean Plugin_096(uint8_t function, struct EventStruct *event, String& string)
           #  endif // if P096_USE_WAVESHARE_2IN7
         };
         constexpr size_t optionCount = NR_ELEMENTS(optionValues4);
-        FormSelectorOptions selector(
+        const FormSelectorOptions selector(
           optionCount,
           options4,
           optionValues4);
@@ -292,7 +292,7 @@ boolean Plugin_096(uint8_t function, struct EventStruct *event, String& string)
         const __FlashStringHelper *options2[] = { F("Normal"), F("+90&deg;"), F("+180&deg;"), F("+270&deg;") };
         int optionValues2[]                   = { 0, 1, 2, 3 };
         constexpr size_t optionCount          = NR_ELEMENTS(optionValues2);
-        FormSelectorOptions selector( optionCount, options2, optionValues2);
+        const FormSelectorOptions selector( optionCount, options2, optionValues2);
         selector.addFormSelector(F("Rotation"), F("_rotate"), P096_CONFIG_ROTATION);
       }
       # endif // ifdef P096_USE_ADA_GRAPHICS
@@ -340,7 +340,7 @@ boolean Plugin_096(uint8_t function, struct EventStruct *event, String& string)
           P096_CONFIG_FLAGS = lSettings;
         }
         constexpr size_t optionCount = NR_ELEMENTS(colorDepthOptions);
-        FormSelectorOptions selector(optionCount, colorDepths, colorDepthOptions);
+        const FormSelectorOptions selector(optionCount, colorDepths, colorDepthOptions);
         selector.addFormSelector(F("Greyscale levels"),F("_colorDepth"),
             P096_CONFIG_FLAG_GET_COLORDEPTH);
       }
@@ -377,7 +377,7 @@ boolean Plugin_096(uint8_t function, struct EventStruct *event, String& string)
           #  endif // if P096_USE_WAVESHARE_2IN7
         };
         constexpr size_t optionCount = NR_ELEMENTS(commandTriggerOptions);
-        FormSelectorOptions selector(optionCount, commandTriggers, commandTriggerOptions);
+        const FormSelectorOptions selector(optionCount, commandTriggers, commandTriggerOptions);
         selector.addFormSelector(F("Write Command trigger"), F("_commandtrigger"),
                         P096_CONFIG_FLAG_GET_CMD_TRIGGER);
         addFormNote(F("Select the command that is used to handle commands for this display."));

@@ -124,7 +124,7 @@ boolean Plugin_062(uint8_t function, struct EventStruct *event, String& string)
           MPR212_EXTRA_SENSITIVITY
         };
         constexpr size_t optionCount = NR_ELEMENTS(sensitivityValues);
-        FormSelectorOptions selector(optionCount, sensitivityOptions, sensitivityValues);
+        const FormSelectorOptions selector(optionCount, sensitivityOptions, sensitivityValues);
         selector.addFormSelector(F("Panel sensitivity"), F("psens"), PCONFIG(4));
       }
       {

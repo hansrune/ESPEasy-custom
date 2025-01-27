@@ -170,7 +170,7 @@ boolean Plugin_045(uint8_t function, struct EventStruct *event, String& string)
           F("G-force Z")
         };
 
-        FormSelectorOptions selector(NR_ELEMENTS(options), options);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options);
         selector.addFormSelector(F("Function"), F("pfunction"), choice);
       }
 

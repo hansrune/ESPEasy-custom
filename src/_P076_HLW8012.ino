@@ -333,7 +333,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String &string)
 #endif // ifdef ESP32
       };
       constexpr int nrElements = NR_ELEMENTS(predefinedId);
-      FormSelectorOptions selector(nrElements, predefinedNames, predefinedId);
+      const FormSelectorOptions selector(nrElements, predefinedNames, predefinedId);
       selector.addFormSelector(F("Device"), F("preDefDevSel"), devicePinSettings);
       addFormNote(F("Enable device and select device type first"));
     }
@@ -358,7 +358,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String &string)
             HIGH,
         };
 
-        FormSelectorOptions selector(NR_ELEMENTS(modeCurr), modeCurr, modeCurrValues);
+        const FormSelectorOptions selector(NR_ELEMENTS(modeCurr), modeCurr, modeCurrValues);
         selector.addFormSelector(F("SEL Current (A) Reading"), F("curr_read"), currentRead);
       }
       {
@@ -376,7 +376,7 @@ boolean Plugin_076(uint8_t function, struct EventStruct *event, String &string)
             FALLING,
         };
 
-        FormSelectorOptions selector(NR_ELEMENTS(modeRaise), modeRaise, modeValues);
+        const FormSelectorOptions selector(NR_ELEMENTS(modeRaise), modeRaise, modeValues);
         selector.addFormSelector(F("CF1  Interrupt Edge"), F("cf1_edge"), P076_CF1_TRIGGER);
         selector.addFormSelector(F("CF Interrupt Edge"), F("cf_edge"), P076_CF_TRIGGER);
       }

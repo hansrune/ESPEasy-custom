@@ -219,7 +219,7 @@ void AdaGFXFormTextPrintMode(const __FlashStringHelper *id,
   };
   */
 
-  FormSelectorOptions selector(NR_ELEMENTS(textModes), textModes);
+  const FormSelectorOptions selector(NR_ELEMENTS(textModes), textModes);
   selector.addFormSelector(F("Text print Mode"), id, selectedIndex);
 }
 
@@ -281,7 +281,7 @@ void AdaGFXFormRotation(const __FlashStringHelper *id,
                         uint8_t                    selectedIndex) {
   const __FlashStringHelper *rotationOptions[] = { F("Normal"), F("+90&deg;"), F("+180&deg;"), F("+270&deg;") };
 //  const int rotationOptionValues[]             = { 0, 1, 2, 3 };
-  FormSelectorOptions selector(NR_ELEMENTS(rotationOptions), rotationOptions);
+  const FormSelectorOptions selector(NR_ELEMENTS(rotationOptions), rotationOptions);
   selector.addFormSelector(F("Rotation"), id, selectedIndex);
 }
 
@@ -418,7 +418,7 @@ void AdaGFXFormLineSpacing(const __FlashStringHelper *id,
     }
 //    lineSpacingOptions[i] = i;
   }
-  FormSelectorOptions selector(16, lineSpacings);
+  const FormSelectorOptions selector(16, lineSpacings);
   selector.addFormSelector(F("Linespacing"), id, selectedIndex);
   addUnit(F("px"));
 }

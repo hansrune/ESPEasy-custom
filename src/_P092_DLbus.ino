@@ -138,7 +138,7 @@ boolean Plugin_092(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(eP092pinmode::ePPM_Input),
           static_cast<int>(eP092pinmode::ePPM_InputPullUp)
         };
-        FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
+        const FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
         selector.addFormSelector(F("Pin mode"), F("ppinmode"), choice);
       }
       {

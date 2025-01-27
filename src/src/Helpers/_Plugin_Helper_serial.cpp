@@ -163,7 +163,7 @@ void serialHelper_addI2CuartSelectors(int address, int channel) {
       SC16IS752_CHANNEL_B,
     };
     */
-    FormSelectorOptions selector(NR_ELEMENTS(chOptions), chOptions);
+    const FormSelectorOptions selector(NR_ELEMENTS(chOptions), chOptions);
     selector.addFormSelector(F("Channel"), F("i2cuart_ch"), channel);
   }
 }

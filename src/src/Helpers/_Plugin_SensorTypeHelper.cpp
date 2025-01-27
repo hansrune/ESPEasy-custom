@@ -142,7 +142,7 @@ void sensorTypeHelper_loadOutputSelector(
   if (pconfigIndex < 0 || pconfigIndex >= PLUGIN_CONFIGVAR_MAX) {
     return;
   }
-  FormSelectorOptions selector(
+  const FormSelectorOptions selector(
     optionCount,
     options,
     indices);
@@ -159,7 +159,7 @@ void sensorTypeHelper_loadOutputSelector(
   if (pconfigIndex < 0 || pconfigIndex >= PLUGIN_CONFIGVAR_MAX) {
     return;
   }
-  FormSelectorOptions selector(
+  const FormSelectorOptions selector(
     optionCount,
     options,
     indices);

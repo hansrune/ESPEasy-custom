@@ -158,7 +158,7 @@ void P148_data_struct::MonitorTaskValue_t::webformLoad(int index) const {
         static_cast<int>(P148_data_struct::Tm1621UnitOfMeasure::kWh_Watt)
       };
       constexpr size_t nrElements = sizeof(optionValues) / sizeof(optionValues[0]);
-      FormSelectorOptions selector(nrElements, options, optionValues);
+      const FormSelectorOptions selector(nrElements, options, optionValues);
       selector.addFormSelector(
         F("Unit Symbols"), concat(F("punit"), index),
         static_cast<int>(unit));
@@ -177,7 +177,7 @@ void P148_data_struct::MonitorTaskValue_t::webformLoad(int index) const {
       };
       constexpr size_t nrElements = sizeof(optionValues) / sizeof(optionValues[0]);
 
-      FormSelectorOptions selector(nrElements, options, optionValues);
+      const FormSelectorOptions selector(nrElements, options, optionValues);
       selector.addFormSelector(
         F("Unit Symbols"), concat(F("punit"), index),
         static_cast<int>(unit));

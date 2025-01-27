@@ -102,7 +102,7 @@ boolean Plugin_015(uint8_t function, struct EventStruct *event, String& string)
           F("402"),
         };
         constexpr size_t optionCount = NR_ELEMENTS(options);
-        FormSelectorOptions selector(optionCount, options);
+        const FormSelectorOptions selector(optionCount, options);
         selector.addFormSelector(F("Integration time"), F("pintegration"),  P015_INTEGRATION);
         addUnit(F("ms"));
       }
@@ -126,7 +126,7 @@ boolean Plugin_015(uint8_t function, struct EventStruct *event, String& string)
         };
         */
         constexpr size_t optionCount = NR_ELEMENTS(options);
-        FormSelectorOptions selector(optionCount, options/*, optionValues*/);
+        const FormSelectorOptions selector(optionCount, options/*, optionValues*/);
         selector.addFormSelector(F("Gain"), F("pgain"),  P015_GAIN);
       }
 

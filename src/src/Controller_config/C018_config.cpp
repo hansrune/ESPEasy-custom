@@ -93,7 +93,7 @@ void C018_ConfigStruct::webform_load(C018_data_struct *C018_data) {
       RN2xx3_datatypes::Freq_plan::TTN_US,
       RN2xx3_datatypes::Freq_plan::DEFAULT_EU
     };
-    FormSelectorOptions selector( NR_ELEMENTS(options), options, values);
+    const FormSelectorOptions selector( NR_ELEMENTS(options), options, values);
     selector.addFormSelector(F("Frequency Plan"), F("frequencyplan"), frequencyplan);
     addFormNumericBox(F("RX2 Frequency"), F("rx2freq"), rx2_freq, 0);
     addUnit(F("Hz"));
@@ -105,7 +105,7 @@ void C018_ConfigStruct::webform_load(C018_data_struct *C018_data) {
       RN2xx3_datatypes::TTN_stack_version::TTN_v2,
       RN2xx3_datatypes::TTN_stack_version::TTN_v3
     };
-    FormSelectorOptions selector(NR_ELEMENTS(options), options, values);
+    const FormSelectorOptions selector(NR_ELEMENTS(options), options, values);
     selector.addFormSelector(F("TTN Stack"), F("ttnstack"), stackVersion);
   }
 

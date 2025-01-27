@@ -84,7 +84,7 @@ boolean Plugin_011(uint8_t function, struct EventStruct *event, String& string)
       const __FlashStringHelper *options[] = { F("Digital"), F("Analog"), F("Input (switch)") };
       const int optionValues[]             = { P011_TYPE_DIGITAL, P011_TYPE_ANALOG, P011_TYPE_SWITCH };
       constexpr size_t optionCount         = NR_ELEMENTS(options);
-      FormSelectorOptions selector(optionCount, options, optionValues);
+      const FormSelectorOptions selector(optionCount, options, optionValues);
       selector.addFormSelector(F("Port Type"), F("p011"), P011_PORT_TYPE);
 
       success = true;

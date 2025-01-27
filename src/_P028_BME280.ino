@@ -190,7 +190,7 @@ boolean Plugin_028(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(P028_data_struct::BMx_DetectMode::BME280),
           static_cast<int>(P028_data_struct::BMx_DetectMode::BMP280),
         };
-        FormSelectorOptions selector(NR_ELEMENTS(detectOptionList), detectOptionList, detectOptions);
+        const FormSelectorOptions selector(NR_ELEMENTS(detectOptionList), detectOptionList, detectOptions);
         selector.addFormSelector(F("Output values mode"), F("det"),  P028_DETECTION_MODE);
 
         success = true;
@@ -254,7 +254,7 @@ boolean Plugin_028(uint8_t function, struct EventStruct *event, String& string)
         # endif // ifndef LIMIT_BUILD_SIZE
       };
       constexpr int P028_ERROR_STATE_COUNT = NR_ELEMENTS(resultsOptions);
-      FormSelectorOptions selector(        
+      const FormSelectorOptions selector(        
         P028_ERROR_STATE_COUNT,
         resultsOptions,
         resultsOptionValues);

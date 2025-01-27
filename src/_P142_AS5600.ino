@@ -173,7 +173,7 @@ boolean Plugin_142(uint8_t function, struct EventStruct *event, String& string)
           AS5600_MODE_RADIANS,
         };
         constexpr size_t optionCount = NR_ELEMENTS(configurationOptions);
-        FormSelectorOptions selector(optionCount, configurations, configurationOptions);
+        const FormSelectorOptions selector(optionCount, configurations, configurationOptions);
         selector.addFormSelector(F("Output range"), F("range"), P142_GET_OUTPUT_MODE);
       }
       addFormCheckBox(F("Generate Events only when changed"),         F("diff"), P142_GET_UPDATE_DIFF_ONLY);
@@ -208,7 +208,7 @@ boolean Plugin_142(uint8_t function, struct EventStruct *event, String& string)
           AS5600_POWERMODE_LOW3,
         };
         constexpr size_t optionCount = NR_ELEMENTS(configurationOptions);
-        FormSelectorOptions selector(optionCount, configurations, configurationOptions);
+        const FormSelectorOptions selector(optionCount, configurations, configurationOptions);
         selector.addFormSelector(F("Power mode"), F("pow"), P142_GET_POWER_MODE);
       }
       addFormCheckBox(F("Power watchdog"), F("wdog"), P142_GET_WATCHDOG);
@@ -229,7 +229,7 @@ boolean Plugin_142(uint8_t function, struct EventStruct *event, String& string)
           AS5600_HYST_LSB3,
         };
         constexpr size_t optionCount = NR_ELEMENTS(configurationOptions);
-        FormSelectorOptions selector(optionCount, configurations, configurationOptions);
+        const FormSelectorOptions selector(optionCount, configurations, configurationOptions);
         selector.addFormSelector(F("Hysteresis"), F("hyst"), P142_GET_HYSTERESIS);
       }
       {
@@ -246,7 +246,7 @@ boolean Plugin_142(uint8_t function, struct EventStruct *event, String& string)
           AS5600_SLOW_FILT_2X,
         };
         constexpr size_t optionCount = NR_ELEMENTS(configurationOptions);
-        FormSelectorOptions selector(optionCount, configurations, configurationOptions);
+        const FormSelectorOptions selector(optionCount, configurations, configurationOptions);
         selector.addFormSelector(F("Slow filter"), F("sflt"), P142_GET_SLOW_FILTER);
       }
       {
@@ -271,7 +271,7 @@ boolean Plugin_142(uint8_t function, struct EventStruct *event, String& string)
           AS5600_FAST_FILT_LSB10,
         };
         constexpr size_t optionCount = NR_ELEMENTS(configurationOptions);
-        FormSelectorOptions selector(optionCount, configurations, configurationOptions);
+        const FormSelectorOptions selector(optionCount, configurations, configurationOptions);
         selector.addFormSelector(F("Fast filter"), F("fflt"), P142_GET_FAST_FILTER);
       }
       success = true;

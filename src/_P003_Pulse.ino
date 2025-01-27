@@ -163,7 +163,7 @@ boolean Plugin_003(uint8_t function, struct EventStruct *event, String& string)
           F("Time/Delta"),
           # endif // if P003_USE_EXTRA_COUNTERTYPES
         };
-        FormSelectorOptions selector(
+        const FormSelectorOptions selector(
           NR_ELEMENTS(options),
           options);
         selector.addFormSelector(F("Counter Type"), F("countertype"), choice);

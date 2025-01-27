@@ -239,7 +239,7 @@ boolean Plugin_021(uint8_t function, struct EventStruct *event, String& string)
         { P021_OPMODE_CLASSIC, P021_OPMODE_OFF, P021_OPMODE_STANDBY, P021_OPMODE_ON, P021_OPMODE_TEMP, P021_OPMODE_REMOTE };
         */
         constexpr size_t optionCount = NR_ELEMENTS(options);
-        FormSelectorOptions selector(optionCount, options/*, optionValues*/);
+        const FormSelectorOptions selector(optionCount, options/*, optionValues*/);
         selector.addFormSelector(F("Control mode"), F(P021_GUID_OPMODE),  P021_OPMODE);
 
         // Add timer values depending on build size

@@ -157,7 +157,7 @@ void handle_hardware() {
       I2C_MULTIPLEXER_TCA9543A,
       I2C_MULTIPLEXER_PCA9540
     };
-    FormSelectorOptions selector(NR_ELEMENTS(i2c_muxtype_choices),
+    const FormSelectorOptions selector(NR_ELEMENTS(i2c_muxtype_choices),
                     i2c_muxtype_options, i2c_muxtype_choices);
     selector.addFormSelector(F("I2C Multiplexer type"), F("pi2cmuxtype"), Settings.I2C_Multiplexer_Type);
   }
@@ -180,7 +180,7 @@ void handle_hardware() {
       }
       i2c_mux_choices[mux_opt] = 0x70 + x;
     }
-    FormSelectorOptions selector(mux_opt + 1, i2c_mux_options, i2c_mux_choices);
+    const FormSelectorOptions selector(mux_opt + 1, i2c_mux_options, i2c_mux_choices);
     selector.addFormSelector(F("I2C Multiplexer address"), F("pi2cmuxaddr"),  Settings.I2C_Multiplexer_Addr);
   }
   addFormPinSelect(PinSelectPurpose::Generic_output, formatGpioName_output_optional(F("Reset")), F("pi2cmuxreset"), Settings.I2C_Multiplexer_ResetPin);
@@ -244,7 +244,7 @@ void handle_hardware() {
       toString(NetworkMedium_t::WIFI), 
       toString(NetworkMedium_t::Ethernet) 
       };
-    FormSelectorOptions selector(2, ethWifiOptions);
+    const FormSelectorOptions selector(2, ethWifiOptions);
     selector.addSelector(F("ethwifi"), static_cast<int>(Settings.NetworkMedium));
   }
   addFormNote(F("Change Switch between WiFi and Ethernet requires reboot to activate"));
@@ -315,7 +315,7 @@ void handle_hardware() {
       ? static_cast<int>(Settings.ETH_Phy_Type) 
       : static_cast<int>(EthPhyType_t::notSet);
 
-    FormSelectorOptions selector(      
+    const FormSelectorOptions selector(      
       nrItems, 
       ethPhyTypes, 
       ethPhyTypes_index);
@@ -363,7 +363,7 @@ void handle_hardware() {
       toString(EthClockMode_t::Int_50MHz_GPIO_16),
       toString(EthClockMode_t::Int_50MHz_GPIO_17_inv)
       };
-    FormSelectorOptions selector(NR_ELEMENTS(ethClockOptions), ethClockOptions);
+    const FormSelectorOptions selector(NR_ELEMENTS(ethClockOptions), ethClockOptions);
     selector.addSelector(F("ethclock"), static_cast<int>(Settings.ETH_Clock_Mode));
   }
 #endif

@@ -86,7 +86,7 @@ boolean Plugin_001(uint8_t function, struct EventStruct *event, String& string)
         const int optionValues[]             = { PLUGIN_001_TYPE_SWITCH, PLUGIN_001_TYPE_DIMMER };
         const uint8_t switchtype             = P001_data_struct::P001_getSwitchType(event);
         constexpr size_t optionCount         = NR_ELEMENTS(optionValues);
-        FormSelectorOptions selector(optionCount, options, optionValues);
+        const FormSelectorOptions selector(optionCount, options, optionValues);
         selector.addFormSelector(F("Switch Type"), F("type"), switchtype);
 
         if (switchtype == PLUGIN_001_TYPE_DIMMER)
@@ -106,7 +106,7 @@ boolean Plugin_001(uint8_t function, struct EventStruct *event, String& string)
           SWITCH_TYPE_PUSH_ACTIVE_LOW,
           SWITCH_TYPE_PUSH_ACTIVE_HIGH };
 */
-        FormSelectorOptions selector(
+        const FormSelectorOptions selector(
           NR_ELEMENTS(buttonOptions),
           buttonOptions); // buttonOptionValues);
         selector.addFormSelector(

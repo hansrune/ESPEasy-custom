@@ -181,7 +181,7 @@ boolean Plugin_043(uint8_t function, struct EventStruct *event, String& string)
         if (validGpio(CONFIG_PIN1) || (P043_SIMPLE_VALUE == 1)) {
           addHtml(' ');
           const uint8_t choice = Cache.getTaskDevicePluginConfig(event->TaskIndex, x);
-          FormSelectorOptions selector(optionsCount, options);
+          const FormSelectorOptions selector(optionsCount, options);
           selector.addSelector(
             concat(F("state"), x), 
             choice);

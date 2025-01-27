@@ -224,7 +224,7 @@ boolean Plugin_052(uint8_t function, struct EventStruct *event, String& string) 
                 // Disable selector for now, since single measurement not yet supported.
 
                 const __FlashStringHelper *options[] = { F("Continuous"), F("Single Measurement") };
-                FormSelectorOptions selector(NR_ELEMENTS(options), options);
+                const FormSelectorOptions selector(NR_ELEMENTS(options), options);
                 selector.addFormSelector(F("Measurement Mode"), F("mode"), value);
               }
            */
@@ -249,7 +249,7 @@ boolean Plugin_052(uint8_t function, struct EventStruct *event, String& string) 
          uint8_t choiceABCperiod = PCONFIG(4);
          const __FlashStringHelper * optionsABCperiod[] = { F("disable"), F("1 h"), F("12 h"), F("1
          day"), F("2 days"), F("4 days"), F("7 days"), F("14 days"), F("30 days") };
-         FormSelectorOptions selector(NR_ELEMENTS(optionsABCperiod), optionsABCperiod);
+         const FormSelectorOptions selector(NR_ELEMENTS(optionsABCperiod), optionsABCperiod);
          selector.addFormSelector(F("ABC period"), F("ABC_period"), choiceABCperiod);
        */
 

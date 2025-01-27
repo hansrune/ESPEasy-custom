@@ -154,7 +154,7 @@ void P002_data_struct::webformLoad(struct EventStruct *event)
       P002_ADC_0db
     };
     constexpr int nrOptions = NR_ELEMENTS(outputOptionValues);
-    FormSelectorOptions selector(nrOptions, outputOptions, outputOptionValues);
+    const FormSelectorOptions selector(nrOptions, outputOptions, outputOptionValues);
     selector.addFormSelector(F("Attenuation"), F("attn"), P002_ATTENUATION);
   }
 
@@ -176,7 +176,7 @@ void P002_data_struct::webformLoad(struct EventStruct *event)
 # endif // ifndef LIMIT_BUILD_SIZE
     };
     constexpr int nrOptions = NR_ELEMENTS(outputOptionValues);
-    FormSelectorOptions selector(nrOptions, outputOptions, outputOptionValues);
+    const FormSelectorOptions selector(nrOptions, outputOptions, outputOptionValues);
     selector.addFormSelector(F("Oversampling"), F("oversampling"), P002_OVERSAMPLING);
   }
 

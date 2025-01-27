@@ -201,7 +201,7 @@ boolean Plugin_020(uint8_t function, struct EventStruct *event, String& string)
           };
 */
           constexpr int optionCount = NR_ELEMENTS(options);
-          FormSelectorOptions selector(optionCount, options /*, optionValues*/);
+          const FormSelectorOptions selector(optionCount, options /*, optionValues*/);
           selector.addFormSelector(
             F("Event processing"), 
             F("pevents"), 

@@ -335,7 +335,7 @@ void handle_advanced() {
   };
   //const int cssModeOptions[] = { 0, 1, 2};
   constexpr int nrCssModeOptions = NR_ELEMENTS(cssModeNames);
-  FormSelectorOptions selector(
+  const FormSelectorOptions selector(
     nrCssModeOptions,
     cssModeNames/*,
     cssModeOptions*/);
@@ -421,7 +421,7 @@ void addFormDstSelect(bool isStart, uint16_t choice) {
       isStart ? F("Start")  : F("End"),
       F(" (week, dow, month)")));
 
-    FormSelectorOptions selector(NR_ELEMENTS(weekValues), week, weekValues);
+    const FormSelectorOptions selector(NR_ELEMENTS(weekValues), week, weekValues);
     selector.addSelector(
       isStart ? F("dststartweek")  : F("dstendweek"), 
       rule.week);
@@ -431,7 +431,7 @@ void addFormDstSelect(bool isStart, uint16_t choice) {
     const __FlashStringHelper *  dow[] = { F("Sun"), F("Mon"), F("Tue"), F("Wed"), F("Thu"), F("Fri"), F("Sat") };
     constexpr int dowValues[]  = { 1, 2, 3, 4, 5, 6, 7 };
 
-    FormSelectorOptions selector(NR_ELEMENTS(dowValues), dow, dowValues);
+    const FormSelectorOptions selector(NR_ELEMENTS(dowValues), dow, dowValues);
     selector.addSelector(
       isStart ? F("dststartdow")   : F("dstenddow"),
       rule.dow);
@@ -442,7 +442,7 @@ void addFormDstSelect(bool isStart, uint16_t choice) {
                              "Dec") };
     constexpr int monthValues[] = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
-    FormSelectorOptions selector(NR_ELEMENTS(monthValues), month, monthValues);
+    const FormSelectorOptions selector(NR_ELEMENTS(monthValues), month, monthValues);
     selector.addSelector(
       isStart ? F("dststartmonth") : F("dstendmonth"),
       rule.month);
@@ -468,7 +468,7 @@ void addFormExtTimeSourceSelect(const __FlashStringHelper * label, const __Flash
     static_cast<int>(ExtTimeSource_e::PCF8563)
     };
 
-  FormSelectorOptions selector(NR_ELEMENTS(optionValues), options, optionValues);
+  const FormSelectorOptions selector(NR_ELEMENTS(optionValues), options, optionValues);
   selector.addSelector(id, static_cast<int>(choice));
 }
 
@@ -488,7 +488,7 @@ void addFormLogLevelSelect(LabelType::Enum label, int choice)
   for (int i = 0; i < LOG_LEVEL_NRELEMENTS; ++i) {
     options[i + 1] = getLogLevelDisplayStringFromIndex(i, optionValues[i + 1]);
   }
-  FormSelectorOptions selector(LOG_LEVEL_NRELEMENTS + 1, options, optionValues);
+  const FormSelectorOptions selector(LOG_LEVEL_NRELEMENTS + 1, options, optionValues);
   selector.addSelector(getInternalLabel(label), choice);
 
 }
@@ -501,7 +501,7 @@ void addFormLogFacilitySelect(const __FlashStringHelper * label, const __FlashSt
     F("Local2"), F("Local3"), F("Local4"),   F("Local5"),  F("Local6"),  F("Local7") };
   const int optionValues[] = { 0, 1, 3, 5, 16, 17, 18, 19, 20, 21, 22, 23 };
 
-  FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
+  const FormSelectorOptions selector(NR_ELEMENTS(options), options, optionValues);
   selector.addSelector(id, choice);
 }
 

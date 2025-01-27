@@ -4,48 +4,48 @@
 #include "../WebServer/Markup_Forms.h"
 #include "../WebServer/HTML_wrappers.h"
 
+FormSelectorOptions::FormSelectorOptions()
+  : classname(F("wide")), _onlySelectorHead(true)
+{}
+
+
 FormSelectorOptions::FormSelectorOptions(int optionCount)
-  : _optionCount(optionCount)
-{
-  classname = F("wide");
-}
+  :   classname(F("wide")), _optionCount(optionCount)
+{}
 
 FormSelectorOptions::FormSelectorOptions(
   int          optionCount,
   const int    indices[],
   const String attr[]) :
+  classname(F("wide")),
   _optionCount(optionCount),
   _indices(indices),
   _attr_str(attr)
-{
-  classname = F("wide");
-}
+{}
 
 FormSelectorOptions::FormSelectorOptions(
   int          optionCount,
   const String options[],
   const int    indices[],
   const String attr[]) :
+  classname(F("wide")),
   _optionCount(optionCount),
   _names_str(options),
   _indices(indices),
   _attr_str(attr)
-{
-  classname = F("wide");
-}
+{}
 
 FormSelectorOptions::FormSelectorOptions(
   int                        optionCount,
   const __FlashStringHelper *options[],
   const int                  indices[],
   const String               attr[]) :
+  classname(F("wide")),
   _optionCount(optionCount),
   _names_f(options),
   _indices(indices),
   _attr_str(attr)
-{
-  classname = F("wide");
-}
+{}
 
 FormSelectorOptions::~FormSelectorOptions() {}
 
@@ -79,6 +79,11 @@ int FormSelectorOptions::getIndexValue(int index) const
     return _indices[index];
   }
   return index;
+}
+
+bool FormSelectorOptions::isDone(int index) const
+{
+  return index >= _optionCount;
 }
 
 void FormSelectorOptions::clearClassName()
@@ -119,15 +124,14 @@ void FormSelectorOptions::addFormSelector(
   addSelector(id, selectedIndex);
 }
 
-
 void FormSelectorOptions::addSelector(const __FlashStringHelper *id,
-                   int                        selectedIndex) const
+                                      int                        selectedIndex) const
 {
   addSelector(String(id), selectedIndex);
 }
 
 void FormSelectorOptions::addSelector(const String& id,
-                   int                        selectedIndex) const
+                                      int           selectedIndex) const
 {
   // FIXME TD-er Change bool 'enabled' to disabled
   if (reloadonchange)
@@ -145,11 +149,17 @@ void FormSelectorOptions::addSelector(const String& id,
                         );
   }
 
-  for (int i = 0; i < _optionCount; ++i)
+  if (_onlySelectorHead) { return; }
+
+  for (int i = 0; !isDone(i); ++i)
   {
     const int index = getIndexValue(i);
+    String optionString = getOptionString(i);
+    if (index == default_index) {
+      optionString += F(" (default)");
+    }
     addSelector_Item(
-      getOptionString(i),
+      optionString,
       index,
       selectedIndex == index,
       false,
@@ -157,5 +167,11 @@ void FormSelectorOptions::addSelector(const String& id,
 
     if ((i & 0x07) == 0) { delay(0); }
   }
+
+  addSelectorFoot();
+}
+
+void FormSelectorOptions::addSelectorFoot() const
+{
   addSelector_Foot(reloadonchange);
 }

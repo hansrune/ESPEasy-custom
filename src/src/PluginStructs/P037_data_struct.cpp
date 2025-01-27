@@ -291,7 +291,7 @@ bool P037_data_struct::webform_load(
         html_TD();
         filterIndex = filters.indexOf(parseString(valueArray[filterOffset], 2, P037_VALUE_SEPARATOR));
 
-        FormSelectorOptions selector(P037_FILTER_COUNT, filterOptions, filterIndices);
+        const FormSelectorOptions selector(P037_FILTER_COUNT, filterOptions, filterIndices);
         selector.addSelector(getPluginCustomArgName(idx + 100 + 1), filterIndex);
         html_TD();
 
@@ -329,7 +329,7 @@ bool P037_data_struct::webform_load(
       }
       {
         html_TD();
-        FormSelectorOptions selector(P037_FILTER_COUNT, filterOptions, filterIndices);
+        const FormSelectorOptions selector(P037_FILTER_COUNT, filterOptions, filterIndices);
         selector.addSelector(getPluginCustomArgName(idx + 100 + 1), filterIndex);
         html_TD();
         addTextBox(getPluginCustomArgName(idx + 100 + 2), EMPTY_STRING,
@@ -404,7 +404,7 @@ bool P037_data_struct::webform_load(
         html_TD();
         operandIndex = operands.indexOf(parseString(valueArray[mappingOffset], 2, P037_VALUE_SEPARATOR));
 
-        FormSelectorOptions selector(P037_OPERAND_COUNT, operandOptions, operandIndices);
+        const FormSelectorOptions selector(P037_OPERAND_COUNT, operandOptions, operandIndices);
         selector.addSelector(getPluginCustomArgName(idx + 1), operandIndex);
         html_TD();
         addTextBox(getPluginCustomArgName(idx + 2),
@@ -439,7 +439,7 @@ bool P037_data_struct::webform_load(
       }
       {
         html_TD();
-        FormSelectorOptions selector(P037_OPERAND_COUNT, operandOptions, operandIndices);
+        const FormSelectorOptions selector(P037_OPERAND_COUNT, operandOptions, operandIndices);
         selector.addSelector(getPluginCustomArgName(idx + 1), operandIndex);
         html_TD();
         addTextBox(getPluginCustomArgName(idx + 2), EMPTY_STRING,

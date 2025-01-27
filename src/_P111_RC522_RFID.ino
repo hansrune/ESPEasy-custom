@@ -87,7 +87,7 @@ boolean Plugin_111(uint8_t function, struct EventStruct *event, String& string)
           # endif // P111_USE_REMOVAL
         };
         constexpr size_t P111_removaltypes = NR_ELEMENTS(removalopts);
-        FormSelectorOptions selector(P111_removaltypes, removaltype, removalopts);
+        const FormSelectorOptions selector(P111_removaltypes, removaltype, removalopts);
         selector.addFormSelector(F("Tag removal mode"), F("autotagremoval"), P111_TAG_AUTOREMOVAL);
       }
 

@@ -177,7 +177,7 @@ boolean Plugin_129(uint8_t function, struct EventStruct *event, String& string)
         F("50/sec (20 msec)") };
       const int frequencyValues[]  = { P129_FREQUENCY_10, P129_FREQUENCY_50 };
       constexpr size_t optionCount = NR_ELEMENTS(frequencyValues);
-      FormSelectorOptions selector(optionCount, frequencyOptions, frequencyValues);
+      const FormSelectorOptions selector(optionCount, frequencyOptions, frequencyValues);
       selector.addFormSelector(
         F("Sample frequency"), F("frequency"), P129_CONFIG_FLAGS_GET_READ_FREQUENCY);
 
@@ -193,7 +193,7 @@ boolean Plugin_129(uint8_t function, struct EventStruct *event, String& string)
         F("Hex/bin only") };
       const int outputValues[]     = { P129_OUTPUT_BOTH, P129_OUTPUT_DEC_ONLY, P129_OUTPUT_HEXBIN };
       constexpr size_t outputCount = NR_ELEMENTS(outputValues);
-      FormSelectorOptions selector_output(outputCount, outputOptions, outputValues);
+      const FormSelectorOptions selector_output(outputCount, outputOptions, outputValues);
       selector_output.addFormSelector(F("Output selection"), F("outputsel"), P129_CONFIG_FLAGS_GET_OUTPUT_SELECTION);
 
       addFormCheckBox(F("Separate events per pin"), F("separate_events"), P129_CONFIG_FLAGS_GET_SEPARATE_EVENTS == 1);

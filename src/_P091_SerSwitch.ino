@@ -125,7 +125,7 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
         };
         const int optionValues[]     = { SER_SWITCH_YEWE, SER_SWITCH_SONOFFDUAL, SER_SWITCH_LCTECH, SER_SWITCH_WIFIDIMMER };
         constexpr size_t optionCount = NR_ELEMENTS(optionValues);
-        FormSelectorOptions selector(optionCount, options, optionValues);
+        const FormSelectorOptions selector(optionCount, options, optionValues);
         selector.addFormSelector(F("Switch Type"), F("type"), PCONFIG(0));
       }
 
@@ -139,7 +139,7 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
         };
         const int buttonoptionValues[] = { 1, 2, 3, 4 };
         constexpr size_t optionCount   = NR_ELEMENTS(buttonoptionValues);
-        FormSelectorOptions selector(optionCount, buttonOptions, buttonoptionValues);
+        const FormSelectorOptions selector(optionCount, buttonOptions, buttonoptionValues);
         selector.addFormSelector(F("Number of relays"), F("button"), PCONFIG(1));
       }
 
@@ -151,7 +151,7 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
           F("Simultaneous mode"),
         };
         constexpr size_t optionCount = NR_ELEMENTS(modeoptions);
-        FormSelectorOptions selector(optionCount, modeoptions);
+        const FormSelectorOptions selector(optionCount, modeoptions);
         selector.addFormSelector(F("Relay working mode"), F("mode"), PCONFIG(1));
       }
 
@@ -160,7 +160,7 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
         {
           const int buttonoptionValues[] = { 1, 2, 3, 4 };
           constexpr size_t optionCount   = NR_ELEMENTS(buttonoptionValues);
-          FormSelectorOptions selector(optionCount, buttonoptionValues);
+          const FormSelectorOptions selector(optionCount, buttonoptionValues);
           selector.addFormSelector(F("Number of relays"), F("button"), PCONFIG(1));
         }
 
@@ -176,7 +176,7 @@ boolean Plugin_091(uint8_t function, struct EventStruct *event, String& string)
             F("57600"),
           };
           constexpr size_t optionCount = NR_ELEMENTS(speedOptions);
-          FormSelectorOptions selector(optionCount, speedOptions);
+          const FormSelectorOptions selector(optionCount, speedOptions);
           selector.addFormSelector(F("Serial speed"), F("speed"), PCONFIG(2));
           addUnit(F("baud"));
         }

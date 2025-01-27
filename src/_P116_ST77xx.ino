@@ -180,7 +180,7 @@ boolean Plugin_116(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(ST77xx_type_e::ST7796s_320x480)
         };
         constexpr int optCount4 = NR_ELEMENTS(optionValues4);
-        FormSelectorOptions selector(optCount4, options4, optionValues4);
+        const FormSelectorOptions selector(optCount4, options4, optionValues4);
         selector.addFormSelector(F("TFT display model"),
                         F("type"),
                         P116_CONFIG_FLAG_GET_TYPE);
@@ -216,7 +216,7 @@ boolean Plugin_116(uint8_t function, struct EventStruct *event, String& string)
           static_cast<int>(P116_CommandTrigger::st7796)
         };
         constexpr int cmdCount = NR_ELEMENTS(commandTriggerOptions);
-        FormSelectorOptions selector(cmdCount, commandTriggers, commandTriggerOptions);
+        const FormSelectorOptions selector(cmdCount, commandTriggers, commandTriggerOptions);
         selector.addFormSelector(
           F("Write Command trigger"),
           F("commandtrigger"),
