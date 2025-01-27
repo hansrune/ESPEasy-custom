@@ -188,6 +188,17 @@ void addNumericBox(const String& id,
 void addTextBox(const __FlashStringHelper * id,
                 const String& value,
                 int           maxlength,
+                const __FlashStringHelper * classname);
+
+void addTextBox(const String& id,
+                const String& value,
+                int           maxlength,
+                const __FlashStringHelper * classname);
+
+
+void addTextBox(const __FlashStringHelper * id,
+                const String& value,
+                int           maxlength,
                 bool          readonly = false,
                 bool          required = false,
                 const String& pattern  = EMPTY_STRING);

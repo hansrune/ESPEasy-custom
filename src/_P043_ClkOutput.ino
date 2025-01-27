@@ -166,12 +166,12 @@ boolean Plugin_043(uint8_t function, struct EventStruct *event, String& string)
           thisDay);
         addHtml(',');
         addTextBox(concat(F("clock"), x),
-                   parseString(timeStr, 2), 32
-                   , false, false, EMPTY_STRING, F("")
+                   parseString(timeStr, 2), 32,
+                   F(""),
                    #  if FEATURE_TOOLTIPS
-                   , EMPTY_STRING
+                   EMPTY_STRING,
                    #  endif // if FEATURE_TOOLTIPS
-                   , F("timepatternlist"));
+                   F("timepatternlist"));
         # else // ifndef LIMIT_BUILD_SIZE
         addFormTextBox(concat(F("Day,Time "), x + 1),
                        concat(F("clock"), x),

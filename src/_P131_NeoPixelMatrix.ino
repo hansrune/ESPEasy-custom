@@ -222,9 +222,6 @@ boolean Plugin_131(uint8_t function, struct EventStruct *event, String& string)
           addTextBox(getPluginCustomArgName(varNr),
                      parseStringKeepCaseNoTrim(strings[varNr], 1),
                      P131_Nchars,
-                     false,
-                     false,
-                     EMPTY_STRING,
                      F(""));
 
           String   opts    = parseString(strings[varNr], 2);

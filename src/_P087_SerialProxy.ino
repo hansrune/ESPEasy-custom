@@ -395,7 +395,7 @@ void P087_html_show_matchForms(struct EventStruct *event) {
         case 2:
         {
           // Compare with
-          addTextBox(id, filter, 32, false, false, EMPTY_STRING, F(""));
+          addTextBox(id, filter, 32, F(""));
           break;
         }
       }

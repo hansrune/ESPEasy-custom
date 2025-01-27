@@ -430,18 +430,14 @@ void saveControllerParameterForm(ControllerSettingsStruct        & ControllerSet
 #if FEATURE_MQTT_TLS
     case ControllerSettingsStruct::CONTROLLER_MQTT_TLS_TYPE:
     {
-      # if FEATURE_MQTT_TLS
       const int current        = static_cast<int>(ControllerSettings.TLStype());
       const TLS_types tls_type = static_cast<TLS_types>(getFormItemInt(internalName, current));
       ControllerSettings.TLStype(tls_type);
-      # endif // if FEATURE_MQTT_TLS
       break;
     }
 
     case ControllerSettingsStruct::CONTROLLER_MQTT_TLS_STORE_FINGERPRINT:
     {
-      # if FEATURE_MQTT_TLS
-
       if (isFormItemChecked(internalName)) {
         String fingerprint;
 
@@ -453,7 +449,6 @@ void saveControllerParameterForm(ControllerSettingsStruct        & ControllerSet
           SaveCertificate(ControllerSettings.getCertificateFilename(TLS_types::TLS_FINGERPRINT), fingerprint);
         }
       }
-      # endif // if FEATURE_MQTT_TLS
       break;
     }
 
@@ -461,8 +456,6 @@ void saveControllerParameterForm(ControllerSettingsStruct        & ControllerSet
     // fall through
     case ControllerSettingsStruct::CONTROLLER_MQTT_TLS_STORE_CACERT:
     {
-      # if FEATURE_MQTT_TLS
-
       if (isFormItemChecked(internalName)) {
         String cacert;
 
@@ -470,7 +463,6 @@ void saveControllerParameterForm(ControllerSettingsStruct        & ControllerSet
           SaveCertificate(ControllerSettings.getCertificateFilename(TLS_types::TLS_CA_CERT), cacert);
         }
       }
-      # endif // if FEATURE_MQTT_TLS
       break;
     }
 #endif // if FEATURE_MQTT_TLS

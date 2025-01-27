@@ -2319,9 +2319,6 @@ bool P104_data_struct::webform_load(struct EventStruct *event) {
         addTextBox(getPluginCustomArgName(index + P104_OFFSET_TEXT),
                    zones[zone].text,
                    P104_MAX_TEXT_LENGTH_PER_ZONE,
-                   false,
-                   false,
-                   EMPTY_STRING,
                    F(""));
         {
           html_TD(); // Content

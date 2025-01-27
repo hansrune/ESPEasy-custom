@@ -155,7 +155,7 @@ boolean Plugin_042(uint8_t function, struct EventStruct *event, String& string)
         }
 
         // Candle Type Selection
-        const FormSelectorOptions selector(P042_FLAME_OPTIONS, options, nullptr);
+        const FormSelectorOptions selector(P042_FLAME_OPTIONS, options);
         selector.addFormSelector(F("Flame Type"), P042_WEBVAR_CANDLETYPE,  P042_CONFIG_CANDLETYPE);
       }
 

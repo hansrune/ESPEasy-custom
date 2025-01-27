@@ -101,7 +101,7 @@ void P002_data_struct::webformLoad_2p_calibPoint(
   float                      value) const
 {
   addRowLabel_tr_id(label, id_point);
-  addTextBox(id_point, String(point), 10, false, false, EMPTY_STRING, F("number"));
+  addTextBox(id_point, String(point), 10, F("number"));
 
 # ifdef ESP32
 
@@ -113,7 +113,7 @@ void P002_data_struct::webformLoad_2p_calibPoint(
   html_add_estimate_symbol();
   const unsigned int display_nrDecimals = _nrDecimals > 3 ? _nrDecimals : 3;
 
-  addTextBox(id_value, toString(value, display_nrDecimals), 10, false, false, EMPTY_STRING, F("number"));
+  addTextBox(id_value, toString(value, display_nrDecimals), 10, F("number"));
 }
 
 void P002_data_struct::webformLoad(struct EventStruct *event)
@@ -324,9 +324,6 @@ void P002_data_struct::webformLoad(struct EventStruct *event)
                  _nrDecimals,
                  true) : EMPTY_STRING,
                0,
-               false,
-               false,
-               EMPTY_STRING,
                F("query-input widenumber"));
 
     ++line_nr;

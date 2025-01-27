@@ -335,7 +335,7 @@ boolean Plugin_143(uint8_t function, struct EventStruct *event, String& string)
             addHtml('#');
             addHtmlInt(varNr + 1);
             html_TD();
-            addTextBox(getPluginCustomArgName(varNr), strings[varNr], P143_STRING_LEN, false, false, EMPTY_STRING, F("xwide"));
+            addTextBox(getPluginCustomArgName(varNr), strings[varNr], P143_STRING_LEN, F("xwide"));
           }
           html_end_table();
         }

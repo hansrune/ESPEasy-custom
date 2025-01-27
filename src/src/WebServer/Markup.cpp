@@ -613,6 +613,30 @@ void addFloatNumberBox(const String& id, float value, float min, float max, unsi
 // ********************************************************************************
 // Add Textbox
 // ********************************************************************************
+void addTextBox(const __FlashStringHelper * id,
+                const String& value,
+                int           maxlength,
+                const __FlashStringHelper * classname)
+{
+  addTextBox(String(id), value, maxlength, 
+             false, // readonly
+             false, // required
+             EMPTY_STRING, // pattern
+             classname);
+}
+
+void addTextBox(const String& id,
+                const String& value,
+                int           maxlength,
+                const __FlashStringHelper * classname)
+{
+  addTextBox(id, value, maxlength, 
+             false, // readonly
+             false, // required
+             EMPTY_STRING, // pattern
+             classname);
+}
+
 void addTextBox(const __FlashStringHelper * id, const String&  value, int maxlength, bool readonly, bool required, const String& pattern) {
   addTextBox(id, value, maxlength, readonly, required, pattern, F("wide"));
 }

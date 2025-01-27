@@ -1214,7 +1214,7 @@ bool ESPEasy_TouchHandler::plugin_webform_load(struct EventStruct *event) {
       addTextBox(getPluginCustomArgName(objectNr + 100),
                  TouchObjects[objectNr].objectName,
                  TOUCH_MaxObjectNameLength,
-                 false, false, EMPTY_STRING, F("wide"));
+                 F("wide"));
       html_TD(); // top-x
       addNumericBox(getPluginCustomArgName(objectNr + 200),
                     TouchObjects[objectNr].top_left.x, 0, 65535

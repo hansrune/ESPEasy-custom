@@ -552,9 +552,6 @@ boolean Plugin_036(uint8_t function, struct EventStruct *event, String& string)
             addTextBox(getPluginCustomArgName(varNr),
                        P036_lines.DisplayLinesV1[varNr].Content,
                        P36_NcharsV1 - 1,
-                       false,        // readonly,
-                       false,        // required,
-                       EMPTY_STRING, // pattern,
                        F("xwide")    // class name
                        );
             {
