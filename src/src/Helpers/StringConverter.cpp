@@ -109,7 +109,8 @@ bool reserve_special(String& str, size_t size) {
 void free_string(String& str) {
   // This is a call specifically tailored to what is done in:
   //  void String::move(String &rhs)
-  
+
+  str.clear(); // Prevent any unneeded copying  
   String tmp(std::move(str));
 }
 
