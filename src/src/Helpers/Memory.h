@@ -56,3 +56,6 @@ unsigned long getMaxFreeBlock();
 void *special_malloc(uint32_t size);
 void *special_realloc(void *ptr, size_t size);
 void *special_calloc(size_t num, size_t size);
+
+
+bool String_reserve_special(String& str, size_t size);

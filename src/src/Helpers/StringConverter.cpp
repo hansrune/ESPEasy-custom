@@ -90,6 +90,9 @@ void move_special(String& dest, String&& source) {
   }
   #endif // ifdef USE_SECOND_HEAP
   dest = std::move(source);
+  #ifdef ESP32
+  reserve_special(dest, dest.length());
+  #endif
 }
 
 String move_special(String&& source) {
@@ -100,23 +103,7 @@ String move_special(String&& source) {
 
 
 bool reserve_special(String& str, size_t size) {
-  if (str.length() >= size) {
-    // Nothing needs to be done
-    return true;
-  }
-  // FIXME TD-er: Should also use this for ESP32 with PSRAM to allocate on PSRAM
-  #ifdef USE_SECOND_HEAP
-  if (size >= 32) {
-    // Only try to store larger strings here as those tend to be kept for a longer period.
-    HeapSelectIram ephemeral;
-    // String does round up to nearest multiple of 16 bytes, so no need to round up to multiples of 32 bit here
-    if (str.reserve(size)) {
-      return true;
-    }
-  }
-  #endif
-  return str.reserve(size);
-  // TD-er: should we also log here?
+  return String_reserve_special(str, size);
 }
 
 

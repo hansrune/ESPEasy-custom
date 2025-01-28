@@ -48,7 +48,7 @@ bool LogEntry_t::add(const uint8_t loglevel, String&& line)
     // Need to make a substring, which is a new allocation, on the 2nd heap
     HeapSelectIram ephemeral;
       #endif // ifdef USE_SECOND_HEAP
-    _message = std::move(line.substring(0, LOG_STRUCT_MESSAGE_SIZE - 1));
+    _message = move_special(line.substring(0, LOG_STRUCT_MESSAGE_SIZE - 1));
   } else {
     move_special(_message, std::move(line));
   }
