@@ -83,7 +83,7 @@ void move_special(String& dest, String&& source) {
     HeapSelectIram ephemeral;
     if (dest.reserve(source.length())) {
       dest = source;
-      source = String();
+      free_string(source);
       return;
     }
     // Could not allocate on 2nd heap, so just move existing string
@@ -106,6 +106,12 @@ bool reserve_special(String& str, size_t size) {
   return String_reserve_special(str, size);
 }
 
+void free_string(String& str) {
+  // This is a call specifically tailored to what is done in:
+  //  void String::move(String &rhs)
+  
+  String tmp(std::move(str));
+}
 
 /********************************************************************************************\
    Format string using vsnprintf
@@ -1515,7 +1521,7 @@ bool GetArgv(const char *string, String& argvString, unsigned int argc, char sep
   int  pos_begin, pos_end;
   bool hasArgument = GetArgvBeginEnd(string, argc, pos_begin, pos_end, separator);
 
-  argvString = String();
+  free_string(argvString);
 
   if (!hasArgument) { return false; }
 
