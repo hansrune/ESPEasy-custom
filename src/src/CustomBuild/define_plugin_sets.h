@@ -1691,6 +1691,11 @@ To create/register a plugin, you have to :
       #define USES_P163   // Environment - RadSens I2C radiation counter
     #endif
   #endif
+  #ifdef ESP32
+    #ifndef USES_P105
+      #define USES_P105
+    #endif
+  #endif
   #ifndef USES_P164
     #define USES_P164   // Gases - ENS16x TVOC\eCO2
   #endif

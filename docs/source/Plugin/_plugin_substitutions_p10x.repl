@@ -79,7 +79,7 @@
 .. |P105_type| replace:: :cyan:`Environment`
 .. |P105_typename| replace:: :cyan:`Environment - AHT1x/AHT2x/DHT20/AM2301B`
 .. |P105_porttype| replace:: `.`
-.. |P105_status| replace:: :yellow:`COLLECTION A` :yellow:`CLIMATE`
+.. |P105_status| replace:: :yellow:`COLLECTION A` :yellow:`COLLECTION G` :yellow:`CLIMATE`
 .. |P105_github| replace:: P105_AHT.ino
 .. _P105_github: https://github.com/letscontrolit/ESPEasy/blob/mega/src/_P105_AHT.ino
 .. |P105_usedby| replace:: `.`
