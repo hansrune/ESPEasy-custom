@@ -227,7 +227,7 @@ Your Own Default Settings
 // #define USES_P086   // Receiving values according Homie convention. Works together with C014 Homie controller
 // #define USES_P087   // Serial Proxy
 #define USES_P088      // HeatpumpIR
-// #define USES_P089   // Ping
+#define USES_P089   // Ping
 
 // #define USES_P090   // CCS811
 // #define USES_P091   // SerSwitch
@@ -288,9 +288,57 @@ Your Own Default Settings
 // #define P128_USES_RBG
 // #define P128_ENABLE_FAKETV 1 // Enable(1)/Disable(0) FakeTV effect, disabled by default on ESP8266 (.bin size issue), enabled by default on ESP32
 
+// #define USES_P129   // 74HC165 Input shiftregisters
 
-// #define USES_P108   // DDS238-x ZN Modbus energy meters
+// #define USES_P131   // NeoPixel Matrix
+// #define USES_P132   // INA3221
+// #define USES_P133   // LTR390 UV
+// #define USES_P134   // A02YYUW
+// #define USES_P135   // SCD4x
+//   #define P135_FEATURE_RESET_COMMANDS  1 // Enable/Disable quite spacious (~950 bytes) 'selftest' and 'factoryreset' subcommands
+// #define USES_P137   // AXP192
+// #define USES_P138   // IP5306
+// #define USES_P139   // AXP2101
 
+// #define USES_P140   // CardKB
+// #define UN_USES_P140   // **DISABLE** I2C CardKB for ESP32 (Enabled by default for ESP32)
+// #define USES_P141   // PCD8544 Nokia 5110 LCD
+// #define USES_P142   // Position - AS5600
+// #define USES_P143   // I2C Rotary encoders
+//   #define P143_FEATURE_INCLUDE_M5STACK      0 // Enabled by default, can be turned off here
+//   #define P143_FEATURE_INCLUDE_DFROBOT      0 // Enabled by default, can be turned off here
+//   #define P143_FEATURE_COUNTER_COLORMAPPING 0 // Enabled by default, can be turned off here
+
+// #define USES_P144   // PM1006(K) (Vindriktning)
+// #define USES_P145   // MQxxx (MQ135 CO2, MQ3 Alcohol)
+// #define USES_P146   // Cache Reader
+// #define USES_P147   // SGP4x
+//   #define P147_FEATURE_GASINDEXALGORITHM    0 // Enabled by default, can be turned off here
+// #define USES_P148   // POWR3xxD/THR3xxD
+
+// #define USES_P150   // TMP117 Temperature
+// #define USES_P151   // Honeywell Pressure
+// #define USES_P152   // ESP32 DAC
+// #define USES_P153   // SHT4x
+// #define USES_P154   // BMP3xx I2C
+
+// #define USES_P159   // Presence - LD2410 Radar detection
+
+// #define USES_P162   // Output - MCP42xxx Digipot
+// #define USES_P163   // Environment - RadSens I2C radiation counter
+// #define USES_P164   // Gases - ENS16x TVOC/eCO2
+// #define USES_P165   // Display - NeoPixel (7-segment)
+// #define USES_P166   // Output - GP8403 Dual channel DAC (Digital Analog Converter)
+// #define USES_P167   // Environment - Sensirion SEN5x / Ikea Vindstyrka
+// #define USES_P168   // Light - VEML6030/VEML7700
+// #define USES_P169   // Environment - AS3935 Lightning Detector
+
+// #define USES_P170   // Input - I2C Liquid level sensor
+// #define USES_P172   // BMP3xx SPI.
+// #define USES_P173   // Environment - SHTC3
+// #define USES_P175   // Dust - PMSx003i I2C
+// #define USES_P176   // Communication - Victron VE.Direct
+// #define USES_P178   // LU9685 Servo controller
 
 /*
  #######################################################################################################
