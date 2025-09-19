@@ -1221,6 +1221,7 @@ To create/register a plugin, you have to :
     #endif
     #define FEATURE_MQTT_TLS 1
     #define FEATURE_EMAIL_TLS 1
+    #define FEATURE_HTTP_TLS 1
 
     #ifdef FEATURE_CUSTOM_PROVISIONING
         #undef FEATURE_CUSTOM_PROVISIONING
@@ -2602,6 +2603,9 @@ To create/register a plugin, you have to :
   #ifndef FEATURE_EMAIL_TLS
     #define FEATURE_EMAIL_TLS 1
   #endif
+  #ifndef FEATURE_HTTP_TLS
+    #define FEATURE_HTTP_TLS 1
+  #endif
 
   #ifdef BUILD_NO_DEBUG
     #undef BUILD_NO_DEBUG
@@ -3411,6 +3415,13 @@ To create/register a plugin, you have to :
   #endif
 #endif
 
+#ifndef FEATURE_HTTP_TLS
+  #if defined(ESP32) && (FEATURE_SEND_TO_HTTP || FEATURE_POST_TO_HTTP || FEATURE_PUT_TO_HTTP)
+    #define FEATURE_HTTP_TLS 1
+  #else
+    #define FEATURE_HTTP_TLS 0
+  #endif
+#endif // ifndef FEATURE_HTTP_TLS
 
 #ifdef ESP8266
 // It just doesn't work on ESP8266, too slow, too high memory requirements
@@ -3423,9 +3434,13 @@ To create/register a plugin, you have to :
     #undef FEATURE_EMAIL_TLS
     #define FEATURE_EMAIL_TLS 0
   #endif
+  #if FEATURE_HTTP_TLS
+    #undef FEATURE_HTTP_TLS
+    #define FEATURE_HTTP_TLS 0
+  #endif
 #endif
 
-#if FEATURE_MQTT_TLS
+#if FEATURE_MQTT_TLS || FEATURE_EMAIL_TLS || FEATURE_HTTP_TLS
   #if defined(FEATURE_TLS) && !FEATURE_TLS
     #undef FEATURE_TLS
   #endif
@@ -3434,16 +3449,6 @@ To create/register a plugin, you have to :
   #endif
 #endif
 
-
-#if FEATURE_EMAIL_TLS
-  #if defined(FEATURE_TLS) && !FEATURE_TLS
-    #undef FEATURE_TLS
-  #endif
-  #ifndef FEATURE_TLS
-    #define FEATURE_TLS 1
-  #endif
-#endif
-  
 
 #if !defined(FEATURE_MQTT_DISCOVER) && FEATURE_MQTT
   #if defined(LIMIT_BUILD_SIZE) || defined(ESP8266) // Must enable this explicitly for ESP8266 Custom build
