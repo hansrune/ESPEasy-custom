@@ -1354,7 +1354,7 @@ String splitURL(const String& fullURL, String& user, String& pass, String& host,
   }
 
   #if FEATURE_HTTP_TLS
-  if ((starthost > 0) && (port == 80)) { // 'Upgrade' from port 80 to port 443 for HTTPS url
+  if ((starthost > 3) && (port == 80)) { // 'Upgrade' from port 80 to port 443 for HTTPS url
     String proto = fullURL.substring(0, starthost - 3);
     proto.toLowerCase();
 
