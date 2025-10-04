@@ -24,6 +24,7 @@
 #include "../WebServer/Markup_Buttons.h"
 #include "../WebServer/Markup_Forms.h"
 #include "../WebServer/NotificationPage.h"
+#include "../WebServer/PluginListPage.h"
 #include "../WebServer/PinStates.h"
 #include "../WebServer/RootPage.h"
 #include "../WebServer/Rules.h"
@@ -299,6 +300,9 @@ void WebServerInit()
 #ifdef WEBSERVER_SYSVARS
   web_server.on(F("/sysvars"),     handle_sysvars);
 #endif // WEBSERVER_SYSVARS
+#if FEATURE_PLUGIN_LIST
+  web_server.on(F("/pluginlist"),  handle_pluginlist);
+#endif // if FEATURE_PLUGIN_LIST
 #ifdef WEBSERVER_TIMINGSTATS
   web_server.on(F("/timingstats"), handle_timingstats);
 #endif // WEBSERVER_TIMINGSTATS
