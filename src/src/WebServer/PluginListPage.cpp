@@ -11,6 +11,9 @@
 #  include "../Globals/NPlugins.h"
 #  include "../DataTypes/NPluginID.h"
 # endif // if FEATURE_NOTIFIER
+# ifdef WEBSERVER_NETWORK
+#  include "../ESPEasy/net/DataTypes/NetworkDriverIndex.h"
+# endif
 
 void handle_pluginlist() {
   # ifndef BUILD_NO_RAM_TRACKER
@@ -146,7 +149,38 @@ void handle_pluginlist() {
   }
   # endif // if FEATURE_NOTIFIER
 
-  // TODO Add Network plugins once PR https://github.com/letscontrolit/ESPEasy/pull/5149 is merged
+  # ifdef WEBSERVER_NETWORK
+  {
+    addTableSeparator(F("Networks"), colspan, 3);
+    html_TR();
+    html_table_header(F("Network"),     80);
+    html_table_header(F(""),            25);
+    html_table_header(F("Description"), 800);
+    html_table_header(F(""),            50);
+    #  if FEATURE_MQTT_TLS
+    html_table_header(F(""),            50);
+    #  endif // if FEATURE_MQTT_TLS
+    html_table_header(F(""));
+
+    ESPEasy::net::networkDriverIndex_t tmpNetworkDriverIndex{};
+
+    while (validNetworkDriverIndex(tmpNetworkDriverIndex))
+    {
+      html_TR_TD();
+      const ESPEasy::net::nwpluginID_t number = getNWPluginID_from_NetworkDriverIndex(tmpNetworkDriverIndex);
+      addHtml(number.toDisplayString());
+      html_TD();
+      #  ifndef LIMIT_BUILD_SIZE
+      addRTDNetworkDriverButton(number);
+      #  endif // ifndef LIMIT_BUILD_SIZE
+      html_TD();
+      addHtml(getNWPluginNameFromNetworkDriverIndex(tmpNetworkDriverIndex));
+      html_TD();
+      ++tmpNetworkDriverIndex;
+    }
+
+  }
+  # endif // ifdef WEBSERVER_NETWORK
 
   html_end_table();
   html_end_form();
