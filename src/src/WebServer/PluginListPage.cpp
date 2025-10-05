@@ -18,9 +18,9 @@ void handle_pluginlist() {
   # endif // ifndef BUILD_NO_RAM_TRACKER
 
   # if FEATURE_MQTT_TLS // TODO Add check for FEATURE_HTTP_TLS when https://github.com/letscontrolit/ESPEasy/pull/5402 is merged
-  const int colspan = 5;
+  const int colspan = 6;
   # else // if FEATURE_MQTT_TLS
-  const int colspan = 4;
+  const int colspan = 5;
   # endif // if FEATURE_MQTT_TLS
 
   TXBuffer.startStream();
@@ -33,6 +33,7 @@ void handle_pluginlist() {
     addTableSeparator(concat(F("Plugins sorted by "), 0 == p ? F("Description") : F("Plugin ID")), colspan, 3);
     html_TR();
     html_table_header(F("Plugin"),      80);
+    html_table_header(F(""),            25);
     html_table_header(F("Description"), 800);
     html_table_header(F(""),            50);
     # if FEATURE_MQTT_TLS
@@ -55,6 +56,8 @@ void handle_pluginlist() {
           html_TR_TD();
           addHtml(get_formatted_Plugin_number(pluginID));
           html_TD();
+          addRTDPluginButton(pluginID);
+          html_TD();
           addHtml(getPluginNameFromDeviceIndex(deviceIndex));
           html_TD();
         }
@@ -67,6 +70,7 @@ void handle_pluginlist() {
     addTableSeparator(F("Controllers"), colspan, 3);
     html_TR();
     html_table_header(F("Controller"),  80);
+    html_table_header(F(""),            25);
     html_table_header(F("Description"), 800);
     html_table_header(F("MQTT"),        50);
     # if FEATURE_MQTT_TLS
@@ -86,6 +90,10 @@ void handle_pluginlist() {
         if (validCPluginID(cpluginID)) {
           html_TR_TD();
           addHtml(get_formatted_Controller_number(cpluginID));
+          html_TD();
+          # ifndef LIMIT_BUILD_SIZE
+          addRTDControllerButton(cpluginID);
+          # endif // ifndef LIMIT_BUILD_SIZE
           html_TD();
           addHtml(getCPluginNameFromProtocolIndex(x));
 
@@ -114,6 +122,7 @@ void handle_pluginlist() {
     addTableSeparator(F("Notifications"), colspan, 3);
     html_TR();
     html_table_header(F("Notifier"),    80);
+    html_table_header(F(""),            25);
     html_table_header(F("Description"), 800);
     html_table_header(F(""),            50);
     #  if FEATURE_MQTT_TLS
@@ -126,6 +135,8 @@ void handle_pluginlist() {
       html_TR_TD();
       const npluginID_t plugin(Notification[x].Number);
       addHtml(plugin.toDisplayString());
+      html_TD();
+      addRTDHelpButton(strformat(F("Notify/%s.html"), plugin.toDisplayString().c_str()));
       html_TD();
       String NotificationName;
       NPlugin_ptr[x](NPlugin::Function::NPLUGIN_GET_DEVICENAME, 0, NotificationName);
