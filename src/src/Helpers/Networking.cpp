@@ -14,6 +14,7 @@
 #include "../Globals/ESPEasyEthEvent.h"
 #include "../Globals/ESPEasyWiFiEvent.h"
 #include "../Globals/ESPEasy_Scheduler.h"
+#include "../Globals/ESPEasy_time.h"
 
 #ifdef USES_ESPEASY_NOW
 #include "../Globals/ESPEasy_now_handler.h"
