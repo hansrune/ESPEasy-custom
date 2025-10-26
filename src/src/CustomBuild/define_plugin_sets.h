@@ -1784,15 +1784,15 @@ To create/register a plugin, you have to :
   #ifndef USES_P170
     #define USES_P170   // Input - I2C Liquid level sensor
   #endif
+#endif // ifdef PLUGIN_SET_COLLECTION_G
+
+#ifdef PLUGIN_SET_COLLECTION_H
   #if !defined(USES_P173) && defined(ESP32)
     #define USES_P173   // Environment - SHTC3
   #endif
   #if !defined(USES_P177) && defined(ESP32)
     #define USES_P177   // Environment - I2C XDB401 pressure
   #endif
-#endif // ifdef PLUGIN_SET_COLLECTION_G
-
-#ifdef PLUGIN_SET_COLLECTION_H
   #if !defined(USES_P178) && defined(ESP32)
     #define USES_P178   // Extra IO - LU9685 Servo controller
   #endif
