@@ -1010,6 +1010,9 @@ To create/register a plugin, you have to :
   #ifdef ESP8266
     #undef ESP8266
   #endif
+  #ifndef P037_LIMIT_BUILD_SIZE
+    #define P037_LIMIT_BUILD_SIZE // Reduce build size for P037 (MQTT Import) only
+  #endif
   // Undefine contradictionary defines
   #ifdef PLUGIN_SET_NONE
     #undef PLUGIN_SET_NONE
