@@ -964,9 +964,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_B_ESP32
@@ -995,9 +992,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_C_ESP32
@@ -1026,9 +1020,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_D_ESP32
@@ -1057,9 +1048,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_E_ESP32
@@ -1088,9 +1076,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_F_ESP32
@@ -1119,9 +1104,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_G_ESP32
@@ -1150,9 +1132,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_SET_COLLECTION_H_ESP32
@@ -1181,9 +1160,6 @@ To create/register a plugin, you have to :
   #define  CONTROLLER_SET_COLLECTION
   #define  NOTIFIER_SET_STABLE
   #define  PLUGIN_SET_STABLE     // add stable
-  // See also PLUGIN_SET_COLLECTION_ESP32 section at end,
-  // where incompatible plugins will be disabled.
-  // TODO : Check compatibility of plugins for ESP32 board.
 #endif
 
 #ifdef PLUGIN_BUILD_MAX_ESP32
