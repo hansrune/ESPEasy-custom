@@ -283,7 +283,7 @@ To create/register a plugin, you have to :
 #endif
 
 #ifdef PLUGIN_BUILD_COLLECTION
-  #if !defined(PLUGIN_BUILD_COLLECTION_B) && !defined(PLUGIN_BUILD_COLLECTION_C) && !defined(PLUGIN_BUILD_COLLECTION_D) && !defined(PLUGIN_BUILD_COLLECTION_E) && !defined(PLUGIN_BUILD_COLLECTION_F) && !defined(PLUGIN_BUILD_COLLECTION_G)
+  #if !defined(PLUGIN_BUILD_COLLECTION_B) && !defined(PLUGIN_BUILD_COLLECTION_C) && !defined(PLUGIN_BUILD_COLLECTION_D) && !defined(PLUGIN_BUILD_COLLECTION_E) && !defined(PLUGIN_BUILD_COLLECTION_F) && !defined(PLUGIN_BUILD_COLLECTION_G) && !defined(PLUGIN_BUILD_COLLECTION_H)
     #define PLUGIN_DESCR  "Collection_A"
     #define PLUGIN_SET_COLLECTION_A
   #endif
@@ -392,7 +392,39 @@ To create/register a plugin, you have to :
   #ifndef FEATURE_RULES_EASY_COLOR_CODE
     #define FEATURE_RULES_EASY_COLOR_CODE 1
   #endif
-#endif
+#endif // ifdef PLUGIN_CLIMATE_A_COLLECTION
+
+#ifdef PLUGIN_CLIMATE_B_COLLECTION
+  #ifdef PLUGIN_BUILD_NORMAL
+    #undef PLUGIN_BUILD_NORMAL
+  #endif
+  #define PLUGIN_SET_NONE // Specifically configured below
+  #define CONTROLLER_SET_STABLE
+  #define NOTIFIER_SET_STABLE
+  #ifndef FEATURE_ESPEASY_P2P
+    #define FEATURE_ESPEASY_P2P 1
+  #endif
+  #if defined(ESP8266) && !defined(LIMIT_BUILD_SIZE)
+    #define LIMIT_BUILD_SIZE
+  #endif
+
+  #ifndef FEATURE_I2CMULTIPLEXER
+    #define FEATURE_I2CMULTIPLEXER  1
+  #endif
+  #ifndef FEATURE_TRIGONOMETRIC_FUNCTIONS_RULES
+    #define FEATURE_TRIGONOMETRIC_FUNCTIONS_RULES 1
+  #endif
+  #define KEEP_TRIGONOMETRIC_FUNCTIONS_RULES
+  #ifndef FEATURE_PLUGIN_STATS
+    #define FEATURE_PLUGIN_STATS  1
+  #endif
+  #ifndef FEATURE_CHART_JS
+    #define FEATURE_CHART_JS  1
+  #endif
+  #ifndef FEATURE_RULES_EASY_COLOR_CODE
+    #define FEATURE_RULES_EASY_COLOR_CODE 1
+  #endif
+#endif // ifdef PLUGIN_CLIMATE_B_COLLECTION
 
 #ifdef PLUGIN_BUILD_NORMAL
     #define  PLUGIN_SET_STABLE
