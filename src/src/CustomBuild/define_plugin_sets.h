@@ -949,6 +949,12 @@ To create/register a plugin, you have to :
   #ifdef ESP8266
     #undef ESP8266
   #endif
+  #ifndef BUILD_NO_DEBUG
+    #define BUILD_NO_DEBUG
+  #endif
+  #ifndef P036_LIMIT_BUILD_SIZE
+    #define P036_LIMIT_BUILD_SIZE
+  #endif
   // Undefine contradictionary defines
   #ifdef PLUGIN_SET_NONE
     #undef PLUGIN_SET_NONE
@@ -2323,7 +2329,7 @@ To create/register a plugin, you have to :
 
   // Enable extra climate-related plugins (CO2/Temp/Hum)
 
-  #ifndef USES_P169
+  #if defined(USES_P169) && defined(ESP32)
     #define USES_P169   // Environment - AS3935 Lightning Detector
   #endif
   #if !defined(USES_P173) // && defined(ESP32)
@@ -2353,6 +2359,9 @@ To create/register a plugin, you have to :
 #ifdef PLUGIN_NEOPIXEL_COLLECTION
   #ifndef PLUGIN_DESCR
     #define PLUGIN_DESCR  "NeoPixel"
+  #endif
+  #ifndef BUILD_NO_DEBUG
+    #define BUILD_NO_DEBUG
   #endif
   #if !defined(FEATURE_SD) && !defined(ESP8266)
     #define FEATURE_SD  1
