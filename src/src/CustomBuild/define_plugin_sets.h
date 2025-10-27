@@ -2603,6 +2603,10 @@ To create/register a plugin, you have to :
     #define FEATURE_EMAIL_TLS 1
   #endif
 
+  #ifdef BUILD_NO_DEBUG
+    #undef BUILD_NO_DEBUG
+  #endif
+
   // Plugins
   #ifndef USES_P016
     #define USES_P016   // IR TSOP4838
