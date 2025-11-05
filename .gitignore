@@ -80,7 +80,7 @@ managed_components/
 
 CMakeLists.txt
 
-sdkconfig.max_ESP32s3_16M8M_LittleFS_OPI_PSRAM_ETH
+sdkconfig.max_ESP32s3_16M8M_OPI_PSRAM
 
 sdkconfig.defaults
 
@@ -91,3 +91,5 @@ dependencies.lock
 .cache/
 
 src/src/CustomBuild/CompiletimeDefines_generated.h
+
+bhutan_16m.bin
