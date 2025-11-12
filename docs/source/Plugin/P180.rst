@@ -428,11 +428,11 @@ The plugin should be configured with these settings:
 
 * **I2C Init Commands** sequence for initializing the sensor:
 
-``put.u8.2.0x36.0x03``: Start continuous measurement.
+``put.b.2.0x36.0x03``: Start continuous measurement.
 
 * **I2C Exit Commands** sequence for shutting down the sensor:
 
-``put.u8.2.0x3f.0xf9``: Stop continuous measurement.
+``put.b.2.0x3f.0xf9``: Stop continuous measurement.
 
 * **Cache-Name 1 (optional)**: Fill with a useable name, f.e. ``sdp``, so the I2C Command sequence is cached for much improved execution-performance.
 
