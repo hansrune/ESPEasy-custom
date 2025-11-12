@@ -455,6 +455,21 @@ Command sequence explanation:
 * ``calc.%v_prs%/0x{substring:14:18:%h%}``: Divide the raw pressure by the scale factor.
 * ``value.2``: Store the pressure in Value 2.
 
+Alternative read method
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Instead of having the sensor doing continuous measurements, and returning the average value since the last read, a single measurement can be started, wait a little to complete the measurement, and read the results.
+
+In this case, the **I2C Init Commands** and **I2C Exit Commands** fields must be made empty, and **I2C Commands 1** should be set to:
+
+``put.b.2.0x36.0x24;delay.50;get.b.9;eval;let.tmp.0x{substring:8:12:%h%};if.{and:%v_tmp%:0x8000}.1;let.tmp.%v_tmp%-0x10000;calc.%v_tmp%/0x{substring:14:18:%h%};value.1;let.prs.0x{substring:2:6:%h%};if.{and:%v_prs%:0x8000}.1;let.prs.%v_prs%-0x10000;calc.%v_prs%/0x{substring:14:18:%h%};value.2``
+
+This command sequence is nearly the same as with the Continuous measurement, except there are a few commands added *before* the values are read.
+
+* ``put.b.2.0x36.0x24``: Send the command to start a single measurement.
+* ``delay.50``: Insert an asynchronous delay of 50 msec, as the sensor needs ca. 45 msec to complete a measurement. This delay does **not** block processing, as is described above.
+* The rest of the commands is already explained in the Continuous measurement description, above this paragraph.
+
 |
 
 Change log
