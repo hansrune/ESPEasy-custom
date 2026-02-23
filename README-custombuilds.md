@@ -44,7 +44,7 @@ You can build the firmware like this for any of the environments in `platformio.
 pio run --environment public_IR_ESP32c3_4M316k_LittleFS_CDC # this will take a long time as it also downloads all tools and libraries needed
 ```
 
-## Upload
+### Upload
 
 Connect the ESP device to your system. In this case it is available as `/dev/ttyACM0`.
 
@@ -62,7 +62,7 @@ esptool.py --port /dev/ttyACM0 write_flash 0x0 build_output/bin/ESP_Easy_mega_20
 esptool.py --port /dev/ttyACM0 write_flash 0x10000 build_output/bin/ESP_Easy_mega_20240830_public_IR_ESP32c3_4M316k_LittleFS_CDC.bin
 ```
 
-## Connect to serial port
+### Connect to serial port
 
 You should check that the code loads from using a serial console. For example
 
@@ -71,3 +71,27 @@ tio /dev/ttyACM0
 ```
 
 (use Ctrl+t q to quit)
+
+
+## Updates
+
+Updates from upstream can be done as follows:
+
+From [github](https://github.com):
+
+- Switch to `mega` branch
+- Sync your fork from upstream
+
+From your git client sync from upsteam and create a new branch from `mega`
+
+```bash
+git fetch origin
+git checkout -b 'builds/custom/mega-20260223-1'
+```
+
+Then merge the changes from the latest custom build:
+
+```bash
+git merge builds/custom/mega-20260109-2
+git push
+```
