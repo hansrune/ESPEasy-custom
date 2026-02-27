@@ -226,7 +226,9 @@ Your Own Default Settings
 // #define USES_P085   // AcuDC24x
 // #define USES_P086   // Receiving values according Homie convention. Works together with C014 Homie controller
 // #define USES_P087   // Serial Proxy
+#ifndef ESP32C6
 #define USES_P088      // HeatpumpIR
+#endif
 #define USES_P089   // Ping
 
 // #define USES_P090   // CCS811
