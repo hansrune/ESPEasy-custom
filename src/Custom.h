@@ -60,7 +60,7 @@ Your Own Default Settings
     But since this Custom.h is included before other defines are made, you don't have to undef a lot of defines.
 */
 
-#define DATEREV "20260223-1"
+#define DATEREV "20260321-1"
 // #define BUILDDATEREV(pre, post) pre " - " DATEREV " - " post
 #define BUILDDATEREV(pre, post) pre " - " DATEREV
 // #warning "Custom config is being used"
@@ -226,9 +226,9 @@ Your Own Default Settings
 // #define USES_P085   // AcuDC24x
 // #define USES_P086   // Receiving values according Homie convention. Works together with C014 Homie controller
 // #define USES_P087   // Serial Proxy
-#ifndef ESP32C6
+// #ifndef ESP32C6
 #define USES_P088      // HeatpumpIR
-#endif
+// #endif
 #define USES_P089   // Ping
 
 // #define USES_P090   // CCS811
