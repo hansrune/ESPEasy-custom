@@ -125,11 +125,11 @@ bool NWPlugin_001(NWPlugin::Function function, EventStruct *event, String& strin
       break;
     }
 
-    case NWPlugin::Function::NWPLUGIN_FALLBACK_INTERFACE_SHOULD_START:
-    {
-      success = true;
-      break;
-    }
+    //case NWPlugin::Function::NWPLUGIN_FALLBACK_INTERFACE_SHOULD_START:
+    //{
+    //  success = true;
+    //  break;
+    //}
 
     case NWPlugin::Function::NWPLUGIN_WEBFORM_SHOW_ACTIVE:
     {
