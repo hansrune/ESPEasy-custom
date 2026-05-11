@@ -363,6 +363,7 @@ private:
   void    tm1637_i2cStart();
   void    tm1637_i2cStop();
   bool    tm1637_i2cAck();
+  bool    tm1637_i2cAck();
   void    tm1637_i2cWrite_ack(uint8_t bytesToPrint[],
                               uint8_t length);
   void    tm1637_i2cWriteByte_ack(uint8_t bytetoprint);

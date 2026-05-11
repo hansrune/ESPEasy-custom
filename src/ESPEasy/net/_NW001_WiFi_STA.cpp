@@ -71,8 +71,7 @@ bool NWPlugin_001(NWPlugin::Function function, EventStruct *event, String& strin
       Settings.setRoutePrio_for_network(event->NetworkIndex, DEFAULT_STA_ROUTE_PRIO);
 # endif // ifdef ESP32
       Settings.setNetworkInterfaceSubnetBlockClientIP(event->NetworkIndex, false);
-      Settings.setNetworkInterfaceStartupDelay(event->NetworkIndex, DEFAULT_STA_STARTUP_DELAY);
-      Settings.setNetworkInterface_isFallback(event->NetworkIndex, DEFAULT_STA_IS_FALLBACK);
+      Settings.setNetworkInterfaceStartupDelay(event->NetworkIndex, 1000);
 
       Settings.ConnectFailRetryCount = 1;
       break;
@@ -101,15 +100,11 @@ bool NWPlugin_001(NWPlugin::Function function, EventStruct *event, String& strin
 
     case NWPlugin::Function::NWPLUGIN_WEBSERVER_SHOULD_RUN:
     {
-      ESPEasy::net::wifi::NW001_data_struct_WiFi_STA *NW_data =
-        static_cast<ESPEasy::net::wifi::NW001_data_struct_WiFi_STA *>(getNWPluginData(event->NetworkIndex));
-
-      if (NW_data) {
-        auto runtime_data = NW_data->getNWPluginData_static_runtime();
-        if (runtime_data) {
-          success = runtime_data->connected();
-        }
-      }
+# ifdef ESP32
+      success = WiFi.STA.connected();
+# else // ifdef ESP32
+      success = WiFi.isConnected();
+# endif // ifdef ESP32
       break;
     }
 

@@ -451,7 +451,7 @@ bool NW004_data_struct_ETH_SPI::ETHConnectRelaxed() {
   if (!(data && iface)) { return false; }
 
   if (data->started() && data->connected()) {
-    if (EthLinkUp()) { return true; }
+    if (EthLinkUp()) return true;
     data->mark_connect_failed();
     return false;
   }

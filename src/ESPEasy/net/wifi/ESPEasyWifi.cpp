@@ -197,11 +197,11 @@ void exitWiFi()               {
   WiFi_AP_Candidates.force_reload();
 }
 
-void loopWiFi()               { ESPEasyWiFi.loop(); }
+void loopWiFi() { ESPEasyWiFi.loop(); }
 
-bool shouldStartAP_fallback() { return ESPEasyWiFi.shouldStartAP_fallback(); }
-
-bool shouldRedirectTo_setup() { return ESPEasyWiFi.shouldRedirectTo_setup(); }
+bool shouldStartAP_fallback() { 
+  return ESPEasyWiFi.shouldStartAP_fallback(); 
+}
 
 # ifdef BOARD_HAS_SDIO_ESP_HOSTED
 
@@ -260,14 +260,13 @@ String GetHostedFwVersion(EspHostTypes hostType)
 String GetHostedMCU()
 {
   // Function is not yet implemented in Arduino Core so emulate it here
-#  if defined(CONFIG_ESP_HOSTED_CP_TARGET_ESP32C6) && CONFIG_ESP_HOSTED_CP_TARGET_ESP32C6 == 1
+#if defined(CONFIG_ESP_HOSTED_CP_TARGET_ESP32C6) && CONFIG_ESP_HOSTED_CP_TARGET_ESP32C6==1
   return String("ESP32-C6");
-#  else
-
+#else
   if (equals(F(CONFIG_ESP_HOSTED_IDF_SLAVE_TARGET), F("esp32c6"))) {
     return String("ESP32-C6");
   }
-#  endif // if defined(CONFIG_ESP_HOSTED_CP_TARGET_ESP32C6) && CONFIG_ESP_HOSTED_CP_TARGET_ESP32C6 == 1
+#endif
   return String("Unknown");
 }
 

@@ -67,15 +67,6 @@ bool NWPluginData_base::isDefaultRoute() const {
 
 #endif
 
-bool NWPluginData_base::getStaticIPAddresses(IPAddress & ip, IPAddress & gateway, IPAddress & subnetmask, IPAddress & dns ) const
-{
-  getStaticIPAddress(IPAddressType::IP, ip);
-  getStaticIPAddress(IPAddressType::Gateway, gateway);
-  getStaticIPAddress(IPAddressType::Subnetmask, subnetmask);
-  getStaticIPAddress(IPAddressType::DNS, dns);
-
-  return IPAddressSet(ip) && IPAddressSet(gateway) && IPAddressSet(subnetmask);
-}
 
 bool NWPluginData_base::hasPluginStats() const {
 #if FEATURE_NETWORK_STATS

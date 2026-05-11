@@ -38,20 +38,12 @@ ESPEasy does support a number of variants of the processors manufactured by Espr
 * **ESP32-C5** Preliminary support added: 2026-01-09
 * **ESP32-C6** Support added: 2023-11-10
 * **ESP32-C61** Preliminary support added: 2026-01-09
-* **ESP32-E22** ❌ (No chip available yet)
-* **ESP32-H2** ❌
-* **ESP32-H21** ❌
-* **ESP32-H4** ❌
+* **ESP32-E22** Not yet supported
+* **ESP32-H2** Not yet supported
+* **ESP32-H21** Not yet supported
+* **ESP32-H4** Not yet supported
 * **ESP32-P4** Support added: 2026-01-08
-* **ESP32-P4rev3** Support added: 2026-04-20
 
-.. note::
-   ESP32-P4 rev. 1.x was renamed by Espressif to "ESP32-P4 ES" as in "Engineering Sample". The newer 'rev.3.x' silicon is now named "ESP32-P4", though some pages on the Espressif site refer to this as "ESP32-P4X".
-   It is unclear yet what will be the common naming schema for these.  Both silicon revisions do require different build files.
-
-
-.. note::
-   ESP32-Hxx will likely never be supported in ESPEasy as these do not have WiFi or other networking options. Only Zigbee.
 
 .. list-table:: Espressif platforms
    :header-rows: 1
@@ -109,7 +101,7 @@ ESPEasy does support a number of variants of the processors manufactured by Espr
       - 160
       - 120
       - 96
-      - v1.x:360 / v3.x:400
+      - 360 (v1.x) / 400 (v3.x)
    *  - Voltage (V)
       - 2.5 ~ 3.6
       - 3.0 ~ 3.6
@@ -126,16 +118,15 @@ ESPEasy does support a number of variants of the processors manufactured by Espr
    *  - ESPEasy supported since
       - 2015/05
       - 2017/12 (solo1:2023/05)
-      - 2021/09
-      - 2023/05
-      - ❌
-      - 2023/11
-      - 2023/05
-      - 2026/01
-      - 2023/11
-      - 2026/01
-      - ❌
-      - 2026/01 (v3.x:2026/04)
+      - Sep-21
+      - May-23
+      - Nov-23
+      - May-23
+      - 
+      - Nov-23
+      - 
+      - n/a
+      - Jan-26
    *  - Introduction
       - 2014
       - 2016
@@ -148,8 +139,8 @@ ESPEasy does support a number of variants of the processors manufactured by Espr
       - 2021
       - 2024
       - 2021
-      - 2023 (v3.x:2026)
-   *  - Status (2026/04)
+      - 2023
+   *  - Status (2026/03)
       - End-Of-Life
       - Mass Production (solo1: NRND)
       - NRND
@@ -161,7 +152,7 @@ ESPEasy does support a number of variants of the processors manufactured by Espr
       - Mass Production
       - Mass Production
       - Mass Production
-      - V1.x: NRND, V3.x: Sample
+      - Mass Production
    *  - Wi-Fi
       - IEEE 802.11 b/g/n; 2.4 GHz; HT20; up to 72 Mbps
       - IEEE 802.11 b/g/n; 2.4 GHz; HT20/40; up to 150 Mbps

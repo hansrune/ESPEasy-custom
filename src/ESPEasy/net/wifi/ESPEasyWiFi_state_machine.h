@@ -100,8 +100,6 @@ public:
 
   bool shouldStartAP_fallback() const;
 
-  bool shouldRedirectTo_setup() const;
-
 private:
 
   //  WiFi_AP_Candidate _active_sta;
