@@ -77,9 +77,8 @@ void update_mDNS() {
   if (webserverRunning) {
     if (!MDNS_RUNNING) {
       addLog(LOG_LEVEL_INFO, F("mDNS : Starting mDNS..."));
-      const String hostname = ESPEasy::net::NetworkGetHostname();
-      mDNS_init = MDNS.begin(hostname.c_str());
-      MDNS.setInstanceName(hostname); // Needed for when the hostname has changed.
+      mDNS_init = MDNS.begin(ESPEasy::net::NetworkGetHostname().c_str());
+      MDNS.setInstanceName(ESPEasy::net::NetworkGetHostname()); // Needed for when the hostname has changed.
 
       if (loglevelActiveFor(LOG_LEVEL_INFO)) {
         String log = F("mDNS : ");

@@ -56,7 +56,6 @@ void exitWiFi();
 void loopWiFi();
 
 bool shouldStartAP_fallback();
-bool shouldRedirectTo_setup();
 
 # ifdef BOARD_HAS_SDIO_ESP_HOSTED
 

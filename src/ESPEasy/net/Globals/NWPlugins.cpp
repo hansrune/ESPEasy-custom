@@ -85,11 +85,13 @@ bool NWPluginCall(NWPlugin::Function Function, EventStruct *event, String& str)
 
         if (Settings.getNWPluginID_for_network(x) && checkedEnabled) {
           if (Function == NWPlugin::Function::NWPLUGIN_INIT_ALL) {
-            Scheduler.setNetworkInitTimer(Settings.getNetworkInterfaceStartupDelay(x), x);
+            if (!Settings.getNetworkInterface_isFallback(x)) {
+              Scheduler.setNetworkInitTimer(Settings.getNetworkInterfaceStartupDelay(x), x);
+            }
           }
-
-          if ((Function == NWPlugin::Function::NWPLUGIN_WEBSERVER_SHOULD_RUN) &&
-              Settings.getNetworkInterfaceSubnetBlockClientIP(x))
+          
+          if (Function == NWPlugin::Function::NWPLUGIN_WEBSERVER_SHOULD_RUN &&
+              Settings.getNetworkInterfaceSubnetBlockClientIP(x)) 
           {
             // Skip check for this network interface as access to the web UI should be blocked anyway
           } else {
@@ -106,12 +108,11 @@ bool NWPluginCall(NWPlugin::Function Function, EventStruct *event, String& str)
 
               if (!currentDefaultInterface) {
                 String dummy;
-
                 if (do_NWPluginCall(
-                      getNetworkDriverIndex_from_NetworkIndex(x),
-                      NWPlugin::Function::NWPLUGIN_FALLBACK_INTERFACE_SHOULD_START,
-                      event,
-                      dummy))
+                  getNetworkDriverIndex_from_NetworkIndex(x),
+                  NWPlugin::Function::NWPLUGIN_FALLBACK_INTERFACE_SHOULD_START,
+                  event,
+                  dummy))
                 {
                   // No current default interface, thus we need to start this one.
                   Scheduler.setNetworkInitTimer(Settings.getNetworkInterfaceStartupDelay(x), x);
@@ -135,29 +136,6 @@ bool NWPluginCall(NWPlugin::Function Function, EventStruct *event, String& str)
               }
             }
 #endif // ifdef ESP32
-#ifdef ESP8266
-
-            if ((Function == NWPlugin::Function::NWPLUGIN_PRIORITY_ROUTE_CHANGED) &&
-                Settings.getNetworkInterface_isFallback(x))
-            {
-              if (!ESPEasy::net::wifi::WiFiConnected()) {
-                String dummy;
-
-                if (do_NWPluginCall(
-                      getNetworkDriverIndex_from_NetworkIndex(x),
-                      NWPlugin::Function::NWPLUGIN_FALLBACK_INTERFACE_SHOULD_START,
-                      event,
-                      dummy))
-                {
-                  // No current default interface, thus we need to start this one.
-                  Scheduler.setNetworkInitTimer(Settings.getNetworkInterfaceStartupDelay(x), x);
-                }
-              } else {
-                // TODO TD-er: What to do when performing the setup process?
-                Scheduler.setNetworkExitTimer(10, x);
-              }
-            }
-#endif // ifdef ESP8266
             String command;
 
             if (Function == NWPlugin::Function::NWPLUGIN_WRITE) {
@@ -179,11 +157,12 @@ bool NWPluginCall(NWPlugin::Function Function, EventStruct *event, String& str)
           }
         }
       }
+#ifdef ESP32
 
       if (Function == NWPlugin::Function::NWPLUGIN_PRIORITY_ROUTE_CHANGED) {
         CheckRunningServices(success);
       }
-
+#endif // ifdef ESP32
       return success;
     }
 

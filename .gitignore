@@ -100,3 +100,5 @@ sdkconfig.*
 src/Custom_.h
 
 compile_commands.json
+
+src/Custom_.h
