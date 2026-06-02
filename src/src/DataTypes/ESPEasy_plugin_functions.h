@@ -175,7 +175,7 @@ public:
     NWPLUGIN_EXIT_ALL,         // Exit all network interfaces
     NWPLUGIN_EXIT,
     NWPLUGIN_WRITE,            // Send commands to a network adapter.
-    NWPLUGIN_CREDENTIALS_CHANGED,  // TODO TD-er: Implement
+    NWPLUGIN_CREDENTIALS_CHANGED,
     NWPLUGIN_FALLBACK_INTERFACE_SHOULD_START,
 #ifdef ESP32
     NWPLUGIN_GET_INTERFACE,

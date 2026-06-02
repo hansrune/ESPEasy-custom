@@ -764,8 +764,8 @@ public:
       uint32_t RestoreUserVarsFromEEPROMOnWarmBoot : 1; // Bit 12
       uint32_t MQTTConnectInBackground             : 1; // Bit 13  // inverted
 
-      uint32_t StartAPfallback_NoCredentials       : 1; // Bit 14  // inverted
-      uint32_t ColorizeSerialLog                   : 1; // Bit 15  // inverted
+      uint32_t StartAPfallback_NoCredentials       : 1; // Bit 14 // inverted
+      uint32_t Unused_bit15                        : 1; // Bit 15
       uint32_t APfallback_minimal_on_time_sec      : 8; // Bit 16 - 23
       uint32_t APfallback_autostart_max_uptime_m   : 8; // Bit 23 - 31  '0' == disabled
     };

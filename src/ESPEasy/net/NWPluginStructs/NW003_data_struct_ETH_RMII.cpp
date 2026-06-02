@@ -563,7 +563,7 @@ bool NW003_data_struct_ETH_RMII::ETHConnectRelaxed() {
   if (!(data && iface)) { return false; }
 
   if (data->started() && data->connected()) {
-    if (EthLinkUp()) { return true; }
+    if (EthLinkUp()) return true;
     data->mark_connect_failed();
     return false;
   }
