@@ -77,7 +77,7 @@ void NWPluginData_static_runtime::mark_begin_establish_connection()
   _operationalStats.setOff();
 
   if (!_isAP) {
-    ESPEasy::net::wifi::setUseStaticIP(_useStaticIP);
+    // HRB workaround: ESPEasy::net::wifi::setUseStaticIP(_useStaticIP);
     if (_useStaticIP) {
       WiFi.config(
         _ip,
