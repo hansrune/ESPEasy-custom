@@ -406,6 +406,11 @@ void handle_networks_NetworkSettingsPage(ESPEasy::net::networkIndex_t networkind
     addFormNote(F(
                   "For fallback interface, it is the delay after connection of primary interface has failed. For non-fallback it is the delay from boot"));
 # endif // ifdef ESP32
+    addFormNumericBox(F("Delay Startup"), F("delay_start"), Settings.getNetworkInterfaceStartupDelay(networkindex), 0, 60000);
+    addUnit(F("ms"));
+#ifdef ESP32
+    addFormNote(F("For fallback interface, it is the delay after connection of primary interface has failed. For non-fallback it is the delay from boot"));
+#endif
     addFormCheckBox(F("Block Web Access"), F("block_web_access"), Settings.getNetworkInterfaceSubnetBlockClientIP(networkindex));
     addFormNote(F("When checked, any host from a subnet on this network interface will be blocked to access the ESPEasy web interface"));
 

@@ -6,7 +6,8 @@
 
 # include "../ESPEasyNetwork.h"
 # include "../../../src/Helpers/StringConverter.h"
-# include "../wifi/ESPEasyWifi.h"
+# include "../Globals/NetworkState.h"
+# include "../ESPEasyNetwork.h"
 
 namespace ESPEasy {
 namespace net {
