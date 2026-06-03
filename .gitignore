@@ -2,6 +2,8 @@
 
 # MacOSX Finder *****
 .DS_Store
+.platformio
+.venv
 
 # Fuse FileSystem ***
 .fuse_hidden*
@@ -49,6 +51,7 @@ tools/vagrant/Custom.h
 
 tools/vagrant/pio_envlist.txt
 
+build/
 build_output/
 
 **/__tmpfile.cpp
