@@ -1673,8 +1673,10 @@ void P073_data_struct::tm1637_i2cStop() {
   delayMicroseconds(TM1637_CLOCKDELAY);
   DIO_HIGH();
   delayMicroseconds(TM1637_CLOCKDELAY);
+  delayMicroseconds(TM1637_CLOCKDELAY);
 }
 
+bool P073_data_struct::tm1637_i2cAck() {
 bool P073_data_struct::tm1637_i2cAck() {
   CLK_LOW();
   DIO_INPUT();
@@ -1697,6 +1699,7 @@ bool P073_data_struct::tm1637_i2cAck() {
   if (loglevelActiveFor(LOG_LEVEL_DEBUG)) {
     String log = F("7DGT : Comm ACK=");
 
+    if (acknowledged) {
     if (acknowledged) {
       log += F("TRUE");
     } else {
