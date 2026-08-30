@@ -60,7 +60,7 @@ Your Own Default Settings
     But since this Custom.h is included before other defines are made, you don't have to undef a lot of defines.
 */
 
-#define DATEREV "20260810-1"
+#define DATEREV "20260830-1"
 // #define BUILDDATEREV(pre, post) pre " - " DATEREV " - " post
 #define BUILDDATEREV(pre, post) pre " - " DATEREV
 // #warning "Custom config is being used"
@@ -281,7 +281,7 @@ Your Own Default Settings
 // #define P143_FEATURE_INCLUDE_DFROBOT      0 // Enabled by default, can be turned off here
 // #define P143_FEATURE_COUNTER_COLORMAPPING 0 // Enabled by default, can be turned off here
 
-// #define USES_P128   // NeoPixelBusFX
+#define USES_P128   // NeoPixelBusFX
 // #define P128_USES_GRB  // Default
 // #define P128_USES_GRBW // Select 1 option, only first one enabled from this list will be used
 // #define P128_USES_RGB
