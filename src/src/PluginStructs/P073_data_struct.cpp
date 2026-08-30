@@ -1320,6 +1320,7 @@ bool P073_data_struct::tm1637_i2cAck() {
     DIRECT_pinWrite(clockPin, HIGH);
     DIRECT_pinWrite(clockPin, LOW);
   }
+  #endif // HRB build workaround
 }
 
 void P073_data_struct::shiftinView() {
