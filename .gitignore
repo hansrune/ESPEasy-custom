@@ -35,6 +35,9 @@ docs/build/
 docs/source/_build/
 
 venv/
+.platformio
+.venv
+build/
 
 .idea/
 
