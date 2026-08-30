@@ -1255,14 +1255,64 @@ bool P073_data_struct::plugin_write_7dbin(const String& text) {
 
 # endif // if P073_7DBIN_COMMAND
 
-// Borrowed from wiring_shift.c, using DIRECT_GPIO
-void P073_data_struct::DIRECT_shiftOut(uint8_t dataPin,
-                                       uint8_t clockPin,
-                                       uint8_t bitOrder,
-                                       uint8_t val) {
-  for (uint8_t i = 0; i < 8; i++) {
-    if (bitOrder == LSBFIRST) {
-      DIRECT_pinWrite(dataPin, !!(val & (1 << i)));
+// ===================================
+// ---- TM1637 specific functions ----
+// ===================================
+
+#  define CLK_HIGH() DIRECT_pinWrite(this->pin1, HIGH)
+#  define CLK_LOW() DIRECT_pinWrite(this->pin1, LOW)
+#  define DIO_HIGH() DIRECT_pinWrite(this->pin2, HIGH)
+#  define DIO_LOW() DIRECT_PINMODE_OUTPUT(this->pin2); DIRECT_pinWrite(this->pin2, LOW)
+#  define DIO_INPUT() DIRECT_PINMODE_INPUT(this->pin2)
+#  define DIO_OUTPUT() DIRECT_PINMODE_OUTPUT(this->pin2)
+
+void P073_data_struct::tm1637_i2cStart() {
+  # if defined(P073_DEBUG) && !defined(BUILD_NO_DEBUG)
+  addLog(LOG_LEVEL_DEBUG, F("7DGT : Comm Start"));
+  # endif // if defined(P073_DEBUG) && !defined(BUILD_NO_DEBUG)
+  DIO_LOW();
+  delayMicroseconds(TM1637_CLOCKDELAY);
+}
+
+void P073_data_struct::tm1637_i2cStop() {
+  # if defined(P073_DEBUG) && !defined(BUILD_NO_DEBUG)
+  addLog(LOG_LEVEL_DEBUG, F("7DGT : Comm Stop"));
+  # endif // if defined(P073_DEBUG) && !defined(BUILD_NO_DEBUG)
+  DIO_LOW();
+  delayMicroseconds(TM1637_CLOCKDELAY);
+  CLK_HIGH();
+  delayMicroseconds(TM1637_CLOCKDELAY);
+  DIO_HIGH();
+  delayMicroseconds(TM1637_CLOCKDELAY);
+  delayMicroseconds(TM1637_CLOCKDELAY);
+}
+
+bool P073_data_struct::tm1637_i2cAck() {
+bool P073_data_struct::tm1637_i2cAck() {
+  CLK_LOW();
+  DIO_INPUT();
+
+  delayMicroseconds(TM1637_CLOCKDELAY);
+  CLK_HIGH();
+  const uint32_t start_wait = micros();
+
+  const bool acknowledged = -1 !=
+                            DIRECT_measureWaitForPinState_ISR(this->pin2, start_wait, TM1637_CLOCKDELAY, 0);
+
+  const int32_t timePassed = usecPassedSince_fast(start_wait);
+
+  if (timePassed < TM1637_CLOCKDELAY) {
+    delayMicroseconds(TM1637_CLOCKDELAY - timePassed);
+  }
+
+  # if defined(P073_DEBUG) && !defined(BUILD_NO_DEBUG)
+
+  if (loglevelActiveFor(LOG_LEVEL_DEBUG)) {
+    String log = F("7DGT : Comm ACK=");
+
+    if (acknowledged) {
+    if (acknowledged) {
+      log += F("TRUE");
     } else {
       DIRECT_pinWrite(dataPin, !!(val & (1 << (7 - i))));
     }
