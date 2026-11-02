@@ -60,7 +60,7 @@ Your Own Default Settings
     But since this Custom.h is included before other defines are made, you don't have to undef a lot of defines.
 */
 
-#define DATEREV "20260908-1"
+#define DATEREV "20261102-1"
 // #define BUILDDATEREV(pre, post) pre " - " DATEREV " - " post
 #define BUILDDATEREV(pre, post) pre " - " DATEREV
 // #warning "Custom config is being used"
