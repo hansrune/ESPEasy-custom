@@ -6,7 +6,8 @@
 
 # include "../ESPEasyNetwork.h"
 # include "../../../src/Helpers/StringConverter.h"
-# include "../wifi/ESPEasyWifi.h"
+# include "../Globals/NetworkState.h"
+# include "../ESPEasyNetwork.h"
 
 namespace ESPEasy {
 namespace net {
@@ -76,7 +77,7 @@ void NWPluginData_static_runtime::mark_begin_establish_connection()
   _operationalStats.setOff();
 
   if (!_isAP) {
-    ESPEasy::net::wifi::setUseStaticIP(_useStaticIP);
+    // HRB workaround: ESPEasy::net::wifi::setUseStaticIP(_useStaticIP);
     if (_useStaticIP) {
       WiFi.config(
         _ip,

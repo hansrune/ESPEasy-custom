@@ -134,7 +134,10 @@ do
 		curl -s -m ${JSONTIME} "http://${H}/json" > "${O}"
 	fi
 
-	NAME=$( jq '.WiFi.Hostname' "${O}" | tr -d '"')
+    # New json 
+	NAME=$( jq -r '.["WiFi Station"].Hostname' "${O}" )
+    # ... fallback to old json
+    [[ -z "${NAME#null}" ]] && NAME=$( jq -r '.WiFi.Hostname' "${O}" )
 	NAME="${NAME:-$H}"
 	for F in config.dat security.dat notification.dat rules1.txt rules2.txt rules3.txt rules4.txt esp.css 
 	do
